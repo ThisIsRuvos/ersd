@@ -23,7 +23,9 @@
               "apps/client/src/assets"
             ],
             "styles": [
-              "apps/client/src/styles.css"
+              "apps/client/src/styles.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.css",
+              "node_modules/bootstrap/dist/css/bootstrap.css"
             ],
             "scripts": [],
             "es5BrowserSupport": true
@@ -58,7 +60,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "client:build"
+            "browserTarget": "client:build",
+            "proxyConfig": "proxy.conf.json"
           },
           "configurations": {
             "production": {
@@ -194,5 +197,5 @@
     "defaultCollection": "@nrwl/schematics"
   },
   "schematics": {},
-  "defaultProject": "client"
+  "defaultProject": "server"
 }

@@ -1,1 +1,13 @@
-/* You can add global styles to this file, and also import other style files */
+nav li {
+  white-space: pre;
+}
+
+div.footer {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  height: 47px;
+  width: 100%;
+  background-color: #212529;
+  padding: 5px;
+}
