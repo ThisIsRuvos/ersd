@@ -8,30 +8,36 @@
       <li class="nav-item active">
         <a class="nav-link" routerLink="/home">Home <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="loggedIn">
         <a class="nav-link" routerLink="/subscription">Subscription</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="loggedIn">
         <a class="nav-link" routerLink="/api-keys">API Keys</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="loggedIn">
         <a class="nav-link" routerLink="/contact-info">Contact Info</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="loggedIn">
         <a class="nav-link" routerLink="/admin">Admin</a>
       </li>
     </ul>
   </div>
   <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="loggedIn">
         <a class="nav-link" routerLink="/contact-info">
-          <i class="fas fa-user"></i> Some User
+          <i class="fas fa-user"></i>
+          {{fullName}}
         </a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="loggedIn">
         <a class="nav-link" href="javascript:void(0)">
           <i class="fas fa-sign-out-alt"></i> Sign out
+        </a>
+      </li>
+      <li class="nav-item" *ngIf="!loggedIn">
+        <a class="nav-link" (click)="keycloakService.login()">
+          <i class="fas fa-sign-in-alt"></i> Sign in
         </a>
       </li>
     </ul>

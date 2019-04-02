@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { AdminComponent } from './admin/admin.component';
@@ -10,6 +10,9 @@ import { ApiKeysComponent } from './api-keys/api-keys.component';
 import { HomeComponent } from './home/home.component';
 import { ContactInfoComponent } from './contact-info/contact-info.component';
 import { FormsModule } from '@angular/forms';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { environment } from '../environments/environment';
+import { HttpClientModule } from '@angular/common/http';
 
 const appRoutes: Routes = [
   { path: 'admin',            component: AdminComponent },
@@ -23,16 +26,36 @@ const appRoutes: Routes = [
   }
 ];
 
+export function initializer(keycloak: KeycloakService): () => Promise<any> {
+  return (): Promise<any> => keycloak.init({
+    config: environment.keycloak,
+    initOptions: {
+      onLoad: 'check-sso',
+      checkLoginIframe: false
+    },
+    bearerExcludedUrls: []
+  });
+}
+
 @NgModule({
   declarations: [AppComponent, AdminComponent, SubscriptionComponent, ApiKeysComponent, HomeComponent, ContactInfoComponent],
   imports: [
     BrowserModule,
     FormsModule,
     NgbModule,
+    HttpClientModule,
     RouterModule.forRoot(appRoutes, { enableTracing: true, useHash: true }),
-    FormsModule
+    FormsModule,
+    KeycloakAngularModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      useFactory: initializer,
+      deps: [KeycloakService]
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
