@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
+import { AuthService } from './auth.service';
 
 const appRoutes: Routes = [
   { path: 'admin',            component: AdminComponent },
@@ -49,6 +50,7 @@ export function initializer(keycloak: KeycloakService): () => Promise<any> {
     KeycloakAngularModule
   ],
   providers: [
+    AuthService,
     {
       provide: APP_INITIALIZER,
       multi: true,

@@ -5,38 +5,38 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarCollapse">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" routerLink="/home">Home <span class="sr-only">(current)</span></a>
+      <li class="nav-item" [class.active]="homeLink.isActive">
+        <a class="nav-link" routerLink="/home" routerLinkActive #homeLink="routerLinkActive">Home <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item" *ngIf="loggedIn">
-        <a class="nav-link" routerLink="/subscription">Subscription</a>
+      <li class="nav-item" *ngIf="authService.loggedIn" [class.active]="subscriptionLink.isActive">
+        <a class="nav-link" routerLink="/subscription" routerLinkActive #subscriptionLink="routerLinkActive">Subscription</a>
       </li>
-      <li class="nav-item" *ngIf="loggedIn">
-        <a class="nav-link" routerLink="/api-keys">API Keys</a>
+      <li class="nav-item" *ngIf="authService.loggedIn" [class.active]="apiKeysLink.isActive">
+        <a class="nav-link" routerLink="/api-keys" routerLinkActive #apiKeysLink="routerLinkActive">API Keys</a>
       </li>
-      <li class="nav-item" *ngIf="loggedIn">
-        <a class="nav-link" routerLink="/contact-info">Contact Info</a>
+      <li class="nav-item" *ngIf="authService.loggedIn" [class.active]="contactInfoLink.isActive">
+        <a class="nav-link" routerLink="/contact-info" routerLinkActive #contactInfoLink="routerLinkActive">Contact Info</a>
       </li>
-      <li class="nav-item" *ngIf="loggedIn">
-        <a class="nav-link" routerLink="/admin">Admin</a>
+      <li class="nav-item" *ngIf="authService.loggedIn && authService.isAdmin" [class.active]="adminLink.isActive">
+        <a class="nav-link" routerLink="/admin" routerLinkActive #adminLink="routerLinkActive">Admin</a>
       </li>
     </ul>
   </div>
   <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item" *ngIf="loggedIn">
+      <li class="nav-item" *ngIf="authService.loggedIn">
         <a class="nav-link" routerLink="/contact-info">
           <i class="fas fa-user"></i>
-          {{fullName}}
+          {{authService.fullName}}
         </a>
       </li>
-      <li class="nav-item" *ngIf="loggedIn">
-        <a class="nav-link" href="javascript:void(0)">
+      <li class="nav-item clickable" *ngIf="authService.loggedIn">
+        <a class="nav-link" (click)="authService.logout()">
           <i class="fas fa-sign-out-alt"></i> Sign out
         </a>
       </li>
-      <li class="nav-item" *ngIf="!loggedIn">
-        <a class="nav-link" (click)="keycloakService.login()">
+      <li class="nav-item clickable" *ngIf="!authService.loggedIn">
+        <a class="nav-link" (click)="authService.login()">
           <i class="fas fa-sign-in-alt"></i> Sign in
         </a>
       </li>
@@ -45,7 +45,10 @@
 </nav>
 
 <main role="main" class="container">
-  <div class="jumbotron">
+  <div class="jumbotron" *ngIf="homeLink.isActive || authService.loggedIn">
     <router-outlet></router-outlet>
+  </div>
+  <div class="jumbotron" *ngIf="!homeLink.isActive && !authService.loggedIn">
+    <h3>You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()">login</a> to continue.</h3>
   </div>
 </main>

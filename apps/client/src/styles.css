@@ -11,3 +11,7 @@ div.footer {
   background-color: #212529;
   padding: 5px;
 }
+
+.clickable {
+  cursor: pointer;
+}
