@@ -31,6 +31,9 @@ export class AuthService {
 
   public logout() {
     this.keycloakService.logout();
+    localStorage.removeItem('kc.token');
+    localStorage.removeItem('kc.idToken');
+    localStorage.removeItem('kc.refreshToken');
   }
 
   public checkSession() {
@@ -49,6 +52,11 @@ export class AuthService {
         if (data) {
           this.profile = <Keycloak.KeycloakProfile> data[0];
           this.roles = <string[]> data[1];
+
+          const kc = this.keycloakService.getKeycloakInstance();
+          localStorage.setItem('kc.token', kc.token);
+          localStorage.setItem('kc.idToken', kc.idToken);
+          localStorage.setItem('kc.refreshToken', kc.refreshToken);
         }
       })
       .catch((err) => {

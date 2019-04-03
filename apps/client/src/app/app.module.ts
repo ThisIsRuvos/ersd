@@ -28,11 +28,18 @@ const appRoutes: Routes = [
 ];
 
 export function initializer(keycloak: KeycloakService): () => Promise<any> {
+  const token = localStorage.getItem('kc.token');
+  const idToken = localStorage.getItem('kc.idToken');
+  const refreshToken = localStorage.getItem('kc.refreshToken');
+
   return (): Promise<any> => keycloak.init({
     config: environment.keycloak,
     initOptions: {
       onLoad: 'check-sso',
-      checkLoginIframe: false
+      checkLoginIframe: false,
+      token: token,
+      idToken: idToken,
+      refreshToken: refreshToken
     },
     bearerExcludedUrls: []
   });
