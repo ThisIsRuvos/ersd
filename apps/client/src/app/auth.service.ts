@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 import { Keycloak } from 'keycloak-angular/lib/core/services/keycloak.service';
+import { IPerson } from '../../../../libs/kdslib/src/lib/person';
+import { HttpClient } from '@angular/common/http';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CreatePersonComponent } from './create-person/create-person.component';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +13,12 @@ export class AuthService {
   public loggedIn: boolean;
   public profile: Keycloak.KeycloakProfile;
   public roles: string[];
+  public person: IPerson;
 
-  constructor(private keycloakService: KeycloakService) {
+  constructor(
+    private modalService: NgbModal,
+    private httpClient: HttpClient,
+    private keycloakService: KeycloakService) {
   }
 
   public get fullName(): string {
@@ -57,6 +65,21 @@ export class AuthService {
           localStorage.setItem('kc.token', kc.token);
           localStorage.setItem('kc.idToken', kc.idToken);
           localStorage.setItem('kc.refreshToken', kc.refreshToken);
+
+          this.httpClient.get<IPerson>('/api/user/me').toPromise()
+            .then((person) => {
+              this.person = person;
+
+              if (!this.person) {
+                const modalRef = this.modalService.open(CreatePersonComponent, { size: 'lg', backdrop: 'static' });
+                modalRef.componentInstance.profile = this.profile;
+
+                modalRef.result
+                  .then((person: IPerson) => this.person = person)
+                  .catch((err) => console.error(err));
+              }
+            })
+            .catch((err) => console.error(err));
         }
       })
       .catch((err) => {

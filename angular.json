@@ -18,10 +18,7 @@
             "main": "apps/client/src/main.ts",
             "polyfills": "apps/client/src/polyfills.ts",
             "tsConfig": "apps/client/tsconfig.app.json",
-            "assets": [
-              "apps/client/src/favicon.ico",
-              "apps/client/src/assets"
-            ],
+            "assets": ["apps/client/src/favicon.ico", "apps/client/src/assets"],
             "styles": [
               "apps/client/src/styles.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.css",
@@ -82,9 +79,7 @@
               "apps/client/tsconfig.app.json",
               "apps/client/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "test": {
@@ -122,9 +117,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": "apps/client-e2e/tsconfig.e2e.json",
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -142,9 +135,7 @@
             "outputPath": "dist/apps/server",
             "main": "apps/server/src/main.ts",
             "tsConfig": "apps/server/tsconfig.app.json",
-            "assets": [
-              "apps/server/src/assets"
-            ]
+            "assets": ["apps/server/src/assets"]
           },
           "configurations": {
             "production": {
@@ -174,9 +165,7 @@
               "apps/server/tsconfig.app.json",
               "apps/server/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "test": {
@@ -187,6 +176,32 @@
           }
         }
       }
+    },
+    "kdslib": {
+      "root": "libs/kdslib",
+      "sourceRoot": "libs/kdslib/src",
+      "projectType": "library",
+      "prefix": "kds",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/kdslib/tsconfig.lib.json",
+              "libs/kdslib/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "libs/kdslib/jest.config.js",
+            "tsConfig": "libs/kdslib/tsconfig.spec.json"
+          }
+        }
+      },
+      "schematics": {}
     }
   },
   "cli": {

@@ -15,3 +15,11 @@ div.footer {
 .clickable {
   cursor: pointer;
 }
+
+.card {
+  margin-bottom: 10px;
+}
+
+.tab-pane.active > div.card:first-child {
+  margin-top: 10px;
+}

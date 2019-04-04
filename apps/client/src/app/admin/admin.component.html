@@ -1,3 +1,69 @@
-<p>
-  admin works!
-</p>
+<h2>Administration</h2>
+
+<ngb-tabset>
+  <ngb-tab title="Upload/Messaging">
+    <ng-template ngbTabContent>
+      <div class="card">
+        <div class="card-header">Upload new artifacts</div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Bundle XML File</label>
+            <input type="file" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label>Message</label>
+            <textarea class="form-control" rows="10"></textarea>
+          </div>
+
+          <button type="button" class="btn btn-primary">Upload</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Send a message to all subscribers</div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Message to be sent</label>
+            <textarea class="form-control" rows="10"></textarea>
+          </div>
+
+          <button type="button" class="btn btn-primary">Send</button>
+        </div>
+      </div>
+
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab title="Users">
+    <ng-template ngbTabContent>
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>User</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>Test</td>
+          <td>Test1</td>
+          <td>Test2</td>
+          <td>
+            <div class="pull-right">
+              <button type="button" class="btn btn-dark" title="Edit this user's contact details">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button type="button" class="btn btn-dark" title="Remove this user's contact information and their subscriptions">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>

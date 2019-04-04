@@ -1,0 +1,10 @@
+nav > a > img {
+  position: absolute;
+  width: 45px;
+  height: 45px;
+  margin-top: -7px;
+}
+
+nav > a > span {
+  margin-left: 45px;
+}

@@ -2,18 +2,25 @@
 
 <div class="row">
   <div class="col-md-4">
-    <div class="card">
+    <div class="card" *ngIf="userSubscriptions.emailSubscription">
       <div class="card-header">
-        <input type="checkbox" /> Email subscription
+        Email subscription
       </div>
       <div class="card-body">
         <div class="form-group">
           <label>Email Address</label>
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" [(ngModel)]="userSubscriptions.emailSubscription.emailAddress" />
         </div>
 
         <div class="form-group">
-          <input type="checkbox" /> Include changed artifacts
+          <input type="checkbox" [(ngModel)]="userSubscriptions.emailSubscription.includeArtifacts" /> Include changed artifacts
+        </div>
+
+        <div class="form-group" *ngIf="userSubscriptions.emailSubscription.includeArtifacts || userSubscriptions.emailSubscription.format">
+          <select class="form-control" [(ngModel)]="userSubscriptions.emailSubscription.format">
+            <option value="json">JSON</option>
+            <option value="xml">XML</option>
+          </select>
         </div>
       </div>
     </div>
@@ -22,12 +29,12 @@
   <div class="col-md-4">
     <div class="card">
       <div class="card-header">
-        <input type="checkbox" /> REST hook subscription
+        <input type="checkbox" [(ngModel)]="userSubscriptions.hasRest" /> REST hook subscription
       </div>
-      <div class="card-body">
+      <div class="card-body" *ngIf="userSubscriptions.hasRest">
         <div class="form-group">
           <label>REST Endpoint</label>
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" [(ngModel)]="userSubscriptions.restSubscription.endpoint" />
         </div>
       </div>
     </div>
@@ -36,12 +43,12 @@
   <div class="col-md-4">
     <div class="card">
       <div class="card-header">
-        <input type="checkbox" /> SMS Subscription
+        <input type="checkbox" [(ngModel)]="userSubscriptions.hasSms" /> SMS Subscription
       </div>
-      <div class="card-body">
+      <div class="card-body" *ngIf="userSubscriptions.hasSms">
         <div class="form-group">
           <label>Carrier</label>
-          <select class="form-control">
+          <select class="form-control" [(ngModel)]="userSubscriptions.smsSubscription.carrier">
             <option value="">SELECT</option>
             <option>Verizon</option>
             <option>AT&T</option>
@@ -51,7 +58,7 @@
         </div>
         <div class="form-group">
           <label>Mobile Phone</label>
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" [(ngModel)]="userSubscriptions.smsSubscription.mobilePhone" />
         </div>
       </div>
     </div>

@@ -14,7 +14,9 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@kds/kdslib": ["libs/kdslib/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
