@@ -2,6 +2,13 @@ import { IDomainResource } from './domain-resource';
 import { IContactPoint } from './contact-point';
 import { environment } from '../../../../apps/server/src/environments/environment';
 
+export interface ISubscriptionChannel {
+  type: 'rest-hook'|'email'|'sms';
+  endpoint?: string;
+  payload?: string;
+  header?: string[];
+}
+
 export interface ISubscription extends IDomainResource {
   status: 'requested'|'active'|'error'|'off';
   contact?: IContactPoint[];
@@ -9,27 +16,20 @@ export interface ISubscription extends IDomainResource {
   reason: string;
   criteria: string;
   error?: string;
-  channel: {
-    type: 'rest-hook'|'email'|'sms';
-    endpoint?: string;
-    payload?: string;
-    header?: string[];
-  };
+  channel: ISubscriptionChannel;
 }
 
 export class Subscription implements ISubscription {
   resourceType = 'Subscription';
-  status: 'requested'|'active'|'error'|'off' = 'requested';
+  id?: string;
+  status: 'requested'|'active'|'error'|'off' = 'off';
   contact?: IContactPoint[];
   end?: string;
   reason = 'Automatically created by KDS';
   criteria = environment.subscriptionCriteria;
   error?: string;
-  channel: {
-    type: 'rest-hook'|'email'|'sms';
-    endpoint?: string;
-    payload?: string;
-    header?: string[];
+  channel: ISubscriptionChannel = {
+    type: 'email'
   };
 
   constructor(obj?: any) {

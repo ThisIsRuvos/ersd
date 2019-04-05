@@ -48,7 +48,7 @@
 </nav>
 
 <main role="main" class="container">
-  <div class="jumbotron" *ngIf="homeLink.isActive || authService.loggedIn">
+  <div class="jumbotron" *ngIf="homeLink.isActive || authService.person">
     <router-outlet></router-outlet>
   </div>
   <div class="jumbotron" *ngIf="!homeLink.isActive && !authService.loggedIn">

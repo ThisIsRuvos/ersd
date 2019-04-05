@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UserSubscriptions } from '../../../../../libs/kdslib/src/lib/user-subscriptions';
+import { NgModel } from '@angular/forms';
+import { getErrorString } from '../../../../../libs/kdslib/src/lib/get-error-string';
 
 @Component({
   selector: 'kds-subscription',
@@ -8,12 +10,58 @@ import { UserSubscriptions } from '../../../../../libs/kdslib/src/lib/user-subsc
   styleUrls: ['./subscription.component.css']
 })
 export class SubscriptionComponent implements OnInit {
-  public userSubscriptions: UserSubscriptions = {};
+  public userSubscriptions: UserSubscriptions = new UserSubscriptions();
+  public message: string;
+  public messageIsError: boolean;
 
-  constructor(private http: HttpClient) {}
+  @ViewChild('emailAddress') emailAddressField: NgModel;
+  @ViewChild('restEndpoint') endpointField: NgModel;
+  @ViewChild('carrier') carrierField: NgModel;
+  @ViewChild('mobile') mobileField: NgModel;
+
+  constructor(private httpClient: HttpClient) {}
+
+  public toggleRest(value: boolean) {
+    if (this.userSubscriptions.restSubscription && !value) {
+      delete this.userSubscriptions.restSubscription;
+    } else if (!this.userSubscriptions.restSubscription && value) {
+      this.userSubscriptions.restSubscription = {};
+    }
+  }
+
+  public toggleSms(value: boolean) {
+    if (this.userSubscriptions.smsSubscription && !value) {
+      delete this.userSubscriptions.smsSubscription;
+    } else if (!this.userSubscriptions.smsSubscription && value) {
+      this.userSubscriptions.smsSubscription = { };
+    }
+  }
+
+  get isValid() {
+    if (!this.userSubscriptions.emailSubscription && !this.userSubscriptions.restSubscription && !this.userSubscriptions.smsSubscription) {
+      return false;
+    }
+
+    return (!this.emailAddressField || this.emailAddressField.valid) &&
+      (!this.endpointField || this.endpointField.valid) &&
+      (!this.carrierField || this.carrierField.valid) &&
+      (!this.mobileField || this.mobileField.valid);
+  }
+
+  save() {
+    this.httpClient.post('/api/subscription', this.userSubscriptions).toPromise()
+      .then(() => {
+        this.message = 'Saved/updated subscriptions!';
+        this.messageIsError = false;
+      })
+      .catch((err) => {
+        this.message = getErrorString(err);
+        this.messageIsError = true;
+      });
+  }
 
   ngOnInit() {
-    this.http.get<UserSubscriptions>('/api/subscription').toPromise()
+    this.httpClient.get<UserSubscriptions>('/api/subscription').toPromise()
       .then((response) => {
         this.userSubscriptions = response;
       })

@@ -39,6 +39,10 @@ export class AuthService {
 
   public logout() {
     this.keycloakService.logout();
+    this.loggedIn = false;
+    this.profile = null;
+    this.person = null;
+    this.roles = [];
     localStorage.removeItem('kc.token');
     localStorage.removeItem('kc.idToken');
     localStorage.removeItem('kc.refreshToken');

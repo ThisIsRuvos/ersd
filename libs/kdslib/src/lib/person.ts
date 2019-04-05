@@ -25,6 +25,7 @@ export interface IPerson extends IDomainResource {
 export class Person implements IPerson {
   public resourceType = 'Person';
   public id?: string;
+  public identifier?: IIdentifier[];
   public contained?: IDomainResource[];
   public extension?: IExtension[];
   public name?: IHumanName[];
