@@ -1,11 +1,13 @@
 <h2>API Keys</h2>
 
+<div class="alert" *ngIf="message" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError">{{message}}</div>
+
 <div class="form-group">
   <label>Inbound API Key</label>
   <div class="input-group">
-    <input type="text" class="form-control" [(ngModel)]="keys.inbound" />
+    <input type="text" class="form-control" [(ngModel)]="apiKeys.inbound" />
     <div class="input-group-btn">
-      <button type="button" class="btn btn-dark" (click)="keys.inbound = generateKey()">Re-generate</button>
+      <button type="button" class="btn btn-dark" (click)="apiKeys.inbound = generateKey()">Re-generate</button>
     </div>
   </div>
 </div>
@@ -13,13 +15,13 @@
 <div class="form-group">
   <label>Outbound API Key</label>
   <div class="input-group">
-    <input type="text" class="form-control" [(ngModel)]="keys.outbound" />
+    <input type="text" class="form-control" [(ngModel)]="apiKeys.outbound" />
     <div class="input-group-btn">
-      <button type="button" class="btn btn-dark" (click)="keys.outbound = generateKey()">Re-generate</button>
+      <button type="button" class="btn btn-dark" (click)="apiKeys.outbound = generateKey()">Re-generate</button>
     </div>
   </div>
 </div>
 
 <div class="footer">
-  <button type="button" class="btn btn-primary">Save</button>
+  <button type="button" class="btn btn-primary" (click)="save()">Save</button>
 </div>

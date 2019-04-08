@@ -16,6 +16,9 @@ export class ContactInfoComponent implements OnInit {
   constructor(private httpClient: HttpClient) { }
 
   public save() {
+    this.message = null;
+    this.messageIsError = false;
+
     this.httpClient.post<Person>('/api/user/me', this.person).toPromise()
       .then((person) => {
         this.person = new Person(person);

@@ -49,6 +49,9 @@ export class SubscriptionComponent implements OnInit {
   }
 
   save() {
+    this.message = null;
+    this.messageIsError = false;
+
     this.httpClient.post('/api/subscription', this.userSubscriptions).toPromise()
       .then(() => {
         this.message = 'Saved/updated subscriptions!';

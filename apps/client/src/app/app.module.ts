@@ -16,6 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { CreatePersonComponent } from './create-person/create-person.component';
 import { EditPersonComponent } from './edit-person/edit-person.component';
+import { AdminEditPersonComponent } from './admin/edit-person/edit-person.component';
 
 const appRoutes: Routes = [
   { path: 'admin',            component: AdminComponent },
@@ -49,7 +50,8 @@ export function initializer(keycloak: KeycloakService): () => Promise<any> {
 
 @NgModule({
   entryComponents: [
-    CreatePersonComponent
+    CreatePersonComponent,
+    AdminEditPersonComponent
   ],
   declarations: [
     AppComponent,
@@ -59,7 +61,8 @@ export function initializer(keycloak: KeycloakService): () => Promise<any> {
     HomeComponent,
     ContactInfoComponent,
     CreatePersonComponent,
-    EditPersonComponent
+    EditPersonComponent,
+    AdminEditPersonComponent
   ],
   imports: [
     BrowserModule,

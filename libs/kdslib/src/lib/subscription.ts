@@ -69,6 +69,12 @@ export class Subscription implements ISubscription {
 
     const starting = this.channel.endpoint.startsWith('mailto:') ? 'mailto:'.length : 0;
     const ending = this.channel.endpoint.indexOf('@');
-    return this.channel.endpoint.substring(starting, ending);
+    const mobile = this.channel.endpoint.substring(starting, ending);
+
+    if (mobile.length === 10) {
+      return mobile.substring(0, 3) + '-' + mobile.substring(3, 6) + '-' + mobile.substring(6, 10);
+    }
+
+    return mobile;
   }
 }

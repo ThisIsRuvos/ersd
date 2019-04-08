@@ -6,6 +6,9 @@ import { AuthRequest } from '../auth-module/auth-request';
 import { ISubscription, Subscription } from '../../../../../libs/kdslib/src/lib/subscription';
 import { BaseController } from '../base.controller';
 import { Constants } from '../../../../../libs/kdslib/src/lib/constants';
+import { IPerson, Person } from '../../../../../libs/kdslib/src/lib/person';
+import { AxiosResponse } from 'axios';
+import { IOperationOutcome } from '../../../../../libs/kdslib/src/lib/operation-outcome';
 
 @Controller('subscription')
 export class SubscriptionController extends BaseController {
@@ -26,7 +29,6 @@ export class SubscriptionController extends BaseController {
   @Get()
   @UseGuards(AuthGuard())
   async getSubscriptions(@Req() request: AuthRequest): Promise<UserSubscriptions> {
-    const response = new UserSubscriptions();
     const userController = new UserController(this.httpService);
     const person = await userController.getMyPerson(request);
 
@@ -46,39 +48,47 @@ export class SubscriptionController extends BaseController {
       const restSubscription = subscriptions.find((subscription) => subscription.channel.type === 'rest-hook');
       const smsSubscription = subscriptions.find((subscription) => subscription.isSms);
 
-      if (emailSubscription && emailSubscription.channel && emailSubscription.channel.endpoint) {
-        response.emailSubscription = {
-          emailAddress: emailSubscription.channel.endpoint.startsWith('mailto:') ?
-            emailSubscription.channel.endpoint.substring('mailto:'.length) :
-            emailSubscription.channel.endpoint,
-          includeArtifacts: !!emailSubscription.channel.payload
-        };
+      return this.buildUserSubscriptions(emailSubscription, restSubscription, smsSubscription);
+    }
+  }
 
-        if (emailSubscription.channel.payload === 'application/json') {
-          response.emailSubscription.format = 'json';
-        } else if (emailSubscription.channel.payload === 'application/xml') {
-          response.emailSubscription.format = 'xml';
-        }
-      }
+  private buildUserSubscriptions(emailSubscription: Subscription, restSubscription: Subscription, smsSubscription: Subscription): UserSubscriptions {
+    const userSubscriptions = new UserSubscriptions();
 
-      if (restSubscription && restSubscription.channel && restSubscription.channel.endpoint) {
-        response.restSubscription = {
-          endpoint: restSubscription.channel.endpoint
-        };
-      }
+    if (emailSubscription && emailSubscription.channel && emailSubscription.channel.endpoint) {
+      userSubscriptions.emailSubscription = {
+        emailAddress: emailSubscription.channel.endpoint.startsWith('mailto:') ?
+          emailSubscription.channel.endpoint.substring('mailto:'.length) :
+          emailSubscription.channel.endpoint,
+        includeArtifacts: !!emailSubscription.channel.payload
+      };
 
-      if (smsSubscription && smsSubscription.channel && smsSubscription.channel.endpoint) {
-        response.smsSubscription = {
-          carrier: smsSubscription.smsCarrier,
-          mobilePhone: smsSubscription.smsPhone
-        };
+      if (emailSubscription.channel.payload === 'application/json') {
+        userSubscriptions.emailSubscription.format = 'json';
+      } else if (emailSubscription.channel.payload === 'application/xml') {
+        userSubscriptions.emailSubscription.format = 'xml';
       }
     }
 
-    return response;
+    if (restSubscription && restSubscription.channel && restSubscription.channel.endpoint) {
+      userSubscriptions.restSubscription = {
+        endpoint: restSubscription.channel.endpoint
+      };
+    }
+
+    if (smsSubscription && smsSubscription.channel && smsSubscription.channel.endpoint) {
+      userSubscriptions.smsSubscription = {
+        carrier: smsSubscription.smsCarrier,
+        mobilePhone: smsSubscription.smsPhone
+      };
+    }
+
+    return userSubscriptions;
   }
 
   private updateEmailSubscription(current: Subscription, updated: EmailSubscriptionInfo): Promise<any> {
+    const method = current ? 'PUT' : 'POST';
+
     if (current && !updated) {
       const deleteUrl = this.buildFhirUrl('Subscription', current.id);
       return this.httpService.delete(deleteUrl).toPromise();
@@ -106,7 +116,7 @@ export class SubscriptionController extends BaseController {
       }
 
       return this.httpService.request({
-        method: current ? 'PUT' : 'POST',
+        method: method,
         url: this.buildFhirUrl('Subscription', current ? current.id : null),
         data: current
       }).toPromise();
@@ -116,6 +126,8 @@ export class SubscriptionController extends BaseController {
   }
 
   private updateRestSubscription(current: Subscription, updated: RestSubscriptionInfo): Promise<any> {
+    const method = current ? 'PUT' : 'POST';
+
     if (current && !updated) {
       const deleteUrl = this.buildFhirUrl('Subscription', current.id);
       return this.httpService.delete(deleteUrl).toPromise();
@@ -128,7 +140,7 @@ export class SubscriptionController extends BaseController {
       current.channel.endpoint = updated.endpoint;
 
       return this.httpService.request({
-        method: current ? 'PUT' : 'POST',
+        method: method,
         url: this.buildFhirUrl('Subscription', current ? current.id : null),
         data: current
       }).toPromise();
@@ -138,6 +150,8 @@ export class SubscriptionController extends BaseController {
   }
 
   private updateSmsSubscription(current: Subscription, updated: SmsSubscriptionInfo): Promise<any> {
+    const method = current ? 'PUT' : 'POST';
+
     if (current && !updated) {
       const deleteUrl = this.buildFhirUrl('Subscription', current.id);
       return this.httpService.delete(deleteUrl).toPromise();
@@ -167,8 +181,10 @@ export class SubscriptionController extends BaseController {
           throw new Error(`Unexpected carrier ${updated.carrier}`);
       }
 
+      current.channel.endpoint = email;
+
       return this.httpService.request({
-        method: current ? 'PUT' : 'POST',
+        method: method,
         url: this.buildFhirUrl('Subscription', current ? current.id : null),
         data: current
       }).toPromise();
@@ -177,9 +193,33 @@ export class SubscriptionController extends BaseController {
     return Promise.resolve();
   }
 
+  private ensureSubscription(person: IPerson, currentSubscription: Subscription, updatedSubscription: Subscription|IOperationOutcome): boolean {
+    person.extension = person.extension || [];
+    let foundExtension =  currentSubscription ?
+      person.extension.find((extension) => extension.url === Constants.extensions.subscription && extension.valueReference && extension.valueReference.reference === `Subscription/${currentSubscription.id}`) :
+      undefined;
+
+    if (foundExtension && (!updatedSubscription || updatedSubscription.resourceType === 'OperationOutcome')) {
+      const index = person.extension.indexOf(foundExtension);
+      person.extension.splice(index, index >= 0 ? 1 : 0);
+      return true;
+    } else if (!foundExtension && updatedSubscription) {
+      foundExtension = {
+        url: Constants.extensions.subscription,
+        valueReference: {
+          reference: `Subscription/${updatedSubscription.id}`
+        }
+      };
+      person.extension.push(foundExtension);
+      return true;
+    }
+
+    return false;
+  }
+
   @Post()
   @UseGuards(AuthGuard())
-  async updateSubscriptions(@Req() request: AuthRequest, @Body() userSubscriptions: UserSubscriptions): Promise<void> {
+  async updateSubscriptions(@Req() request: AuthRequest, @Body() userSubscriptions: UserSubscriptions): Promise<UserSubscriptions> {
     const userController = new UserController(this.httpService);
     const person = await userController.getMyPerson(request);
 
@@ -205,7 +245,36 @@ export class SubscriptionController extends BaseController {
         this.updateSmsSubscription(smsSubscription, userSubscriptions.smsSubscription)
       ];
 
-      await Promise.all(updatePromises);
+      let updatedEmailSubscription: AxiosResponse<Subscription>;
+      let updatedRestSubscription: AxiosResponse<Subscription>;
+      let updatedSmsSubscription: AxiosResponse<Subscription>;
+
+      return new Promise((resolve, reject) => {
+        Promise.all(updatePromises)
+          .then((updatedSubscriptions) => {
+            updatedEmailSubscription = updatedSubscriptions[0];
+            updatedRestSubscription = updatedSubscriptions[1];
+            updatedSmsSubscription = updatedSubscriptions[2];
+
+            const updatedPerson =
+              this.ensureSubscription(person, emailSubscription, updatedEmailSubscription ? updatedEmailSubscription.data : undefined) ||
+              this.ensureSubscription(person, restSubscription, updatedRestSubscription ? updatedRestSubscription.data : undefined) ||
+              this.ensureSubscription(person, smsSubscription, updatedSmsSubscription ? updatedSmsSubscription.data : undefined);
+
+            if (updatedPerson) {
+              const updatePersonUrl = this.buildFhirUrl('Person', person.id);
+              return this.httpService.put(updatePersonUrl, person).toPromise();
+            }
+          })
+          .then(() => {
+            const updatedUserSubscriptions = this.buildUserSubscriptions(
+              updatedEmailSubscription ? updatedEmailSubscription.data : undefined,
+              updatedRestSubscription ? updatedRestSubscription.data : undefined,
+              updatedSmsSubscription ? updatedSmsSubscription.data : undefined);
+            resolve(updatedUserSubscriptions);
+          })
+          .catch((err) => reject(err));
+      });
     }
   }
 }

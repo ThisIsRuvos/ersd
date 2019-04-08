@@ -1,5 +1,7 @@
 <h2>Administration</h2>
 
+<div class="alert" *ngIf="message" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError">{{message}}</div>
+
 <ngb-tabset>
   <ngb-tab title="Upload/Messaging">
     <ng-template ngbTabContent>
@@ -40,23 +42,23 @@
       <table class="table table-striped">
         <thead>
         <tr>
-          <th>User</th>
           <th>First Name</th>
           <th>Last Name</th>
+          <th>Email</th>
           <th>&nbsp;</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td>Test</td>
-          <td>Test1</td>
-          <td>Test2</td>
+        <tr *ngFor="let user of users">
+          <td>{{user.firstName}}</td>
+          <td>{{user.lastName}}</td>
+          <td>{{user.email}}</td>
           <td>
             <div class="pull-right">
-              <button type="button" class="btn btn-dark" title="Edit this user's contact details">
+              <button type="button" class="btn btn-dark" title="Edit this user's contact details" (click)="editUser(user)">
                 <i class="fas fa-edit"></i>
               </button>
-              <button type="button" class="btn btn-dark" title="Remove this user's contact information and their subscriptions">
+              <button type="button" class="btn btn-dark" title="Remove this user's contact information and their subscriptions" (click)="deleteUser(user)">
                 <i class="fas fa-times"></i>
               </button>
             </div>

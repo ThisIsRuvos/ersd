@@ -1,0 +1,12 @@
+<div class="modal-header">
+  <h4 class="modal-title">First time user</h4>
+</div>
+<div class="modal-body">
+  <div class="alert alert-danger" *ngIf="message">{{message}}</div>
+
+  <kds-edit-person *ngIf="person" [person]="person" #editPerson></kds-edit-person>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="save()" [disabled]="!isValid">Save</button>
+  <button type="button" class="btn btn-light" (click)="activeModal.dismiss()">Cancel</button>
+</div>
