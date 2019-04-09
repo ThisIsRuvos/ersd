@@ -12,30 +12,37 @@ This project was generated using [Nx](https://nx.dev).
 
 [Interactive tutorial](https://nx.dev/tutorial/01-create-application)
 
-## Generate your first application
+## Building
 
-Run `ng g app myapp` to generate an application. When using Nx, you can create multiple applications and libraries in the same CLI workspace.
+```
+ng build server
+ng build client
+```
 
-## Development server
+## Running
 
-Run `ng serve myapp` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+```
+node DEPLOY_LOCATION/server/main.js
+```
 
-## Code scaffolding
+When developing the application, DEPLOY_LOCATION is the "dist" directory
 
-Run `ng generate component component-name --project=myapp` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Deploying
 
-## Build
+* Build both the client and the server
+* Copy both "client" and "server" directories from the "dist" directory into your destination deployment directory
+* Run the server
 
-Run `ng build myapp` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+## Developers
 
-## Running unit tests
+Add the --watch flag to both "ng build" commands to have the application automatically re-built when changes are detected to source code (.ts files).
+
+DEPLOY_LOCATION is the "dist" directory while developing.
+
+### Running unit tests
 
 Run `ng test` to execute the unit tests via [Jest](https://karma-runner.github.io).
 
-## Running end-to-end tests
+### Running end-to-end tests
 
 Run `ng e2e` to execute the end-to-end tests via [Cypress](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
