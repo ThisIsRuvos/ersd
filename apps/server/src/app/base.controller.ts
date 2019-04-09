@@ -15,8 +15,8 @@ export class BaseController {
     }
   }
 
-  protected buildFhirUrl(resourceType: string, id?: string, params?: { [key: string]: any }): string {
-    let url = BaseController.joinUrl(environment.fhirServerBase, resourceType);
+  protected buildFhirUrl(resourceType?: string, id?: string, params?: { [key: string]: any }): string {
+    let url = resourceType ? BaseController.joinUrl(environment.fhirServerBase, resourceType) : environment.fhirServerBase;
 
     if (id) {
       url = BaseController.joinUrl(url, id);

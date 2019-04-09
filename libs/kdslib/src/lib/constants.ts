@@ -6,6 +6,7 @@ export class Constants {
     organizationTitle: 'https://kds.com/extension-person-organization-title',
     subscription: 'https://kds.com/extension-person-subscription',
     inboundApiKey: 'https://kds.com/extension-person-inbound-api-key',
-    outboundApiKey: 'https://kds.com/extension-person-outbound-api-key'
+    outboundApiKey: 'https://kds.com/extension-person-outbound-api-key',
+    notificationMessage: 'https://kds.com/extension-notification-message'
   };
 }

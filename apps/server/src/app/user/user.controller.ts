@@ -15,10 +15,10 @@ export class UserController extends BaseController {
   }
 
   @Get()
-  async getAllPeople(@Req() request: AuthRequest): Promise<IPerson[]> {
+  async getAllPeople(@Req() request: AuthRequest): Promise<Person[]> {
     this.assertAdmin(request);
 
-    let people: IPerson[] = [];
+    let people: Person[] = [];
     const getNext = (url?: string): Promise<void> => {
       if (!url) {
         url = this.buildFhirUrl('Person', null, { _summary: true });
@@ -30,7 +30,7 @@ export class UserController extends BaseController {
             const bundle = results.data;
 
             if (bundle.entry) {
-              const resources = bundle.entry.map((entry) => <IPerson> entry.resource);
+              const resources = bundle.entry.map((entry) => <Person> entry.resource);
               people = people.concat(resources);
             }
 
@@ -54,7 +54,7 @@ export class UserController extends BaseController {
   }
 
   @Get('me')
-  async getMyPerson(@Req() request: AuthRequest): Promise<IPerson> {
+  async getMyPerson(@Req() request: AuthRequest): Promise<Person> {
     const identifierQuery = Constants.keycloakSystem + '|' + request.user.sub;
 
     return this.httpService.request<IBundle>({
@@ -65,13 +65,13 @@ export class UserController extends BaseController {
     }).toPromise()
       .then((peopleBundle) => {
         if (peopleBundle.data && peopleBundle.data.total === 1) {
-          return <IPerson> peopleBundle.data.entry[0].resource;
+          return <Person> peopleBundle.data.entry[0].resource;
         }
       });
   }
 
   @Post('me')
-  async updateMyPerson(@Req() request: AuthRequest, @Body() body: IPerson): Promise<IPerson> {
+  async updateMyPerson(@Req() request: AuthRequest, @Body() body: Person): Promise<Person> {
     const updatePerson = new Person(body);
     updatePerson.identifier = updatePerson.identifier || [];
 
@@ -112,7 +112,7 @@ export class UserController extends BaseController {
           });
         }
 
-        return this.httpService.request<IPerson>({
+        return this.httpService.request<Person>({
           method: existingPerson ? 'PUT' : 'POST',
           url: this.buildFhirUrl('Person', existingPerson ? existingPerson.id : ''),
           data: updatePerson
@@ -124,16 +124,16 @@ export class UserController extends BaseController {
   }
 
   @Get(':id')
-  async getUser(@Req() request: AuthRequest, @Param('id') id: string): Promise<IPerson> {
+  async getUser(@Req() request: AuthRequest, @Param('id') id: string): Promise<Person> {
     this.assertAdmin(request);
 
     const url = this.buildFhirUrl('Person', id);
-    const results = await this.httpService.get<IPerson>(url).toPromise();
+    const results = await this.httpService.get<Person>(url).toPromise();
     return results.data;
   }
 
   @Put(':id')
-  async updateUser(@Req() request: AuthRequest, @Param('id') id: string, @Body() body: IPerson) {
+  async updateUser(@Req() request: AuthRequest, @Param('id') id: string, @Body() body: Person) {
     this.assertAdmin(request);
 
     const url = this.buildFhirUrl('Person', id);

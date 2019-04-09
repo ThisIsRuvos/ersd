@@ -3,40 +3,6 @@
 <div class="alert" *ngIf="message" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError">{{message}}</div>
 
 <ngb-tabset>
-  <ngb-tab title="Upload/Messaging">
-    <ng-template ngbTabContent>
-      <div class="card">
-        <div class="card-header">Upload new artifacts</div>
-        <div class="card-body">
-          <div class="form-group">
-            <label>Bundle XML File</label>
-            <input type="file" class="form-control" />
-          </div>
-
-          <div class="form-group">
-            <label>Message</label>
-            <textarea class="form-control" rows="10"></textarea>
-          </div>
-
-          <button type="button" class="btn btn-primary">Upload</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">Send a message to all subscribers</div>
-        <div class="card-body">
-          <div class="form-group">
-            <label>Message to be sent</label>
-            <textarea class="form-control" rows="10"></textarea>
-          </div>
-
-          <button type="button" class="btn btn-primary">Send</button>
-        </div>
-      </div>
-
-    </ng-template>
-  </ngb-tab>
-
   <ngb-tab title="Users">
     <ng-template ngbTabContent>
       <table class="table table-striped">
@@ -66,6 +32,42 @@
         </tr>
         </tbody>
       </table>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab title="Upload">
+    <ng-template ngbTabContent>
+      <div class="alert alert-info">Uploading new artifacts will send out notifications to subscribers.</div>
+
+      <div class="form-group">
+        <label>Bundle XML File</label>
+        <input type="file" class="form-control" (change)="handleFileInput($event.target.files)" #fileUploadField [class.is-invalid]="!uploadFile" />
+      </div>
+
+      <div class="form-group">
+        <label>Message</label>
+        <textarea class="form-control" rows="6" [(ngModel)]="uploadMessage" [class.is-invalid]="!uploadMessage"></textarea>
+      </div>
+
+      <button type="button" class="btn btn-primary" (click)="upload()" [disabled]="!uploadFile || !uploadMessage">Upload</button>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab title="Messages">
+    <ng-template ngbTabContent>
+      <div class="alert alert-info">This will send an email message directly to each of the user's contact email address (which may be different than the email address the user uses for subscriptions).</div>
+
+      <div class="form-group">
+        <label>Subject</label>
+        <input type="text" class="form-control" />
+      </div>
+
+      <div class="form-group">
+        <label>Message to be sent</label>
+        <textarea class="form-control" rows="6"></textarea>
+      </div>
+
+      <button type="button" class="btn btn-primary">Send</button>
     </ng-template>
   </ngb-tab>
 </ngb-tabset>

@@ -23,3 +23,7 @@ div.footer {
 .tab-pane.active > div.card:first-child {
   margin-top: 10px;
 }
+
+.tab-pane {
+  padding-top: 10px;
+}

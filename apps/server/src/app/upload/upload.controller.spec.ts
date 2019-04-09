@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ApiKeysController } from './api-keys.controller';
+import { UploadController } from './upload.controller';
 
 describe('Subscription Controller', () => {
   let module: TestingModule;
   
   beforeAll(async () => {
     module = await Test.createTestingModule({
-      controllers: [ApiKeysController],
+      controllers: [UploadController],
     }).compile();
   });
   it('should be defined', () => {
-    const controller: ApiKeysController = module.get<ApiKeysController>(ApiKeysController);
+    const controller: UploadController = module.get<UploadController>(UploadController);
     expect(controller).toBeDefined();
   });
 });

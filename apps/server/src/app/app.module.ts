@@ -6,10 +6,11 @@ import { FhirController } from './fhir/fhir.controller';
 import { AuthModule } from './auth-module/auth.module';
 import { SubscriptionController } from './subscription/subscription.controller';
 import { ApiKeysController } from './api-key/api-keys.controller';
+import { UploadController } from './upload/upload.controller';
 
 @Module({
   imports: [AuthModule, HttpModule],
-  controllers: [AppController, UserController, FhirController, SubscriptionController, ApiKeysController],
+  controllers: [AppController, UserController, FhirController, SubscriptionController, ApiKeysController, UploadController],
   providers: [AppService],
 })
 export class AppModule {}

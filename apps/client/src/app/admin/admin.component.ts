@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IPerson, Person } from '../../../../../libs/kdslib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
 import { getErrorString } from '../../../../../libs/kdslib/src/lib/get-error-string';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AdminEditPersonComponent } from './edit-person/edit-person.component';
 import { AuthService } from '../auth.service';
+import { IUploadRequest } from '../../../../../libs/kdslib/src/lib/upload-request';
 
 @Component({
   selector: 'kds-admin',
@@ -15,6 +16,11 @@ export class AdminComponent implements OnInit {
   public users: Person[] = [];
   public message: string;
   public messageIsError: boolean;
+  public uploadFile: File;
+  public uploadFileContent: string;
+  public uploadMessage: string;
+
+  @ViewChild('fileUploadField') fileUploadField: ElementRef;
 
   constructor(private httpClient: HttpClient,
               private modalService: NgbModal,
@@ -27,6 +33,62 @@ export class AdminComponent implements OnInit {
     modalRef.result.then((results) => {
 
     });
+  }
+
+  handleFileInput(files: FileList) {
+    if (files.length !== 1) {
+      this.uploadFile = null;
+      return;
+    }
+
+    this.uploadFile = files.item(0);
+
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      this.uploadFileContent = <string> fileReader.result;
+    };
+    fileReader.readAsText(this.uploadFile);
+  }
+
+  upload() {
+    if (!this.uploadFile || !this.uploadMessage) {
+      return;
+    }
+
+    if (!confirm('Are you sure you want to upload the selected resource/file?')) {
+      return;
+    }
+
+    this.message = null;
+    this.messageIsError = false;
+
+    if (!this.uploadFile.name.endsWith('.json') && !this.uploadFile.name.endsWith('.xml')) {
+      this.message = 'Unknown file type for uploaded file ' + this.uploadFile.name;
+      this.messageIsError = true;
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    const request: IUploadRequest = {
+      fileContent: this.uploadFileContent,
+      fileName: this.uploadFile.name,
+      message: this.uploadMessage
+    };
+
+    this.httpClient.post('/api/upload', request).toPromise()
+      .then(() => {
+        this.message = 'Successfully uploaded!';
+        this.messageIsError = false;
+
+        this.fileUploadField.nativeElement.value = '';
+        this.uploadMessage = null;
+        this.uploadFile = null;
+        this.uploadFileContent = null;
+      })
+      .catch((err) => {
+        this.message = getErrorString(err);
+        this.messageIsError = true;
+      });
   }
 
   deleteUser(user: Person) {
