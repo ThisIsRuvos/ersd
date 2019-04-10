@@ -7,6 +7,7 @@ import { IAddress } from './address';
 import { IExtension } from './extension';
 import { IOrganization, Organization } from './organization';
 import { Constants } from './constants';
+import { ICoding } from './coding';
 
 export interface IPerson extends IDomainResource {
   identifier?: IIdentifier[];
@@ -24,6 +25,13 @@ export interface IPerson extends IDomainResource {
 
 export class Person implements IPerson {
   public resourceType = 'Person';
+  public meta?: {
+    versionId?: string;
+    lastUpdated?: string;
+    profile?: string[];
+    security?: ICoding[];
+    tag?: ICoding[];
+  };
   public id?: string;
   public identifier?: IIdentifier[];
   public contained?: IDomainResource[];

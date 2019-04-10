@@ -60,6 +60,7 @@ client/browser application asks the server for the client config.
 | &nbsp;&nbsp;&nbsp;fhirServerBase | The base url of the FHIR server that provides data to the KDS components |
 | &nbsp;&nbsp;&nbsp;subscriptionCriteria | The criteria to be used for each of the subscriptions that the end users setup. See [here](http://hl7.org/fhir/STU3/subscription-definitions.html#Subscription.criteria) for more details. |
 | &nbsp;&nbsp;&nbsp;enableSubscriptions | Primarily for debugging purposes. When false, modified subscriptions are disabled (off). When true, modified subscriptions are submitted to the FHIR server with a status of "requested". See [here](http://hl7.org/fhir/STU3/subscription-definitions.html#Subscription.status) for more details. |
+| &nbsp;&nbsp;&nbsp;restrictedResourceTypes | A list of resource types that are restricted from the FHIR proxy provided by the server. It is suggested that at least Person and Subscription be restricted, because these are resources directly influenced by the server and may include sensitive user information |
 | email | Configuration that allows administrators to send emails to all users |
 | &nbsp;&nbsp;&nbsp;from | The from address that emails are sent from. Should be in the format "joe@somewhere.com" |
 | &nbsp;&nbsp;&nbsp;host | The host address of the SMTP server |
@@ -75,10 +76,15 @@ client/browser application asks the server for the client config.
 
 #### server.authCertificate
 This property must take the form of "------ BEGIN CERTIFICATE ------\n.............\n------ END CERTIFICATE -----". In other words, it must be wrapped with
+
 `----- BEGIN CERTIFICIATE -----`
+
 Followed by a line break
+
 Followed by the actual certificate contents
+
 Followed by a line break
+
 `----- END CERTIFICATE -----`
 
 #### server.subscriptionCriteria

@@ -10,6 +10,7 @@ import { IPerson, Person } from '../../../../../libs/kdslib/src/lib/person';
 import { AxiosResponse } from 'axios';
 import { IOperationOutcome } from '../../../../../libs/kdslib/src/lib/operation-outcome';
 import { IUserApiKeys } from '../../../../../libs/kdslib/src/lib/user-api-keys';
+import { ICoding } from '../../../../../libs/kdslib/src/lib/coding';
 
 @Controller('api-keys')
 export class ApiKeysController extends BaseController {
@@ -23,19 +24,34 @@ export class ApiKeysController extends BaseController {
     const userController = new UserController(this.httpService);
     const person = await userController.getMyPerson(request);
     const response: IUserApiKeys = {};
-    const extensions = person.extension || [];
-    const foundInboundExtension = extensions.find((extension) => extension.url === Constants.extensions.inboundApiKey);
-    const foundOutboundExtension = extensions.find((extension) => extension.url === Constants.extensions.outboundApiKey);
+    const meta = person.meta || {};
+    const tags = meta.tag || [];
+    const foundInboundTag = tags.find((extension) => extension.system === Constants.tags.inboundApiKey);
+    const foundOutboundTag = tags.find((extension) => extension.system === Constants.tags.outboundApiKey);
 
-    if (foundInboundExtension) {
-      response.inbound = foundInboundExtension.valueString;
+    if (foundInboundTag) {
+      response.inbound = foundInboundTag.code;
     }
 
-    if (foundOutboundExtension) {
-      response.outbound = foundOutboundExtension.valueString;
+    if (foundOutboundTag) {
+      response.outbound = foundOutboundTag.code;
     }
 
     return response;
+  }
+  
+  private addOrRemoveTag(personId: string, tag: ICoding, operation: '$meta-add'|'$meta-delete') {
+    const url = this.buildFhirUrl('Person', personId, null, operation);
+    const body = {
+      resourceType: 'Parameters',
+      parameter: [{
+        name: 'meta',
+        valueMeta: {
+          tag: [tag]
+        }
+      }]
+    };
+    return this.httpService.post(url, body).toPromise();
   }
 
   @Post()
@@ -44,45 +60,47 @@ export class ApiKeysController extends BaseController {
     const userController = new UserController(this.httpService);
     const person = await userController.getMyPerson(request);
 
-    person.extension = person.extension || [];
+    person.meta = person.meta || {};
+    person.meta.tag = person.meta.tag || [];
 
-    let foundInboundExtension = person.extension.find((extension) => extension.url === Constants.extensions.inboundApiKey);
-    let foundOutboundExtension = person.extension.find((extension) => extension.url === Constants.extensions.outboundApiKey);
+    let foundInboundTag = person.meta.tag.find((extension) => extension.system === Constants.tags.inboundApiKey);
+    let foundOutboundTag = person.meta.tag.find((extension) => extension.system === Constants.tags.outboundApiKey);
 
-    if (foundInboundExtension && !apiKeys.inbound) {
-      const index = person.extension.indexOf(foundInboundExtension);
-      person.extension.splice(index, index >= 0 ? 1 : 0);
+    if (foundInboundTag && !apiKeys.inbound) {
+      await this.addOrRemoveTag(person.id, foundInboundTag, '$meta-delete');
     }
 
-    if (foundOutboundExtension && !apiKeys.outbound) {
-      const index = person.extension.indexOf(foundOutboundExtension);
-      person.extension.splice(index, index >= 0 ? 1 : 0);
+    if (foundOutboundTag && !apiKeys.outbound) {
+      await this.addOrRemoveTag(person.id, foundOutboundTag, '$meta-delete');
     }
 
     if (apiKeys.inbound) {
-      if (!foundInboundExtension) {
-        foundInboundExtension = {
-          url: Constants.extensions.inboundApiKey
+      if (!foundInboundTag) {
+        foundInboundTag = {
+          system: Constants.tags.inboundApiKey,
+          code: apiKeys.inbound
         };
-        person.extension.push(foundInboundExtension);
+        await this.addOrRemoveTag(person.id, foundInboundTag, '$meta-add');
+      } else if (foundInboundTag.code !== apiKeys.inbound) {
+        await this.addOrRemoveTag(person.id, foundInboundTag, '$meta-delete');
+        foundInboundTag.code = apiKeys.inbound;
+        await this.addOrRemoveTag(person.id, foundInboundTag, '$meta-add');
       }
-
-      foundInboundExtension.valueString = apiKeys.inbound;
     }
 
     if (apiKeys.outbound) {
-      if (!foundOutboundExtension) {
-        foundOutboundExtension = {
-          url: Constants.extensions.outboundApiKey
+      if (!foundOutboundTag) {
+        foundOutboundTag = {
+          system: Constants.tags.outboundApiKey,
+          code: apiKeys.outbound
         };
-        person.extension.push(foundOutboundExtension);
+        await this.addOrRemoveTag(person.id, foundOutboundTag, '$meta-add');
+      } else if (foundOutboundTag.code !== apiKeys.outbound) {
+        await this.addOrRemoveTag(person.id, foundOutboundTag, '$meta-delete');
+        foundOutboundTag.code = apiKeys.outbound;
+        await this.addOrRemoveTag(person.id, foundOutboundTag, '$meta-add');
       }
-
-      foundOutboundExtension.valueString = apiKeys.outbound;
     }
-
-    const updatePersonUrl = this.buildFhirUrl('Person', person.id);
-    await this.httpService.put(updatePersonUrl, person).toPromise();
 
     return await this.getApiKeys(request);
   }

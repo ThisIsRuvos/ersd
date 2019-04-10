@@ -4,7 +4,8 @@
     "authCertificate": "",
     "fhirServerBase": "",
     "subscriptionCriteria": "Bundle?",
-    "enableSubscriptions": true
+    "enableSubscriptions": true,
+    "restrictedResourceTypes": ["Person", "Subscription"]
   },
   "email": {
     "from": "",

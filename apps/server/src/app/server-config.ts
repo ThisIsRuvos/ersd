@@ -5,4 +5,5 @@ export interface IServerConfig {
   fhirServerBase: string;
   subscriptionCriteria: string;
   enableSubscriptions: boolean;
+  restrictedResourceTypes: string[];
 }

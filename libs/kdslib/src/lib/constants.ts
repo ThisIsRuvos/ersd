@@ -5,8 +5,10 @@ export class Constants {
     secondaryContact: 'https://kds.com/extension-person-secondary-contact',
     organizationTitle: 'https://kds.com/extension-person-organization-title',
     subscription: 'https://kds.com/extension-person-subscription',
-    inboundApiKey: 'https://kds.com/extension-person-inbound-api-key',
-    outboundApiKey: 'https://kds.com/extension-person-outbound-api-key',
     notificationMessage: 'https://kds.com/extension-notification-message'
+  };
+  static readonly tags = {
+    inboundApiKey: 'https://kds.com/inbound-api-key',
+    outboundApiKey: 'https://kds.com/outbound-api-key',
   };
 }
