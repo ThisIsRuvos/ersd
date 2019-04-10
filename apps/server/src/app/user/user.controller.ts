@@ -29,6 +29,8 @@ export class UserController extends BaseController {
 
   @Post('email')
   async emailAllPeople(@Req() request: AuthRequest, @Body() body: IEmailRequest) {
+    this.assertAdmin(request);
+
     if (!emailConfig.host || !emailConfig.port) {
       throw new InvalidModuleConfigException('Email has not been configured on this server');
     }
