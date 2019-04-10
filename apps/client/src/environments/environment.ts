@@ -3,12 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
-  keycloak: {
-    url: 'https://oauth.lantanagroup.com/auth',
-    realm: 'kds',
-    clientId: 'kds-app'
-  }
+  production: false
 };
 
 /*

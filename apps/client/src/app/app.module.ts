@@ -11,12 +11,12 @@ import { HomeComponent } from './home/home.component';
 import { ContactInfoComponent } from './contact-info/contact-info.component';
 import { FormsModule } from '@angular/forms';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
-import { environment } from '../environments/environment';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { CreatePersonComponent } from './create-person/create-person.component';
 import { EditPersonComponent } from './edit-person/edit-person.component';
 import { AdminEditPersonComponent } from './admin/edit-person/edit-person.component';
+import { IClientConfig } from '../../../../libs/kdslib/src/lib/client-config';
 
 const appRoutes: Routes = [
   { path: 'admin',            component: AdminComponent },
@@ -30,22 +30,27 @@ const appRoutes: Routes = [
   }
 ];
 
-export function initializer(keycloak: KeycloakService): () => Promise<any> {
+export function initializer(keycloak: KeycloakService, httpClient: HttpClient): () => Promise<any> {
   const token = localStorage.getItem('kc.token');
   const idToken = localStorage.getItem('kc.idToken');
   const refreshToken = localStorage.getItem('kc.refreshToken');
 
-  return (): Promise<any> => keycloak.init({
-    config: environment.keycloak,
-    initOptions: {
-      onLoad: 'check-sso',
-      checkLoginIframe: false,
-      token: token,
-      idToken: idToken,
-      refreshToken: refreshToken
-    },
-    bearerExcludedUrls: []
-  });
+  return (): Promise<any> => {
+    return httpClient.get('/api/config').toPromise()
+      .then((config: IClientConfig) => {
+        return keycloak.init({
+          config: config.keycloak,
+          initOptions: {
+            onLoad: 'check-sso',
+            checkLoginIframe: false,
+            token: token,
+            idToken: idToken,
+            refreshToken: refreshToken
+          },
+          bearerExcludedUrls: []
+        });
+      });
+  };
 }
 
 @NgModule({
@@ -79,7 +84,7 @@ export function initializer(keycloak: KeycloakService): () => Promise<any> {
       provide: APP_INITIALIZER,
       multi: true,
       useFactory: initializer,
-      deps: [KeycloakService]
+      deps: [KeycloakService, HttpClient]
     }
   ],
   bootstrap: [AppComponent]

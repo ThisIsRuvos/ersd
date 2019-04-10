@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@kds/kdslib": ["libs/kdslib/src/index.ts"]
+      "@kds/kdslib": ["libs/kdslib/src/index.ts"],
+      "config": ["node_modules/config/lib/config"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,6 +1,9 @@
-import { environment } from '../environments/environment';
 import { AuthRequest } from './auth-module/auth-request';
 import { UnauthorizedException } from '@nestjs/common';
+import * as config from 'config';
+import { IServerConfig } from './server-config';
+
+const serverConfig = <IServerConfig> config.get('server');
 
 export class BaseController {
   private static joinUrl(part1: string, part2: string) {
@@ -16,7 +19,7 @@ export class BaseController {
   }
 
   protected buildFhirUrl(resourceType?: string, id?: string, params?: { [key: string]: any }): string {
-    let url = resourceType ? BaseController.joinUrl(environment.fhirServerBase, resourceType) : environment.fhirServerBase;
+    let url = resourceType ? BaseController.joinUrl(serverConfig.fhirServerBase, resourceType) : serverConfig.fhirServerBase;
 
     if (id) {
       url = BaseController.joinUrl(url, id);

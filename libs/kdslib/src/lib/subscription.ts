@@ -1,6 +1,6 @@
 import { IDomainResource } from './domain-resource';
 import { IContactPoint } from './contact-point';
-import { environment } from '../../../../apps/server/src/environments/environment';
+import * as config from 'config';
 
 export interface ISubscriptionChannel {
   type: 'rest-hook'|'email'|'sms';
@@ -26,7 +26,7 @@ export class Subscription implements ISubscription {
   contact?: IContactPoint[];
   end?: string;
   reason = 'Automatically created by KDS';
-  criteria = environment.subscriptionCriteria;
+  criteria: string;
   error?: string;
   channel: ISubscriptionChannel = {
     type: 'email'

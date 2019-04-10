@@ -22,10 +22,12 @@ ng build client
 ## Running
 
 ```
-node DEPLOY_LOCATION/server/main.js
+cd DEPLOY_LOCATION/server
+node main.js
 ```
 
-When developing the application, DEPLOY_LOCATION is the "dist" directory
+When developing the application, DEPLOY_LOCATION is the "dist" directory.
+The server must be run from the DEPLOY_LOCATION so that the "config" directory is relative to the working directory of the server.  
 
 ## Deploying
 

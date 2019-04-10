@@ -1,0 +1,20 @@
+{
+  "server": {
+    "port": 3333,
+    "authCertificate": "",
+    "fhirServerBase": "",
+    "subscriptionCriteria": "Bundle?"
+  },
+  "smtp": {
+    "host": "",
+    "port": 25,
+    "tls": true
+  },
+  "client": {
+    "keycloak": {
+      "url": "",
+      "realm": "",
+      "clientId": ""
+    }
+  }
+}

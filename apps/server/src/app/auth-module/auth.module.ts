@@ -1,15 +1,18 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { environment } from '../../environments/environment';
 import { JwtStrategy } from './jwt-strategy';
 import { AuthService } from './auth.service';
+import * as config from 'config';
+import { IServerConfig } from '../server-config';
+
+const serverConfig = <IServerConfig> config.get('server');
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secretOrPrivateKey: environment.authCertificate,
+      secretOrPrivateKey: serverConfig.authCertificate,
       signOptions: {
         expiresIn: 3600
       }

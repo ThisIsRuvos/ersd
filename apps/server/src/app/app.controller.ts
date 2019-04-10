@@ -1,14 +1,16 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
+import * as config from 'config';
+import { IClientConfig } from '../../../../libs/kdslib/src/lib/client-config';
+
+const clientConfig = <IClientConfig> config.get('client');
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  @UseGuards(AuthGuard())
-  getData(@Req() request: Request) {
-    return this.appService.getData();
+  @Get('config')
+  getClientConfig(): IClientConfig {
+    return clientConfig;
   }
 }

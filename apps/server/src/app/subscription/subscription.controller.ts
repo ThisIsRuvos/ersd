@@ -9,6 +9,10 @@ import { Constants } from '../../../../../libs/kdslib/src/lib/constants';
 import { IPerson, Person } from '../../../../../libs/kdslib/src/lib/person';
 import { AxiosResponse } from 'axios';
 import { IOperationOutcome } from '../../../../../libs/kdslib/src/lib/operation-outcome';
+import * as config from 'config';
+import { IServerConfig } from '../server-config';
+
+const serverConfig = <IServerConfig> config.get('server');
 
 @Controller('subscription')
 export class SubscriptionController extends BaseController {
@@ -96,6 +100,7 @@ export class SubscriptionController extends BaseController {
       if (!current) {
         current = new Subscription();
         current.channel.type = 'email';
+        current.criteria = serverConfig.subscriptionCriteria;
       }
 
       current.channel.endpoint = updated.emailAddress;
@@ -135,6 +140,7 @@ export class SubscriptionController extends BaseController {
       if (!current) {
         current = new Subscription();
         current.channel.type = 'rest-hook';
+        current.criteria = serverConfig.subscriptionCriteria;
       }
 
       current.channel.endpoint = updated.endpoint;
@@ -159,6 +165,7 @@ export class SubscriptionController extends BaseController {
       if (!current) {
         current = new Subscription();
         current.channel.type = 'email';
+        current.criteria = serverConfig.subscriptionCriteria;
       }
 
       const mobile = updated.mobilePhone.replace(/-/g, '');
