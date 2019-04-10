@@ -6,6 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AdminEditPersonComponent } from './edit-person/edit-person.component';
 import { AuthService } from '../auth.service';
 import { IUploadRequest } from '../../../../../libs/kdslib/src/lib/upload-request';
+import { IEmailRequest } from '../../../../../libs/kdslib/src/lib/email-request';
 
 @Component({
   selector: 'kds-admin',
@@ -19,12 +20,40 @@ export class AdminComponent implements OnInit {
   public uploadFile: File;
   public uploadFileContent: string;
   public uploadMessage: string;
+  public emailRequest: IEmailRequest = {
+    subject: '',
+    message: ''
+  };
 
   @ViewChild('fileUploadField') fileUploadField: ElementRef;
 
   constructor(private httpClient: HttpClient,
               private modalService: NgbModal,
               private authService: AuthService) { }
+
+  sendEmail() {
+    if (!this.emailRequest.subject || !this.emailRequest.message) {
+      return;
+    }
+
+    if (!confirm('Are you sure you want to send this email to all users?')) {
+      return;
+    }
+
+    this.message = null;
+    this.messageIsError = false;
+
+    this.httpClient.post('/api/user/email', this.emailRequest).toPromise()
+      .then(() => {
+        this.message = 'Successfully sent email to all users';
+        window.scrollTo(0, 0);
+      })
+      .catch((err) => {
+        this.message = getErrorString(err);
+        this.messageIsError = true;
+        window.scrollTo(0, 0);
+      });
+  }
 
   editUser(user: IPerson) {
     const modalRef = this.modalService.open(AdminEditPersonComponent, { size: 'lg' });

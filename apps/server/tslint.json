@@ -1,4 +1,6 @@
 {
   "extends": "../../tslint.json",
-  "rules": {}
+  "rules": {
+    "nx-enforce-module-boundaries": false
+  }
 }

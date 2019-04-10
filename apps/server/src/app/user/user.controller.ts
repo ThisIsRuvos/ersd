@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpService, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpService, Logger, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { BaseController } from '../base.controller';
 import { AuthGuard } from '@nestjs/passport';
 import { IPerson, Person } from '../../../../../libs/kdslib/src/lib/person';
@@ -6,12 +6,80 @@ import { AuthRequest } from '../auth-module/auth-request';
 import { Constants } from '../../../../../libs/kdslib/src/lib/constants';
 import { IBundle } from '../../../../../libs/kdslib/src/lib/bundle';
 import { Subscription } from '../../../../../libs/kdslib/src/lib/subscription';
+import { IEmailRequest } from '../../../../../libs/kdslib/src/lib/email-request';
+import * as nodemailer from 'nodemailer';
+import * as config from 'config';
+import { IEmailConfig } from '../email-config';
+import * as SMTPConnection from 'nodemailer/lib/smtp-connection';
+import * as Mail from 'nodemailer/lib/mailer';
+import { SentMessageInfo } from 'nodemailer/lib/smtp-transport';
+import { getErrorString } from '../../../../../libs/kdslib/src/lib/get-error-string';
+import { InvalidModuleConfigException } from '@nestjs/common/decorators/modules/exceptions/invalid-module-config.exception';
+
+const emailConfig = <IEmailConfig> config.get('email');
 
 @Controller('user')
 @UseGuards(AuthGuard())
 export class UserController extends BaseController {
+  private readonly logger = new Logger(UserController.name);
+
   constructor(private httpService: HttpService) {
     super();
+  }
+
+  @Post('email')
+  async emailAllPeople(@Req() request: AuthRequest, @Body() body: IEmailRequest) {
+    if (!emailConfig.host || !emailConfig.port) {
+      throw new InvalidModuleConfigException('Email has not been configured on this server');
+    }
+
+    const transportOptions: SMTPConnection.Options = {
+      host: emailConfig.host,
+      port: emailConfig.port,
+      requireTLS: emailConfig.tls
+    };
+
+    if (emailConfig.username && emailConfig.password) {
+      transportOptions.auth = {
+        user: emailConfig.username,
+        pass: emailConfig.password
+      };
+    }
+
+    const people = await this.getAllPeople(request);
+    const transporter = nodemailer.createTransport(transportOptions);
+
+    const sendMessage = (options: Mail.Options) => {
+      return new Promise<SentMessageInfo>((resolve, reject) => {
+        transporter.sendMail(options, (err, info) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(info);
+          }
+        });
+      });
+    };
+
+    const sendPromises = people
+      .filter((person) => !!person.email)
+      .map((person) => {
+        const mailMessage: Mail.Options = {
+          from: emailConfig.from,
+          to: person.email,
+          subject: body.subject,
+          text: body.message
+        };
+        return sendMessage(mailMessage);
+      });
+
+    this.logger.log(`Sending email to ${sendPromises.length} people`);
+
+    const sendResults = await Promise.all(sendPromises);
+
+    sendResults.forEach((result) => {
+      this.logger.log(`Successfully sent message with ID: ${result.messageId}`);
+    });
   }
 
   @Get()
@@ -30,7 +98,7 @@ export class UserController extends BaseController {
             const bundle = results.data;
 
             if (bundle.entry) {
-              const resources = bundle.entry.map((entry) => <Person> entry.resource);
+              const resources = bundle.entry.map((entry) => new Person(entry.resource));
               people = people.concat(resources);
             }
 

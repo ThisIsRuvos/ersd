@@ -5,10 +5,13 @@
     "fhirServerBase": "",
     "subscriptionCriteria": "Bundle?"
   },
-  "smtp": {
+  "email": {
+    "from": "",
     "host": "",
     "port": 25,
-    "tls": true
+    "tls": true,
+    "username": "",
+    "password": ""
   },
   "client": {
     "keycloak": {
