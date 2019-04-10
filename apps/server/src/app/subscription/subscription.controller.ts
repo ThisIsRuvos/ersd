@@ -90,6 +90,14 @@ export class SubscriptionController extends BaseController {
     return userSubscriptions;
   }
 
+  private enableSubscription(subscription: Subscription) {
+    if (serverConfig.enableSubscriptions) {
+      subscription.status = 'requested';
+    } else {
+      subscription.status = 'off';
+    }
+  }
+
   private updateEmailSubscription(current: Subscription, updated: EmailSubscriptionInfo): Promise<any> {
     const method = current ? 'PUT' : 'POST';
 
@@ -102,6 +110,8 @@ export class SubscriptionController extends BaseController {
         current.channel.type = 'email';
         current.criteria = serverConfig.subscriptionCriteria;
       }
+
+      this.enableSubscription(current);
 
       current.channel.endpoint = updated.emailAddress;
 
@@ -143,6 +153,8 @@ export class SubscriptionController extends BaseController {
         current.criteria = serverConfig.subscriptionCriteria;
       }
 
+      this.enableSubscription(current);
+
       current.channel.endpoint = updated.endpoint;
 
       return this.httpService.request({
@@ -167,6 +179,8 @@ export class SubscriptionController extends BaseController {
         current.channel.type = 'email';
         current.criteria = serverConfig.subscriptionCriteria;
       }
+
+      this.enableSubscription(current);
 
       const mobile = updated.mobilePhone.replace(/-/g, '');
       let email = `mailto:${mobile}@`;

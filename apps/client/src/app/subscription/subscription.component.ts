@@ -56,10 +56,12 @@ export class SubscriptionComponent implements OnInit {
       .then(() => {
         this.message = 'Saved/updated subscriptions!';
         this.messageIsError = false;
+        window.scrollTo(0, 0);
       })
       .catch((err) => {
         this.message = getErrorString(err);
         this.messageIsError = true;
+        window.scrollTo(0, 0);
       });
   }
 

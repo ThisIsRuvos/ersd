@@ -4,4 +4,5 @@ export interface IServerConfig {
   authCertificate: string;
   fhirServerBase: string;
   subscriptionCriteria: string;
+  enableSubscriptions: boolean;
 }

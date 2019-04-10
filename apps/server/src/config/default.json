@@ -3,7 +3,8 @@
     "port": 3333,
     "authCertificate": "",
     "fhirServerBase": "",
-    "subscriptionCriteria": "Bundle?"
+    "subscriptionCriteria": "Bundle?",
+    "enableSubscriptions": true
   },
   "email": {
     "from": "",
