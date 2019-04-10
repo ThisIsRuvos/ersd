@@ -48,9 +48,16 @@ Run `ng e2e` to execute the end-to-end tests via [Cypress](http://www.protractor
 
 ### Configuration
 
-The application uses the "config" module to provide environment/deployment configurations to the server. 
+The application uses the [config](https://www.npmjs.com/package/config) module to provide environment/deployment configurations to the server. 
 A portion of the configuration is dedicated to the client/browser application. When the client/browser application launches, the
 client/browser application asks the server for the client config.
+
+To override the default configuration for a specific deployment, either 
+
+1. Create a "local.json" file in the config directory of the server app
+2. Create sn environment-specific json file in the config directory of the server app (such as "production.json") and create an environment variable on the server called "NODE_ENV" with a value of "production" (for example).
+
+The overriding config file can be a complete copy of the default.json file with modifications, or it can include only the properties that you want to override in the default.json. 
 
 | Property | Description |
 | -------- | ----------- |
