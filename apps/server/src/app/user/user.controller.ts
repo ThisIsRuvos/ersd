@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpService, Logger, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpService, InternalServerErrorException, Logger, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { BaseController } from '../base.controller';
 import { AuthGuard } from '@nestjs/passport';
 import { IPerson, Person } from '../../../../../libs/kdslib/src/lib/person';
@@ -163,47 +163,58 @@ export class UserController extends BaseController {
 
     let existingPerson;
 
-    return this.getMyPerson(request)
-      .then((person) => {
-        existingPerson = person;
+    try {
+      existingPerson = await this.getMyPerson(request);
+    } catch (ex) {
+      this.logger.error(`Error when getting existing person: ${ex}`);
+      throw new InternalServerErrorException(ex.message);
+    }
 
-        if (!existingPerson) {
-          this.logger.log(`Person does not already exist. Creating default subscriptions for new person`);
+    if (!existingPerson) {
+      const newSubscriptionUrl = this.buildFhirUrl('Subscription');
+      let newSubscriptionResults;
+      let newSubscription = new Subscription();
+      newSubscription.channel.endpoint = updatePerson.email;
 
-          const newSubscriptionUrl = this.buildFhirUrl('Subscription');
-          const newSubscription = new Subscription();
-          newSubscription.channel.endpoint = updatePerson.email;
+      this.logger.log(`Person does not already exist. Creating default subscriptions for new person via url: ${newSubscriptionUrl}`);
 
-          return this.httpService.post<Subscription>(newSubscriptionUrl, newSubscription).toPromise();
+      try {
+        newSubscriptionResults = await this.httpService.post<Subscription>(newSubscriptionUrl, newSubscription).toPromise();
+      } catch (ex) {
+        this.logger.error(`Error when creating default subscription for new user: ${ex}`);
+        throw new InternalServerErrorException(ex.message);
+      }
+
+      newSubscription = new Subscription(newSubscriptionResults.data);
+
+      this.logger.log(`Adding default subscription to Person resource`);
+
+      updatePerson.extension = updatePerson.extension || [];
+      updatePerson.extension.push({
+        url: Constants.extensions.subscription,
+        valueReference: {
+          reference: 'Subscription/' + newSubscription.id
         }
-      })
-      .then((results) => {
-        if (results && results.data) {
-          const newSubscription = new Subscription(results.data);
-
-          this.logger.log(`Adding default subscription to Person resource`);
-
-          updatePerson.extension = updatePerson.extension || [];
-          updatePerson.extension.push({
-            url: Constants.extensions.subscription,
-            valueReference: {
-              reference: 'Subscription/' + newSubscription.id
-            }
-          });
-        }
-
-        this.logger.log('Sending request to FHIR server to update the Person resource');
-
-        return this.httpService.request<Person>({
-          method: existingPerson ? 'PUT' : 'POST',
-          url: this.buildFhirUrl('Person', existingPerson ? existingPerson.id : ''),
-          data: updatePerson
-        }).toPromise();
-      })
-      .then((updateResponse) => {
-        this.logger.log('Done updating person resource, responding with updated person');
-        return updateResponse.data;
       });
+    }
+
+    this.logger.log('Sending request to FHIR server to update the Person resource');
+
+    let updatePersonRequest;
+
+    try {
+      updatePersonRequest = await this.httpService.request<Person>({
+        method: existingPerson ? 'PUT' : 'POST',
+        url: this.buildFhirUrl('Person', existingPerson ? existingPerson.id : ''),
+        data: updatePerson
+      }).toPromise();
+    } catch (ex) {
+      this.logger.error(`Error when updating Person resource on FHIR server: ${ex}`);
+      throw new InternalServerErrorException(ex.message);
+    }
+
+    this.logger.log('Done updating person resource, responding with updated person');
+    return updatePersonRequest.data;
   }
 
   @Get(':id')
