@@ -16,8 +16,10 @@ import { SentMessageInfo } from 'nodemailer/lib/smtp-transport';
 import { getErrorString } from '../../../../../libs/kdslib/src/lib/get-error-string';
 import { InvalidModuleConfigException } from '@nestjs/common/decorators/modules/exceptions/invalid-module-config.exception';
 import { identifier } from '@babel/types';
+import { IServerConfig } from '../server-config';
 
 const emailConfig = <IEmailConfig> config.get('email');
+const serverConfig = <IServerConfig> config.get('server');
 
 @Controller('user')
 @UseGuards(AuthGuard())
@@ -174,7 +176,10 @@ export class UserController extends BaseController {
       const newSubscriptionUrl = this.buildFhirUrl('Subscription');
       let newSubscriptionResults;
       let newSubscription = new Subscription();
+      newSubscription.criteria = serverConfig.subscriptionCriteria;
+      newSubscription.channel.type = 'email';
       newSubscription.channel.endpoint = updatePerson.email;
+      newSubscription.status = serverConfig.enableSubscriptions ? 'requested' : 'off';
 
       this.logger.log(`Person does not already exist. Creating default subscriptions for new person via url: ${newSubscriptionUrl}`);
 
