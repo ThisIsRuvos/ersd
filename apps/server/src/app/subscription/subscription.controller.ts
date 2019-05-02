@@ -113,7 +113,9 @@ export class SubscriptionController extends BaseController {
 
       this.enableSubscription(current);
 
-      current.channel.endpoint = updated.emailAddress;
+      current.channel.endpoint = updated.emailAddress.indexOf('mailto:') === 0 ?
+        updated.emailAddress :
+        'mailto:' + updated.emailAddress;
 
       if (updated.includeArtifacts) {
         switch (updated.format) {

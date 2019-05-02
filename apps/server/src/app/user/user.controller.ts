@@ -51,7 +51,10 @@ export class UserController extends BaseController {
       };
     }
 
+    this.logger.log('Getting all people registered in the FHIR server');
     const people = await this.getAllPeople(request);
+
+    this.logger.log('Creating email transport to send emails');
     const transporter = nodemailer.createTransport(transportOptions);
 
     const sendMessage = (options: Mail.Options) => {
@@ -66,8 +69,11 @@ export class UserController extends BaseController {
       });
     };
 
-    const sendPromises = people
-      .filter((person) => !!person.email)
+    const filteredPeople = people.filter((person) => !!person.email);
+
+    this.logger.log(`Sending email to ${filteredPeople.length} people`);
+
+    const sendPromises = filteredPeople
       .map((person) => {
         const mailMessage: Mail.Options = {
           from: emailConfig.from,
@@ -80,11 +86,16 @@ export class UserController extends BaseController {
 
     this.logger.log(`Sending email to ${sendPromises.length} people`);
 
-    const sendResults = await Promise.all(sendPromises);
+    try {
+      const sendResults = await Promise.all(sendPromises);
 
-    sendResults.forEach((result) => {
-      this.logger.log(`Successfully sent message with ID: ${result.messageId}`);
-    });
+      sendResults.forEach((result) => {
+        this.logger.log(`Successfully sent message with ID: ${result.messageId}`);
+      });
+    } catch (ex) {
+      this.logger.error(`Error sending email to all registered users: ${ex.message}`);
+      throw new InternalServerErrorException();
+    }
   }
 
   @Get()
