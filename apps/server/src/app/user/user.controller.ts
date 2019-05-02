@@ -15,6 +15,7 @@ import * as Mail from 'nodemailer/lib/mailer';
 import { SentMessageInfo } from 'nodemailer/lib/smtp-transport';
 import { getErrorString } from '../../../../../libs/kdslib/src/lib/get-error-string';
 import { InvalidModuleConfigException } from '@nestjs/common/decorators/modules/exceptions/invalid-module-config.exception';
+import { identifier } from '@babel/types';
 
 const emailConfig = <IEmailConfig> config.get('email');
 
@@ -127,6 +128,8 @@ export class UserController extends BaseController {
   async getMyPerson(@Req() request: AuthRequest): Promise<Person> {
     const identifierQuery = Constants.keycloakSystem + '|' + request.user.sub;
 
+    this.logger.log(`Searching for existing person with identifier ${identifierQuery}`);
+
     return this.httpService.request<IBundle>({
       url: this.buildFhirUrl('Person', null, { identifier: identifierQuery }),
       headers: {
@@ -135,8 +138,11 @@ export class UserController extends BaseController {
     }).toPromise()
       .then((peopleBundle) => {
         if (peopleBundle.data && peopleBundle.data.total === 1) {
+          this.logger.log(`Found a single person with identifier ${identifierQuery}`);
           return <Person> peopleBundle.data.entry[0].resource;
         }
+
+        this.logger.log('Did not find any people with identifier ${identifierQuery}');
       });
   }
 
@@ -162,6 +168,8 @@ export class UserController extends BaseController {
         existingPerson = person;
 
         if (!existingPerson) {
+          this.logger.log(`Person does not already exist. Creating default subscriptions for new person`);
+
           const newSubscriptionUrl = this.buildFhirUrl('Subscription');
           const newSubscription = new Subscription();
           newSubscription.channel.endpoint = updatePerson.email;
@@ -173,6 +181,8 @@ export class UserController extends BaseController {
         if (results && results.data) {
           const newSubscription = new Subscription(results.data);
 
+          this.logger.log(`Adding default subscription to Person resource`);
+
           updatePerson.extension = updatePerson.extension || [];
           updatePerson.extension.push({
             url: Constants.extensions.subscription,
@@ -182,6 +192,8 @@ export class UserController extends BaseController {
           });
         }
 
+        this.logger.log('Sending request to FHIR server to update the Person resource');
+
         return this.httpService.request<Person>({
           method: existingPerson ? 'PUT' : 'POST',
           url: this.buildFhirUrl('Person', existingPerson ? existingPerson.id : ''),
@@ -189,6 +201,7 @@ export class UserController extends BaseController {
         }).toPromise();
       })
       .then((updateResponse) => {
+        this.logger.log('Done updating person resource, responding with updated person');
         return updateResponse.data;
       });
   }
