@@ -178,7 +178,7 @@ export class UserController extends BaseController {
       let newSubscription = new Subscription();
       newSubscription.criteria = serverConfig.subscriptionCriteria;
       newSubscription.channel.type = 'email';
-      newSubscription.channel.endpoint = updatePerson.email;
+      newSubscription.channel.endpoint = 'mailto:' + updatePerson.email;
       newSubscription.status = serverConfig.enableSubscriptions ? 'requested' : 'off';
 
       this.logger.log(`Person does not already exist. Creating default subscriptions for new person via url: ${newSubscriptionUrl}`);
