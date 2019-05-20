@@ -185,20 +185,20 @@ export class SubscriptionController extends BaseController {
       this.enableSubscription(current);
 
       const mobile = updated.mobilePhone.replace(/-/g, '');
-      let email = `mailto:${mobile}@`;
+      let email = `mailto:${mobile}`;
 
       switch (updated.carrier) {
         case 'tmobile':
-          email += 'tomomail.net';
+          email += Subscription.SMS_TMOBILE;
           break;
         case 'verizon':
-          email += 'vtext.net';
+          email += Subscription.SMS_VERIZON;
           break;
         case 'at&t':
-          email += 'text.att.net';
+          email += Subscription.SMS_ATT;
           break;
         case 'sprint':
-          email += 'messaging.sprintpcs.com';
+          email += Subscription.SMS_SPRINT;
           break;
         default:
           throw new Error(`Unexpected carrier ${updated.carrier}`);

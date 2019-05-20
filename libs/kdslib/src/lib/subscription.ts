@@ -20,6 +20,12 @@ export interface ISubscription extends IDomainResource {
 }
 
 export class Subscription implements ISubscription {
+
+  static readonly SMS_SPRINT = '@messaging.sprintpcs.com';
+  static readonly SMS_ATT = '@text.att.net';
+  static readonly SMS_TMOBILE = '@tomomail.net';
+  static readonly SMS_VERIZON = '@vtext.com';
+
   resourceType = 'Subscription';
   id?: string;
   status: 'requested'|'active'|'error'|'off' = 'off';
@@ -51,13 +57,13 @@ export class Subscription implements ISubscription {
       return;
     }
 
-    if (this.channel.endpoint.endsWith('@tomomail.net')) {
+    if (this.channel.endpoint.endsWith(Subscription.SMS_TMOBILE)) {
       return 'tmobile';
-    } else if (this.channel.endpoint.endsWith('@vtext.net')) {
+    } else if (this.channel.endpoint.endsWith(Subscription.SMS_VERIZON)) {
       return 'verizon';
-    } else if (this.channel.endpoint.endsWith('@text.att.net')) {
+    } else if (this.channel.endpoint.endsWith(Subscription.SMS_ATT)) {
       return 'at&t';
-    } else if (this.channel.endpoint.endsWith('@messaging.sprintpcs.com')) {
+    } else if (this.channel.endpoint.endsWith(Subscription.SMS_SPRINT)) {
       return 'sprint';
     }
   }
