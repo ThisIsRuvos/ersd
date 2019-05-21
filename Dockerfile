@@ -1,10 +1,9 @@
-ARG config_file
 FROM node AS build-kds
 
-RUN mkdir /kds
+RUN mkdir -p /kds/server/config
 WORKDIR /kds
 COPY . .
-COPY Dockerfile local.json* /kds/dist/apps/server/config/
+COPY local.json /kds/server/config/
 
 RUN npm install -g @angular/cli
 RUN npm ci --no-optional
