@@ -5,7 +5,7 @@ WORKDIR /kds
 COPY . /kds
 
 RUN npm install -g @angular/cli
-RUN npm install
+RUN npm ci --production
 RUN ng build --prod=true client
 RUN ng build --prod=true server
 
