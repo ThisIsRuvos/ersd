@@ -16,7 +16,7 @@ WORKDIR /kds
 COPY --from=build-kds /kds/dist/apps/client/. /kds/client/
 COPY --from=build-kds /kds/dist/apps/server/. /kds/server/
 
-RUN if [ "x$config_file" = "x" ] ; then echo Config file not provided ; else COPY $config_file /kds/serer/config ; fi
+COPY Dockerfile local.json* .
 
 WORKDIR /kds/server
 
