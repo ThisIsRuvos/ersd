@@ -16,7 +16,7 @@ WORKDIR /kds
 COPY --from=build-kds /kds/dist/apps/client/. /kds/client/
 COPY --from=build-kds /kds/dist/apps/server/. /kds/server/
 
-COPY Dockerfile local.json* .
+COPY Dockerfile local.json* config/.
 
 WORKDIR /kds/server
 
