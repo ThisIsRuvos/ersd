@@ -4,7 +4,7 @@ FROM node AS build-kds
 RUN mkdir /kds
 WORKDIR /kds
 COPY . .
-COPY Dockerfile local.json* config/
+COPY Dockerfile local.json* /kds/dist/apps/server/config/
 
 RUN npm install -g @angular/cli
 RUN npm ci --no-optional
