@@ -3,7 +3,6 @@ FROM node AS build-kds
 RUN mkdir -p /kds/server/config
 WORKDIR /kds
 COPY . .
-COPY ./local.json /kds/server/config/
 
 RUN npm install -g @angular/cli
 RUN npm ci --no-optional
