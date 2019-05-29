@@ -224,4 +224,52 @@ export class Person implements IPerson {
 
     foundOffice.value = value;
   }
+
+  public get lastExpirationSent(): string {
+    const foundExt = (this.extension || []).find((ext) => ext.url === Constants.extensions.lastExpirationSent);
+
+    if (foundExt) {
+      return foundExt.valueDateTime;
+    }
+
+    return '';
+  }
+
+  public set lastExpirationSent(value: string) {
+    this.extension = this.extension || [];
+    let foundExt = this.extension.find((ext) => ext.url === Constants.extensions.lastExpirationSent);
+
+    if (!foundExt) {
+      foundExt = {
+        url: Constants.extensions.lastExpirationSent
+      };
+      this.extension.push(foundExt);
+    }
+
+    foundExt.valueDateTime = value;
+  }
+
+  public get expirationSentCount(): number {
+    const foundExt = (this.extension || []).find((ext) => ext.url === Constants.extensions.expirationSentCount);
+
+    if (foundExt) {
+      return foundExt.valueInteger;
+    }
+
+    return 0;
+  }
+
+  public set expirationSentCount(value: number) {
+    this.extension = this.extension || [];
+    let foundExt = this.extension.find((ext) => ext.url === Constants.extensions.expirationSentCount);
+
+    if (!foundExt) {
+      foundExt = {
+        url: Constants.extensions.expirationSentCount
+      };
+      this.extension.push(foundExt);
+    }
+
+    foundExt.valueInteger = value;
+  }
 }

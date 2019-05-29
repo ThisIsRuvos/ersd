@@ -1,6 +1,15 @@
 import { IDomainResource } from './domain-resource';
 import { IIdentifier } from './identifier';
 
+export interface IBundleEntry {
+  fullUrl?: string;
+  resource?: IDomainResource;
+  request?: {
+    method: 'GET'|'POST'|'PUT'|'DELETE';
+    url: string;
+  };
+};
+
 export interface IBundle extends IDomainResource {
   resourceType: 'Bundle';
   identifier?: IIdentifier;
@@ -10,12 +19,5 @@ export interface IBundle extends IDomainResource {
     relation: 'next'|'previous'|'last'|'first';
     url: string;
   }];
-  entry?: [{
-    fullUrl?: string;
-    resource?: IDomainResource;
-    request?: {
-      method: 'GET'|'POST'|'PUT'|'DELETE';
-      url: string;
-    };
-  }];
+  entry?: IBundleEntry[];
 }

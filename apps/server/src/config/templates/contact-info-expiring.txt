@@ -1,0 +1,6 @@
+Hi {first_name},
+
+Your contact information is going to expire on {expiration_date}. After this date, you will not receive notifications from Knowledge Distribution Services until you have logged into the KDS portal and updated your contact information.
+
+Thank You,
+KDS Team

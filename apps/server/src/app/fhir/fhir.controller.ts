@@ -7,6 +7,7 @@ import { Person } from '../../../../../libs/kdslib/src/lib/person';
 import * as config from 'config';
 import { IServerConfig } from '../server-config';
 import { map } from 'rxjs/operators';
+import { joinUrl } from '../helper';
 
 const serverConfig = <IServerConfig> config.get('server');
 
@@ -79,7 +80,7 @@ export class FhirController extends BaseController {
       throw new BadRequestException(`Requests for the resource type ${resourceType} are not allowed`);
     }
 
-    const fhirUrl = BaseController.joinUrl(serverConfig.fhirServerBase, fhirPart);
+    const fhirUrl = joinUrl(serverConfig.fhirServerBase, fhirPart);
 
     const headers = request.headers;
     delete headers['authorization'];

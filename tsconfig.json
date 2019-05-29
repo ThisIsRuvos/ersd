@@ -1,13 +1,14 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "module": "commonjs",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "esnext",
+    "target": "es5",
     "module": "es2015",
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2017", "dom"],
@@ -17,7 +18,10 @@
     "paths": {
       "@kds/kdslib": ["libs/kdslib/src/index.ts"],
       "config": ["node_modules/config/lib/config"]
-    }
+    },
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "exclude": ["node_modules", "tmp"]
 }

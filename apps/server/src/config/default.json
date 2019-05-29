@@ -5,7 +5,32 @@
     "fhirServerBase": "",
     "subscriptionCriteria": "Bundle?",
     "enableSubscriptions": true,
-    "restrictedResourceTypes": ["Person", "Subscription"]
+    "restrictedResourceTypes": ["Person", "Subscription"],
+    "contactInfo": {
+      "checkDurationSeconds": 0,
+      "checkCountPerPage": 5,
+      "expiration": {
+        "value": 1,
+        "unit": "month"
+      },
+      "notificationInterval": {
+        "value": 15,
+        "unit": "days"
+      },
+      "maxNotifications": 3,
+      "templates": {
+        "expiring": {
+          "subject": "Your KDS contact information is about to expire",
+          "text": "config/templates/contact-info-expiring.txt",
+          "html": "config/templates/contact-info-expiring.html"
+        },
+        "expired": {
+          "subject": "Your KDS contact information has expired",
+          "text": "config/templates/contact-info-expired.txt",
+          "html": "config/templates/contact-info-expired.html"
+        }
+      }
+    }
   },
   "email": {
     "from": "",

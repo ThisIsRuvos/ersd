@@ -13,9 +13,7 @@ import { IEmailConfig } from '../email-config';
 import * as SMTPConnection from 'nodemailer/lib/smtp-connection';
 import * as Mail from 'nodemailer/lib/mailer';
 import { SentMessageInfo } from 'nodemailer/lib/smtp-transport';
-import { getErrorString } from '../../../../../libs/kdslib/src/lib/get-error-string';
 import { InvalidModuleConfigException } from '@nestjs/common/decorators/modules/exceptions/invalid-module-config.exception';
-import { identifier } from '@babel/types';
 import { IServerConfig } from '../server-config';
 
 const emailConfig = <IEmailConfig> config.get('email');
