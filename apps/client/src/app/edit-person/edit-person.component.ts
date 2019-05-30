@@ -20,6 +20,8 @@ export class EditPersonComponent implements OnInit {
   @ViewChild('secondaryMobile') secondaryMobileField: NgModel;
   @ViewChild('secondaryOffice') secondaryOfficeField: NgModel;
 
+  public Person = Person;
+
   constructor() { }
 
   public get secondary(): Person {
@@ -70,5 +72,6 @@ export class EditPersonComponent implements OnInit {
   }
 
   ngOnInit() {
+
   }
 }

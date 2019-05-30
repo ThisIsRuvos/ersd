@@ -15,7 +15,7 @@ export interface IPerson extends IDomainResource {
   telecom?: IContactPoint[];
   gender?: 'male'|'female'|'other'|'unknown';
   birthDate?: string;
-  address?: IAddress;
+  address?: IAddress[];
   managingOrganization?: IResourceReference;
   link?: [{
     target?: IResourceReference;
@@ -40,7 +40,7 @@ export class Person implements IPerson {
   public telecom?: IContactPoint[];
   public gender?: 'male'|'female'|'other'|'unknown';
   public birthDate?: string;
-  public address?: IAddress;
+  public address?: IAddress[];
   public managingOrganization?: IResourceReference;
   public link?: [{
     target?: IResourceReference;
@@ -51,6 +51,15 @@ export class Person implements IPerson {
     if (obj) {
       Object.assign(this, obj);
     }
+
+    // Make sure
+    this.contained = (this.contained || []).map((contained) => {
+      if (contained.resourceType === 'Person') {
+        return new Person(contained);
+      }
+
+      return contained;
+    });
   }
 
   public get firstName(): string {
@@ -142,37 +151,40 @@ export class Person implements IPerson {
     foundMobile.value = value;
   }
 
-  public get organization(): IOrganization {
-    if (this.managingOrganization && this.managingOrganization.reference && this.managingOrganization.reference.startsWith('#') && this.contained) {
-      const foundOrganization = <IOrganization> this.contained.find((contained) => contained.id === this.managingOrganization.reference.substring(1));
+  private static getOrganization(mainResource: IDomainResource, person: IPerson, shouldCreate = false): IOrganization {
+    if (person.managingOrganization && person.managingOrganization.reference && person.managingOrganization.reference.startsWith('#') && person.contained) {
+      const foundOrganization = <IOrganization> mainResource.contained.find((contained) => contained.id === person.managingOrganization.reference.substring(1));
 
       if (foundOrganization) {
         return foundOrganization;
       }
     }
-  }
 
-  public get organizationName(): string {
-    if (this.organization) {
-      return this.organization.name;
-    }
-  }
+    if (shouldCreate) {
+      mainResource.contained = mainResource.contained || [];
 
-  public set organizationName(value: string) {
-    this.contained = this.contained || [];
-
-    if (this.organization) {
-      this.organization.name = value;
-    } else {
       const newOrganization = new Organization();
       newOrganization.id = Math.random().toString(36).substring(2, 9);
-      newOrganization.name = value;
-      this.contained.push(newOrganization);
+      newOrganization.name = '';
+      mainResource.contained.push(newOrganization);
 
-      this.managingOrganization = {
+      person.managingOrganization = {
         reference: '#' + newOrganization.id
       };
     }
+  }
+
+  static getOrganizationName(mainResource: IDomainResource, person: IPerson): string {
+    const organization = Person.getOrganization(mainResource, person);
+
+    if (organization) {
+      return organization.name;
+    }
+  }
+
+  static setOrganizationName(mainResource: IDomainResource, person: IPerson, value: string) {
+    const organization = Person.getOrganization(mainResource, person, true);
+    organization.name = value;
   }
 
   public get organizationTitle(): string {
@@ -223,6 +235,76 @@ export class Person implements IPerson {
     }
 
     foundOffice.value = value;
+  }
+  
+  public get addressLine() {
+    if (this.address && this.address.length > 0 && this.address[0].line && this.address[0].line.length > 0) {
+      return this.address[0].line[0];
+    }
+  }
+  
+  public set addressLine(value: string) {
+    this.address = this.address || [];
+    
+    if (this.address.length === 0) {
+      this.address.push({});
+    }
+
+    this.address[0].line = this.address[0].line || [];
+    
+    if (this.address[0].line.length === 0) {
+      this.address[0].line.push(value);
+    } else {
+      this.address[0].line[0] = value;
+    }
+  }
+  
+  public get addressCity() {
+    if (this.address && this.address.length > 0) {
+      return this.address[0].city;
+    }
+  }
+  
+  public set addressCity(value: string) {
+    this.address = this.address || [];
+
+    if (this.address.length === 0) {
+      this.address.push({});
+    }
+    
+    this.address[0].city = value;
+  }
+
+  public get addressState() {
+    if (this.address && this.address.length > 0) {
+      return this.address[0].state;
+    }
+  }
+
+  public set addressState(value: string) {
+    this.address = this.address || [];
+
+    if (this.address.length === 0) {
+      this.address.push({});
+    }
+
+    this.address[0].state = value;
+  }
+
+  public get addressPostalCode() {
+    if (this.address && this.address.length > 0) {
+      return this.address[0].postalCode;
+    }
+  }
+
+  public set addressPostalCode(value: string) {
+    this.address = this.address || [];
+
+    if (this.address.length === 0) {
+      this.address.push({});
+    }
+
+    this.address[0].postalCode = value;
   }
 
   public get lastExpirationSent(): string {

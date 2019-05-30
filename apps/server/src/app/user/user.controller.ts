@@ -15,6 +15,7 @@ import * as Mail from 'nodemailer/lib/mailer';
 import { SentMessageInfo } from 'nodemailer/lib/smtp-transport';
 import { InvalidModuleConfigException } from '@nestjs/common/decorators/modules/exceptions/invalid-module-config.exception';
 import { IServerConfig } from '../server-config';
+import { buildFhirUrl } from '../helper';
 
 const emailConfig = <IEmailConfig> config.get('email');
 const serverConfig = <IServerConfig> config.get('server');
@@ -141,20 +142,67 @@ export class UserController extends BaseController {
 
     this.logger.log(`Searching for existing person with identifier ${identifierQuery}`);
 
-    return this.httpService.request<IBundle>({
+    const results = await this.httpService.request<IBundle>({
       url: this.buildFhirUrl('Person', null, { identifier: identifierQuery }),
       headers: {
         'cache-control': 'no-cache'
       }
-    }).toPromise()
-      .then((peopleBundle) => {
-        if (peopleBundle.data && peopleBundle.data.total === 1) {
-          this.logger.log(`Found a single person with identifier ${identifierQuery}`);
-          return <Person> peopleBundle.data.entry[0].resource;
-        }
+    }).toPromise();
 
-        this.logger.log('Did not find any people with identifier ${identifierQuery}');
+    const peopleBundle = results.data;
+
+    if (peopleBundle && peopleBundle.total === 1) {
+      this.logger.log(`Found a single person with identifier ${identifierQuery}`);
+      return <Person> peopleBundle.entry[0].resource;
+    }
+
+    throw new InternalServerErrorException(`Did not find any people with identifier ${identifierQuery}`);
+  }
+
+  async enableSubscriptions(person: Person) {
+    const maxNotifications = serverConfig.contactInfo ? serverConfig.contactInfo.maxNotifications : 0;
+
+    // Subscriptions aren't enable, so we shouldn't turn the subscriptions on.
+    if (!serverConfig.enableSubscriptions) {
+      return;
+    }
+
+    // If the person hasn't had the maximum notifications sent out, then they're subscriptions aren't
+    // going to be turned off...
+    if (!person.lastExpirationSent || person.expirationSentCount !== maxNotifications) {
+      return;
+    }
+
+    this.logger.log(`The person's account has expired. Checking their subscriptiosn to see if any should be re-activated`);
+
+    const getSubscriptionsPromises = (person.extension || [])
+      .filter((ext) => {
+        return ext.url === Constants.extensions.subscription &&
+          ext.valueReference &&
+          ext.valueReference.reference &&
+          ext.valueReference.reference.split('/').length === 2;
+      })
+      .map((ext) => {
+        const split = ext.valueReference.reference.split('/');
+        const subscriptionUrl = buildFhirUrl(serverConfig.fhirServerBase, 'Subscription', split[1]);
+        return this.httpService.get<Subscription>(subscriptionUrl).toPromise();
       });
+
+    const getSubscriptionsResults = await Promise.all(getSubscriptionsPromises);
+    this.logger.log(`Found ${getSubscriptionsResults.length} subscriptions associated with the person`);
+    const inactiveSubscriptions = getSubscriptionsResults.filter(result => result.data.status !== 'active');
+    this.logger.log(`Re-activating ${inactiveSubscriptions.length} subscriptions for the person`);
+
+    const updateSubscriptionPromises = inactiveSubscriptions
+      .map((result) => {
+        const subscription = result.data;
+        subscription.status = 'requested';
+
+        const subscriptionUrl = this.buildFhirUrl(serverConfig.fhirServerBase, 'Subscription', subscription.id);
+        return this.httpService.put<Subscription>(subscriptionUrl, subscription).toPromise();
+      });
+
+    await Promise.all(updateSubscriptionPromises);
   }
 
   @Post('me')
@@ -210,6 +258,9 @@ export class UserController extends BaseController {
           reference: 'Subscription/' + newSubscription.id
         }
       });
+    } else {
+      // Ensure the person's subscriptions are enabled if they are not a new person
+      await this.enableSubscriptions(existingPerson);
     }
 
     this.logger.log('Sending request to FHIR server to update the Person resource');
@@ -228,6 +279,7 @@ export class UserController extends BaseController {
     }
 
     this.logger.log('Done updating person resource, responding with updated person');
+
     return updatePersonRequest.data;
   }
 
