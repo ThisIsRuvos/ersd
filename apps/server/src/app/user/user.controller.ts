@@ -198,7 +198,7 @@ export class UserController extends BaseController {
         const subscription = result.data;
         subscription.status = 'requested';
 
-        const subscriptionUrl = this.buildFhirUrl(serverConfig.fhirServerBase, 'Subscription', subscription.id);
+        const subscriptionUrl = this.buildFhirUrl('Subscription', subscription.id);
         return this.httpService.put<Subscription>(subscriptionUrl, subscription).toPromise();
       });
 
