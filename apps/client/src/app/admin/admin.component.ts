@@ -134,7 +134,14 @@ export class AdminComponent implements OnInit {
       return;
     }
 
-    this.httpClient.delete('/api/user/' + user.id);
+    this.httpClient.delete('/api/user/' + user.id)
+      .subscribe(() => {
+        const index = this.users.indexOf(user);
+        this.users.splice(index, index >= 0 ? 1 : 0);
+      }, (err) => {
+        this.message = getErrorString(err);
+        this.messageIsError = true;
+      });
   }
 
   ngOnInit() {

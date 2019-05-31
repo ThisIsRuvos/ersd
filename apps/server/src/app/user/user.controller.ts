@@ -236,6 +236,7 @@ export class UserController extends BaseController {
       newSubscription.criteria = serverConfig.subscriptionCriteria;
       newSubscription.channel.type = 'email';
       newSubscription.channel.endpoint = 'mailto:' + updatePerson.email;
+      newSubscription.channel.payload = 'application/xml';    // Default payload to JSON (for now)
       newSubscription.status = serverConfig.enableSubscriptions ? 'requested' : 'off';
 
       this.logger.log(`Person does not already exist. Creating default subscriptions for new person via url: ${newSubscriptionUrl}`);
@@ -304,7 +305,45 @@ export class UserController extends BaseController {
   async deleteUser(@Req() request: AuthRequest, @Param('id') id: string) {
     this.assertAdmin(request);
 
+    this.logger.log(`Deleting person ${id}. Retrieving the Person resource to determine what all should be deleted.`);
+
     const url = this.buildFhirUrl('Person', id);
+
+    const getResults = await this.httpService.get<Person>(url).toPromise();
+    const person = getResults.data;
+
+    const subscriptionExtensions = (person.extension || [])
+      .filter((ext) => {
+        return ext.url === Constants.extensions.subscription &&
+          ext.valueReference &&
+          ext.valueReference.reference &&
+          ext.valueReference.reference.split('/').length === 2
+      });
+
+    this.logger.log(`Found ${subscriptionExtensions.length} subscriptions associated with person ${person.id}`);
+
+    try {
+      const deletePromises = subscriptionExtensions
+        .map((ext) => {
+          const split = ext.valueReference.reference.split('/');
+
+          this.logger.log(`Deleting subscription ${split[1]} associated with person ${person.id}`);
+
+          const subscriptionUrl = this.buildFhirUrl('Subscription', split[1]);
+          return this.httpService.delete(subscriptionUrl).toPromise();
+        });
+
+      await Promise.all(deletePromises);
+
+      this.logger.log(`Done deleting all subscriptions associated with person ${person.id}`);
+    } catch (ex) {
+      this.logger.error(`Error removing subscriptions for person ${person.id}: ${ex.message}`);
+    }
+
+    this.logger.log(`Deleting person ${person.id}`);
+
     await this.httpService.delete(url).toPromise();
+
+    this.logger.log(`Done deleting person ${person.id}`);
   }
 }

@@ -19,11 +19,16 @@
                  #emailAddress="ngModel" />
         </div>
 
-        <div class="form-group">
+        <!-- The option to include or exclude the payload is disabled for now
+             because HAPI always includes a payload. This is a bug recorded in the
+             following ticket: https://github.com/jamesagnew/hapi-fhir/issues/1329
+             -->
+        <!--div class="form-group">
           <input type="checkbox" [(ngModel)]="userSubscriptions.emailSubscription.includeArtifacts" /> Include changed artifacts
-        </div>
+        </div-->
 
         <div class="form-group" *ngIf="userSubscriptions.emailSubscription.includeArtifacts || userSubscriptions.emailSubscription.format">
+          <label>Format</label>
           <select class="form-control" [(ngModel)]="userSubscriptions.emailSubscription.format">
             <option value="json">JSON</option>
             <option value="xml">XML</option>
