@@ -1,4 +1,4 @@
-# Knowledge Distribution Services
+# Electronic Reporting and Surveillance Distribution
 
 This project was generated using [Nx](https://nx.dev).
 **Nx is a set of Angular CLI power-ups for modern development.**
@@ -64,13 +64,13 @@ The overriding config file can be a complete copy of the default.json file with 
 | server | Generic configuration properties for the entire server |
 | &nbsp;&nbsp;&nbsp;port | The port that the server application runs on |
 | &nbsp;&nbsp;&nbsp;authCertificate | The certificate that should be used to validate authentication tokens provided by the UI |
-| &nbsp;&nbsp;&nbsp;fhirServerBase | The base url of the FHIR server that provides data to the KDS components |
+| &nbsp;&nbsp;&nbsp;fhirServerBase | The base url of the FHIR server that provides data to the ERSD components |
 | &nbsp;&nbsp;&nbsp;subscriptionCriteria | The criteria to be used for each of the subscriptions that the end users setup. See [here](http://hl7.org/fhir/STU3/subscription-definitions.html#Subscription.criteria) for more details. |
 | &nbsp;&nbsp;&nbsp;enableSubscriptions | Primarily for debugging purposes. When false, modified subscriptions are disabled (off). When true, modified subscriptions are submitted to the FHIR server with a status of "requested". See [here](http://hl7.org/fhir/STU3/subscription-definitions.html#Subscription.status) for more details. |
 | &nbsp;&nbsp;&nbsp;restrictedResourceTypes | A list of resource types that are restricted from the FHIR proxy provided by the server. It is suggested that at least Person and Subscription be restricted, because these are resources directly influenced by the server and may include sensitive user information |
 | &nbsp;&nbsp;&nbsp;contactInfo | Configurable properties related to contact information expiration reside in this group |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;checkDurationSeconds | Represents how often the KDS server should check for expired contact information. Every iteration will pull down a full list of the people registered in KDS (the FHIR server) and check each of their last modified date to determine whether their information has expired. |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;checkCountPerPage | Represents how many people can be requested from the FHIR server in a single page. HAPI has a maximum of 50 per page. KDS will repeatedly request every page until no more pages of data are left to retrieve (to get the full list of people). |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;checkDurationSeconds | Represents how often the ERSD server should check for expired contact information. Every iteration will pull down a full list of the people registered in ERSD (the FHIR server) and check each of their last modified date to determine whether their information has expired. |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;checkCountPerPage | Represents how many people can be requested from the FHIR server in a single page. HAPI has a maximum of 50 per page. ERSD will repeatedly request every page until no more pages of data are left to retrieve (to get the full list of people). |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maxNotifications | How many notifications should be sent before the system stops sending notifications. One interval after the last notification, the user's subscriptions are suspended. |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expiration | Represents how long a user's contact information is valid for. |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value | A numeric value |
@@ -124,4 +124,4 @@ The templates used to email may contain the following parameters:
 | {first_name} | The first name of the user |
 | {last_name} | The last name of the user |
 | {expiration_date} | The date that the user's contact information expires |
-| {portal_link} | An http:// value/link to the KDS portal |
+| {portal_link} | An http:// value/link to the ERSD portal |

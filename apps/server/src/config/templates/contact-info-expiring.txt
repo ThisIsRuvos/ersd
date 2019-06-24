@@ -1,6 +1,6 @@
 Hi {first_name},
 
-Your contact information is going to expire on {expiration_date}. After this date, you will not receive notifications from Knowledge Distribution Services until you have logged into the KDS portal and updated your contact information.
+Your contact information is going to expire on {expiration_date}. After this date, you will not receive notifications from Electronic Reporting and Surveillance Distribution until you have logged into the ERSD portal and updated your contact information.
 
 Thank You,
-KDS Team
+ERSD Team

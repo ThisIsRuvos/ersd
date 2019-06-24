@@ -31,7 +31,7 @@ export class Subscription implements ISubscription {
   status: 'requested'|'active'|'error'|'off' = 'off';
   contact?: IContactPoint[];
   end?: string;
-  reason = 'Automatically created by KDS';
+  reason = 'Automatically created by ERSD';
   criteria: string;
   error?: string;
   channel: ISubscriptionChannel = {

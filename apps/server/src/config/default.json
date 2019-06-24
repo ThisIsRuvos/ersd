@@ -23,12 +23,12 @@
           "portal_link": "http://localhost:3333"
         },
         "expiring": {
-          "subject": "Your KDS contact information is about to expire",
+          "subject": "Your ERSD contact information is about to expire",
           "text": "config/templates/contact-info-expiring.txt",
           "html": "config/templates/contact-info-expiring.html"
         },
         "expired": {
-          "subject": "Your KDS contact information has expired",
+          "subject": "Your ERSD contact information has expired",
           "text": "config/templates/contact-info-expired.txt",
           "html": "config/templates/contact-info-expired.html"
         }

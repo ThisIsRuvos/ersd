@@ -7,7 +7,7 @@ export class Constants {
     subscription: 'https://kds.com/extension-person-subscription',
     notificationMessage: 'https://kds.com/extension-notification-message',
     lastExpirationSent: 'https://kds.com/extension-last-expiration-sent',
-    expirationSentCount: 'htthttps://kds.com/extension-expiration-sent-count'
+    expirationSentCount: 'https://kds.com/extension-expiration-sent-count'
   };
   static readonly tags = {
     inboundApiKey: 'https://kds.com/inbound-api-key'
