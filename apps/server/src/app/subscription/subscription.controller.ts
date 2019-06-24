@@ -13,6 +13,7 @@ import * as config from 'config';
 import { IServerConfig } from '../server-config';
 
 const serverConfig = <IServerConfig> config.get('server');
+const authPrefix = 'Authorization: Bearer ';
 
 @Controller('subscription')
 export class SubscriptionController extends BaseController {
@@ -75,9 +76,16 @@ export class SubscriptionController extends BaseController {
     }
 
     if (restSubscription && restSubscription.channel && restSubscription.channel.endpoint) {
+      const authorizationHeader = (restSubscription.channel.header || []).find(h => h.startsWith(authPrefix));
+
       userSubscriptions.restSubscription = {
         endpoint: restSubscription.channel.endpoint
       };
+
+      if (authorizationHeader) {
+        userSubscriptions.restSubscription.authorization =
+          authorizationHeader.substring(authPrefix.length);
+      }
     }
 
     if (smsSubscription && smsSubscription.channel && smsSubscription.channel.endpoint) {
@@ -158,6 +166,19 @@ export class SubscriptionController extends BaseController {
       this.enableSubscription(current);
 
       current.channel.endpoint = updated.endpoint;
+
+      if (updated.authorization) {
+        current.channel.header = current.channel.header || [];
+        let authorizationHeader = (current.channel.header || []).find(h => h.startsWith(authPrefix));
+
+        if (!authorizationHeader) {
+          authorizationHeader = authPrefix + updated.authorization;
+          current.channel.header.push(authorizationHeader);
+        } else if (authorizationHeader) {
+          const index = current.channel.header.indexOf(authorizationHeader);
+          current.channel.header[index] = authPrefix + updated.authorization;
+        }
+      }
 
       return this.httpService.request({
         method: method,

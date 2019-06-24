@@ -10,7 +10,6 @@ export class Constants {
     expirationSentCount: 'htthttps://kds.com/extension-expiration-sent-count'
   };
   static readonly tags = {
-    inboundApiKey: 'https://kds.com/inbound-api-key',
-    outboundApiKey: 'https://kds.com/outbound-api-key',
+    inboundApiKey: 'https://kds.com/inbound-api-key'
   };
 }

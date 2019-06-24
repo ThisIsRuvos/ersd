@@ -18,17 +18,21 @@ export class FhirController extends BaseController {
   }
 
   private assertApiKey(request: Request): Promise<Person> {
-    if (!request.header('Authorization')) {
-      throw new UnauthorizedException('No authorization header is present');
+    let authorization: string;
+
+    if (request.header('authorization')) {
+      authorization = request.header('authorization');
+
+      if (!authorization.startsWith('Bearer ')) {
+        throw new UnauthorizedException('Authorization is not Bearer');
+      }
+
+      authorization = authorization.substring('Bearer '.length);
+    } else if (request.query['api-key']) {
+      authorization = request.query['api-key'];
+    } else {
+      throw new UnauthorizedException('You have not specified an authorization key');
     }
-
-    let authorization = request.header('authorization');
-
-    if (!authorization.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Authorization is not Bearer');
-    }
-
-    authorization = authorization.substring('Bearer '.length);
 
     const tagQuery = `${Constants.tags.inboundApiKey}|${authorization}`;
     const url = this.buildFhirUrl('Person', null, { _tag: tagQuery });

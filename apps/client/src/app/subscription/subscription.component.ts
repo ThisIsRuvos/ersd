@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { UserSubscriptions } from '../../../../../libs/kdslib/src/lib/user-subscriptions';
 import { NgModel } from '@angular/forms';
 import { getErrorString } from '../../../../../libs/kdslib/src/lib/get-error-string';
+import { generateKey } from '../../../../../libs/kdslib/src/lib/generate-key';
 
 @Component({
   selector: 'kds-subscription',
@@ -13,6 +14,7 @@ export class SubscriptionComponent implements OnInit {
   public userSubscriptions: UserSubscriptions = new UserSubscriptions();
   public message: string;
   public messageIsError: boolean;
+  public generateKey = generateKey;
 
   @ViewChild('emailAddress') emailAddressField: NgModel;
   @ViewChild('restEndpoint') endpointField: NgModel;

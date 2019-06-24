@@ -6,6 +6,7 @@ export interface EmailSubscriptionInfo {
 
 export interface RestSubscriptionInfo {
   endpoint?: string;
+  authorization?: string;
 }
 
 export interface SmsSubscriptionInfo {

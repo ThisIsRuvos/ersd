@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { IUserApiKeys } from '../../../../../libs/kdslib/src/lib/user-api-keys';
 import { getErrorString } from '../../../../../libs/kdslib/src/lib/get-error-string';
+import { generateKey } from '../../../../../libs/kdslib/src/lib/generate-key';
 
 @Component({
   selector: 'kds-api-keys',
@@ -12,25 +13,10 @@ export class ApiKeysComponent implements OnInit {
   public apiKeys: IUserApiKeys = {};
   public message: string;
   public messageIsError: boolean;
+  public generateKey = generateKey;
+  public baseAddress: string;
 
   constructor(private httpClient: HttpClient) { }
-
-  generateKey() {
-    const keyPattern = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2xxxxxxxxxxxxxxxxxxx';
-    let d = new Date().getTime();
-
-    if (window.performance && typeof window.performance.now === "function") {
-      d += performance.now();
-    }
-
-    const uuid = keyPattern.replace(/[xy]/g, function(c) {
-      const r = (d + Math.random()*16)%16 | 0;
-      d = Math.floor(d/16);
-      return (c === 'x' ? r : (r&0x3|0x8)).toString(16);
-    });
-
-    return uuid;
-  }
 
   save() {
     this.message = null;
@@ -55,5 +41,7 @@ export class ApiKeysComponent implements OnInit {
         this.message = getErrorString(err);
         this.messageIsError = true;
       })
+
+    this.baseAddress = location.origin + '/api/fhir';
   }
 }
