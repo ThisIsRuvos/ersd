@@ -19,6 +19,9 @@
       },
       "maxNotifications": 3,
       "templates": {
+        "variables": {
+          "portal_link": "http://localhost:3333"
+        },
         "expiring": {
           "subject": "Your KDS contact information is about to expire",
           "text": "config/templates/contact-info-expiring.txt",

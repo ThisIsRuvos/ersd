@@ -249,9 +249,13 @@ export class CheckContactInfo {
     const params = {
       first_name: person.firstName,
       last_name: person.lastName,
-      expiration_date: expirationDate,
-      kds_link: 'http://test.com'     // TODO
+      expiration_date: expirationDate
     };
+
+    // Include variables specified in the config in the templating params
+    if (this.contactInfoConfig.templates && this.contactInfoConfig.templates.variables) {
+      Object.assign(params, this.contactInfoConfig.templates.variables);
+    }
 
     const htmlTemplatePath = expired ?
       path.resolve(this.contactInfoConfig.templates.expired.html) :

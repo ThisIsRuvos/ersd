@@ -124,4 +124,4 @@ The templates used to email may contain the following parameters:
 | {first_name} | The first name of the user |
 | {last_name} | The last name of the user |
 | {expiration_date} | The date that the user's contact information expires |
-| {kds_link} | An http:// value/link to the KDS portal |
+| {portal_link} | An http:// value/link to the KDS portal |

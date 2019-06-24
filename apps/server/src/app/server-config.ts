@@ -11,6 +11,9 @@ export interface IServerConfigContactInfo {
   };
   maxNotifications: number;
   templates: {
+    variables?: {
+      [key: string]: string
+    },
     expiring: {
       subject: string;
       html: string;
