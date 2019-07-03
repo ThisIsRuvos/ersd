@@ -1,23 +1,22 @@
-FROM node:10.16.0 AS build-kds
+FROM node:10.16.0 AS build-ersd
 
-RUN mkdir -p /kds
-WORKDIR /kds
+RUN mkdir -p /ersd
+WORKDIR /ersd
 COPY . .
 
 RUN npm install -g @angular/cli
-RUN npm install
+RUN npm ci
 RUN ng build --prod=true client
 RUN ng build server
 
 FROM node
-RUN mkdir -p /kds/server && mkdir /kds/client
-WORKDIR /kds
-COPY --from=build-kds /kds/node_modules/. /kds/node_modules/
-COPY --from=build-kds /kds/dist/apps/client/. /kds/client/
-COPY --from=build-kds /kds/dist/apps/server/. /kds/server/
-COPY local.json /kds/server/config/
+RUN mkdir -p /ersd/server && mkdir /ersd/client
+WORKDIR /ersd
+COPY --from=build-ersd /ersd/node_modules/. /ersd/node_modules/
+COPY --from=build-ersd /ersd/dist/apps/client/. /ersd/client/
+COPY --from=build-ersd /ersd/dist/apps/server/. /ersd/server/
 
-WORKDIR /kds/server
+WORKDIR /ersd/server
 
 EXPOSE 3333
 
