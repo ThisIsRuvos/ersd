@@ -1,4 +1,18 @@
-import { Body, Controller, Delete, Get, HttpService, InternalServerErrorException, Logger, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpService,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+  Req,
+  UseGuards
+} from '@nestjs/common';
 import { BaseController } from '../base.controller';
 import { AuthGuard } from '@nestjs/passport';
 import { IPerson, Person } from '../../../../../libs/kdslib/src/lib/person';
@@ -151,9 +165,13 @@ export class UserController extends BaseController {
 
     const peopleBundle = results.data;
 
-    if (peopleBundle && peopleBundle.total === 1) {
-      this.logger.log(`Found a single person with identifier ${identifierQuery}`);
-      return <Person> peopleBundle.entry[0].resource;
+    if (peopleBundle) {
+      if (peopleBundle.total === 1) {
+        this.logger.log(`Found a single person with identifier ${identifierQuery}`);
+        return <Person>peopleBundle.entry[0].resource;
+      } else if (peopleBundle.total === 0) {
+        throw new NotFoundException();
+      }
     }
 
     throw new InternalServerErrorException(`Did not find any people with identifier ${identifierQuery}`);

@@ -49,6 +49,15 @@ export class AuthService {
   }
 
   public checkSession() {
+    const createUser = () => {
+      const modalRef = this.modalService.open(CreatePersonComponent, { size: 'lg', backdrop: 'static' });
+      modalRef.componentInstance.profile = this.profile;
+
+      modalRef.result
+        .then((person: IPerson) => this.person = person)
+        .catch((err) => console.error(err));
+    };
+
     this.keycloakService.isLoggedIn()
       .then((loggedIn) => {
         this.loggedIn = loggedIn;
@@ -73,17 +82,14 @@ export class AuthService {
           this.httpClient.get<IPerson>('/api/user/me').toPromise()
             .then((person) => {
               this.person = person;
-
-              if (!this.person) {
-                const modalRef = this.modalService.open(CreatePersonComponent, { size: 'lg', backdrop: 'static' });
-                modalRef.componentInstance.profile = this.profile;
-
-                modalRef.result
-                  .then((person: IPerson) => this.person = person)
-                  .catch((err) => console.error(err));
-              }
             })
-            .catch((err) => console.error(err));
+            .catch((err) => {
+              if (err.status === 404) {
+                createUser();
+              } else {
+                console.error(err);
+              }
+            });
         }
       })
       .catch((err) => {
