@@ -243,8 +243,7 @@ export class UserController extends BaseController {
     try {
       existingPerson = await this.getMyPerson(request);
     } catch (ex) {
-      this.logger.error(`Error when getting existing person: ${ex}`);
-      throw new InternalServerErrorException(ex.message);
+      this.logger.error(`Error when getting existing person: ${ex.message}`);
     }
 
     if (!existingPerson) {
