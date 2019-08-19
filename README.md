@@ -125,3 +125,17 @@ The templates used to email may contain the following parameters:
 | {last_name} | The last name of the user |
 | {expiration_date} | The date that the user's contact information expires |
 | {portal_link} | An http:// value/link to the ERSD portal |
+
+## KeyCloak Notes
+
+### Setting up the application for ERSD in KeyCloak
+
+You must properly configure the "Web Origins" and "Valid Redirect URIs" properties of the application in KeyCloak. For example, if your ERSD installation is installed at https://ersd.mycompany.com then you must set the "Web Origins" property to "https://ersd.mycompany.com" and the "Valid Redirect URIs" should be "https://ersd.mycompany.com/*".
+
+### Reverse Proxy
+To successfully reverse proxy a KeyCloak installation, you must modify the `standalone.xml` file to include `proxy-address-forwarding="true"` and `redirect-socket="proxy-https"` to the `<http-listener>` element and change the `<socket-binding>` element to have a port of "443". For example:
+
+```
+<http-listener name="default" socket-binding="http" proxy-address-forwarding="true" redirect-socket="proxy-https" enable-http2="true"/>
+<socket-binding name="https" port="443"/>
+```
