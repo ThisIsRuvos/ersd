@@ -126,6 +126,16 @@ The templates used to email may contain the following parameters:
 | {expiration_date} | The date that the user's contact information expires |
 | {portal_link} | An http:// value/link to the ERSD portal |
 
+## HAPI Notes
+
+### Uploading Bundles
+
+HAPI does not currently accept storing any Bundle resources with a type that is not "collection". If you attempt to upload a Bundle with a type of "searchset" or "transaction", the HAPI FHIR server will respond to the ERSD server with the following error:
+
+`Unable to store a Bundle resource on this server with a Bundle.type value of: searchset`
+
+The HAPI team has been asked to change this so that Bundle resources may be stored with all possible "type" values. They have agreed to make the change, but have not committed to a date.
+
 ## KeyCloak Notes
 
 ### Setting up the application for ERSD in KeyCloak
