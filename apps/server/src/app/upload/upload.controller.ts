@@ -72,13 +72,23 @@ export class UploadController extends BaseController {
 
     this.logger.log('Posting the transaction to the FHIR server');
 
-    const results = await this.httpService.post<IBundle>(transactionUrl, transaction).toPromise();
-    const resultsBundle = <IBundle> results.data;
+    try {
+      const results = await this.httpService.post<IBundle>(transactionUrl, transaction).toPromise();
+      const resultsBundle = <IBundle>results.data;
 
-    if (resultsBundle.resourceType !== 'Bundle' || !resultsBundle.entry || resultsBundle.entry.length !== 1) {
-      throw new Error('Unexpected response from the FHIR server');
+      if (resultsBundle.resourceType !== 'Bundle' || !resultsBundle.entry || resultsBundle.entry.length !== 1) {
+        throw new Error('Unexpected response from the FHIR server');
+      }
+
+      this.logger.log('Done uploading to FHIR server');
+    } catch (ex) {
+      this.logger.error(`Error occurred while posting the transaction to the FHIR server: ${ex.status} - ${ex.message}`);
+
+      if (ex.response && ex.response.data) {
+        this.logger.error(ex.response.data);
+      }
+
+      throw ex;
     }
-
-    this.logger.log('Done uploading to FHIR server');
   }
 }
