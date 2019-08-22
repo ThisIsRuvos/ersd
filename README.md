@@ -149,3 +149,20 @@ To successfully reverse proxy a KeyCloak installation, you must modify the `stan
 <http-listener name="default" socket-binding="http" proxy-address-forwarding="true" redirect-socket="proxy-https" enable-http2="true"/>
 <socket-binding name="https" port="443"/>
 ```
+
+### Registration Attributes
+
+ERSD attempts to reuse information from the KeyCloak account to make the registration process in ERSD quicker/easier for the end-user.
+
+"First Name", "Last Name" and "Email" should always be available from KeyCloak to ERSD, as those are required fields for KeyCloak and are automatically provided to ERSD during authentication.
+
+The following table indicates what KeyCloak custom attributes are recognized by ERSD. These custom attributes can be captured as part of custom templates used by the KeyCloak registration screen; custom configuration of KeyCloak would be required to have KeyCloak capture these custom attributes.
+
+| ERSD Field | KC  Attr 1 | KC Attr 2 | KC Attr 3 |
+| ---------- | --------------- | -------------- | -------------- |
+| Mobile Phone | mobile | cell | |
+| Office Phone | office | | |
+| Street Address | street | address | line |
+| City | city | | |
+| State | state | st | |
+| Postal Code | postal | postalCode | zip |

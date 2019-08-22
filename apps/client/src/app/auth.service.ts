@@ -6,12 +6,18 @@ import { HttpClient } from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreatePersonComponent } from './create-person/create-person.component';
 
+export interface KeycloakProfile extends Keycloak.KeycloakProfile {
+  attributes: {
+    [key: string]: string[];
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   public loggedIn: boolean;
-  public profile: Keycloak.KeycloakProfile;
+  public profile: KeycloakProfile;
   public roles: string[];
   public person: IPerson;
 
@@ -75,7 +81,7 @@ export class AuthService {
       })
       .then((data) => {
         if (data) {
-          this.profile = <Keycloak.KeycloakProfile> data[0];
+          this.profile = <KeycloakProfile> data[0];
           this.roles = <string[]> data[1];
 
           const kc = this.keycloakService.getKeycloakInstance();
