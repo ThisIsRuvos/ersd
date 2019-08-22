@@ -19,7 +19,7 @@
         </div>
         <div class="form-group">
           <label>Mobile Phone</label>
-          <input type="text" class="form-control" [(ngModel)]="person.mobile" pattern="^\d{3}-\d{3}-\d{4}$" placeholder="XXX-XXX-XXXX" #mobile="ngModel" [class.is-invalid]="mobile.errors?.pattern" />
+          <input type="text" class="form-control" [(ngModel)]="person.mobile" pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" placeholder="(XXX) XXX-XXXX" #mobile="ngModel" [class.is-invalid]="mobile.errors?.pattern" />
         </div>
       </div>
       <div class="col-md-4">
@@ -33,7 +33,7 @@
         </div>
         <div class="form-group">
           <label>Office Phone</label>
-          <input type="text" class="form-control" [(ngModel)]="person.office" pattern="^\d{3}-\d{3}-\d{4}$" required="required" placeholder="XXX-XXX-XXXX" #office="ngModel" [class.is-invalid]="office.errors?.pattern || office.errors?.required" />
+          <input type="text" class="form-control" [(ngModel)]="person.office" pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" required="required" placeholder="(XXX) XXX-XXXX" #office="ngModel" [class.is-invalid]="office.errors?.pattern || office.errors?.required" />
         </div>
       </div>
       <div class="col-md-4">

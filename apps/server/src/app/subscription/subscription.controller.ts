@@ -205,7 +205,7 @@ export class SubscriptionController extends BaseController {
 
       this.enableSubscription(current);
 
-      const mobile = updated.mobilePhone.replace(/-/g, '');
+      const mobile = updated.mobilePhone.replace(/[^0-9]/g, '');
       let email = `mailto:${mobile}`;
 
       switch (updated.carrier) {
