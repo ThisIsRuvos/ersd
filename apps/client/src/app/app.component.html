@@ -40,7 +40,12 @@
       </li>
       <li class="nav-item clickable" *ngIf="!authService.loggedIn">
         <a class="nav-link" (click)="authService.login()">
-          <i class="fas fa-sign-in-alt"></i> Sign in
+          <i class="fas fa-sign-in-alt"></i> Login
+        </a>
+      </li>
+      <li class="nav-item clickable" *ngIf="!authService.loggedIn">
+        <a class="nav-link" (click)="authService.register()">
+          <i class="fas fa-user-plus"></i> Register
         </a>
       </li>
     </ul>
@@ -52,6 +57,6 @@
     <router-outlet></router-outlet>
   </div>
   <div class="jumbotron" *ngIf="!homeLink.isActive && !authService.loggedIn">
-    <h3>You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()">login</a> to continue.</h3>
+    <h3>You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()"><i class="fas fa-sign-in-alt"></i>&nbsp;login</a> or <a href="javascript:void(0)" (click)="authService.register()"><i class="fas fa-user-plus"></i>&nbsp;register</a> to continue.</h3>
   </div>
 </main>

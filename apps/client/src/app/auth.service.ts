@@ -37,6 +37,10 @@ export class AuthService {
     this.keycloakService.login();
   }
 
+  public register() {
+    this.keycloakService.register();
+  }
+
   public logout() {
     this.keycloakService.logout();
     this.loggedIn = false;
