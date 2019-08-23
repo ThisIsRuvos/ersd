@@ -2,7 +2,7 @@
 
 <div class="alert" *ngIf="message" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError">{{message}}</div>
 
-<kds-edit-person [person]="person" *ngIf="person"></kds-edit-person>
+<ersd-edit-person [person]="person" *ngIf="person"></ersd-edit-person>
 
 <p>
   <button type="button" class="btn btn-primary" (click)="save()">Save</button>

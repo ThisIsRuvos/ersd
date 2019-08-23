@@ -4,7 +4,7 @@ import { NgModel } from '@angular/forms';
 import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
 
 @Component({
-  selector: 'kds-edit-person',
+  selector: 'ersd-edit-person',
   templateUrl: './edit-person.component.html',
   styleUrls: ['./edit-person.component.css']
 })

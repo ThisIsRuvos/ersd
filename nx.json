@@ -1,5 +1,5 @@
 {
-  "npmScope": "kds",
+  "npmScope": "ersd",
   "implicitDependencies": {
     "angular.json": "*",
     "package.json": "*",

@@ -9,7 +9,6 @@ import { IUploadRequest } from '../../../../../libs/ersdlib/src/lib/upload-reque
 import { IEmailRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
 
 @Component({
-  selector: 'kds-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })

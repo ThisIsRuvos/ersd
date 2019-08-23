@@ -6,7 +6,6 @@ import { getErrorString } from '../../../../../../libs/ersdlib/src/lib/get-error
 import { EditPersonComponent } from '../../edit-person/edit-person.component';
 
 @Component({
-  selector: 'kds-admin-edit-person',
   templateUrl: './edit-person.component.html',
   styleUrls: ['./edit-person.component.css']
 })

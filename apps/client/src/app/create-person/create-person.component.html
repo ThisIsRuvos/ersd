@@ -4,7 +4,7 @@
 <div class="modal-body">
   <div class="alert alert-danger" *ngIf="message">{{message}}</div>
 
-  <kds-edit-person [person]="person" #editPerson></kds-edit-person>
+  <ersd-edit-person [person]="person" #editPerson></ersd-edit-person>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-outline-dark" (click)="ok()" [disabled]="!editPerson.isValid">OK</button>

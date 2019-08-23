@@ -40,7 +40,7 @@ const contactInfoConfig: IServerConfigContactInfo = {
   }
 };
 const emailConfig: IEmailConfig = {
-  from: 'subscriptions@kds.com',
+  from: 'subscriptions@ersd.com',
   host: 'some-smtp-host',
   port: 25
 };

@@ -5,7 +5,6 @@ import { getErrorString } from '../../../../../libs/ersdlib/src/lib/get-error-st
 import { generateKey } from '../../../../../libs/ersdlib/src/lib/generate-key';
 
 @Component({
-  selector: 'kds-api-keys',
   templateUrl: './api-keys.component.html',
   styleUrls: ['./api-keys.component.css']
 })

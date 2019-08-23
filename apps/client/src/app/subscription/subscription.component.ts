@@ -8,7 +8,6 @@ import { AuthService } from '../auth.service';
 import { formatPhone } from '../../../../../libs/ersdlib/src/lib/helper';
 
 @Component({
-  selector: 'kds-subscription',
   templateUrl: './subscription.component.html',
   styleUrls: ['./subscription.component.css']
 })

@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 
 @Component({
-  selector: 'kds-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })

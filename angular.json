@@ -184,7 +184,7 @@
       "root": "libs/ersdlib",
       "sourceRoot": "libs/ersdlib/src",
       "projectType": "library",
-      "prefix": "kds",
+      "prefix": "ersd",
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",

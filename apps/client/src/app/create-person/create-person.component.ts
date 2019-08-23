@@ -7,7 +7,6 @@ import { KeycloakProfile } from '../auth.service';
 import { formatPhone } from '../../../../../libs/ersdlib/src/lib/helper';
 
 @Component({
-  selector: 'kds-create-person',
   templateUrl: './create-person.component.html',
   styleUrls: ['./create-person.component.css']
 })

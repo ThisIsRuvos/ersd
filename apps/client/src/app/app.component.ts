@@ -4,7 +4,7 @@ import { ActivatedRoute, Route } from '@angular/router';
 import { AuthService } from './auth.service';
 
 @Component({
-  selector: 'kds-root',
+  selector: 'ersd-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

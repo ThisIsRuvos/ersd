@@ -16,7 +16,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@kds/ersdlib": ["libs/ersdlib/src/index.ts"],
+      "@ersd/ersdlib": ["libs/ersdlib/src/index.ts"],
       "config": ["node_modules/config/lib/config"]
     },
     "resolveJsonModule": true,
