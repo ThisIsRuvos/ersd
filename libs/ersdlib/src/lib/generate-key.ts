@@ -1,4 +1,5 @@
 export function generateKey() {
+  // noinspection SpellCheckingInspection
   const keyPattern = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2xxxxxxxxxxxxxxxxxxx';
   let d = new Date().getTime();
 

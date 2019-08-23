@@ -1,5 +1,4 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
 import * as config from 'config';
 import { IClientConfig } from '../../../../libs/ersdlib/src/lib/client-config';
 

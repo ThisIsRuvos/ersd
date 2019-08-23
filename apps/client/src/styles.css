@@ -2,16 +2,6 @@ nav li {
   white-space: pre;
 }
 
-div.footer {
-  position: fixed;
-  bottom: 0px;
-  left: 0px;
-  height: 47px;
-  width: 100%;
-  background-color: #212529;
-  padding: 5px;
-}
-
 .clickable {
   cursor: pointer;
 }
@@ -24,6 +14,7 @@ div.footer {
   margin-top: 10px;
 }
 
+/*noinspection ALL*/
 .tab-pane {
   padding-top: 10px;
 }

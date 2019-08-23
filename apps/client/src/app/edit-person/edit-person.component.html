@@ -6,48 +6,48 @@
     <div class="row">
       <div class="col-md-4">
         <div class="form-group">
-          <label>First Name *</label>
-          <input type="text" class="form-control" [(ngModel)]="person.firstName" required="required" #firstName="ngModel" [class.is-invalid]="firstName.errors?.required" />
+          <label for="firstName">First Name *</label>
+          <input id="firstName" type="text" class="form-control" [(ngModel)]="person.firstName" required="required" #firstName="ngModel" [class.is-invalid]="firstName.errors?.required" />
         </div>
         <div class="form-group">
-          <label>Last Name *</label>
-          <input type="text" class="form-control" [(ngModel)]="person.lastName" required="required" #lastName="ngModel" [class.is-invalid]="lastName.errors?.required" />
+          <label for="lastName">Last Name *</label>
+          <input id="lastName" type="text" class="form-control" [(ngModel)]="person.lastName" required="required" #lastName="ngModel" [class.is-invalid]="lastName.errors?.required" />
         </div>
         <div class="form-group">
-          <label>Email *</label>
-          <input type="text" class="form-control" [(ngModel)]="person.email" email="true" required="required" placeholder="joe@somewhere.com" #email="ngModel" [class.is-invalid]="email.errors?.email || email.errors?.required" />
+          <label for="email">Email *</label>
+          <input id="email" type="text" class="form-control" [(ngModel)]="person.email" email="true" required="required" placeholder="joe@somewhere.com" #email="ngModel" [class.is-invalid]="email.errors?.email || email.errors?.required" />
         </div>
         <div class="form-group">
-          <label>Mobile Phone</label>
-          <input type="text" class="form-control" [(ngModel)]="person.mobile" pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" placeholder="(XXX) XXX-XXXX" #mobile="ngModel" [class.is-invalid]="mobile.errors?.pattern" />
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="form-group">
-          <label>Organization</label>
-          <input type="text" class="form-control" [ngModel]="Person.getOrganizationName(person, person)" (ngModelChange)="Person.setOrganizationName(person, person, $event)" />
-        </div>
-        <div class="form-group">
-          <label>Title</label>
-          <input type="text" class="form-control" [(ngModel)]="person.organizationTitle" />
-        </div>
-        <div class="form-group">
-          <label>Office Phone *</label>
-          <input type="text" class="form-control" [(ngModel)]="person.office" pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" required="required" placeholder="(XXX) XXX-XXXX" #office="ngModel" [class.is-invalid]="office.errors?.pattern || office.errors?.required" />
+          <label for="mobile">Mobile Phone</label>
+          <input id="mobile" type="text" class="form-control" [(ngModel)]="person.mobile" pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" placeholder="(XXX) XXX-XXXX" #mobile="ngModel" [class.is-invalid]="mobile.errors?.pattern" />
         </div>
       </div>
       <div class="col-md-4">
         <div class="form-group">
-          <label>Street Address</label>
-          <input type="text" class="form-control" [(ngModel)]="person.addressLine" />
+          <label for="organizationName">Organization</label>
+          <input id="organizationName" type="text" class="form-control" [ngModel]="Person.getOrganizationName(person, person)" (ngModelChange)="Person.setOrganizationName(person, person, $event)" />
         </div>
         <div class="form-group">
-          <label>City</label>
-          <input type="text" class="form-control" [(ngModel)]="person.addressCity" />
+          <label for="organizationTitle">Title</label>
+          <input id="organizationTitle" type="text" class="form-control" [(ngModel)]="person.organizationTitle" />
         </div>
         <div class="form-group">
-          <label>State</label>
-          <select class="form-control" [(ngModel)]="person.addressState">
+          <label for="office">Office Phone *</label>
+          <input id="office" type="text" class="form-control" [(ngModel)]="person.office" pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" required="required" placeholder="(XXX) XXX-XXXX" #office="ngModel" [class.is-invalid]="office.errors?.pattern || office.errors?.required" />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="street">Street Address</label>
+          <input id="street" type="text" class="form-control" [(ngModel)]="person.addressLine" />
+        </div>
+        <div class="form-group">
+          <label for="city">City</label>
+          <input id="city" type="text" class="form-control" [(ngModel)]="person.addressCity" />
+        </div>
+        <div class="form-group">
+          <label for="state">State</label>
+          <select id="state" class="form-control" [(ngModel)]="person.addressState">
             <option value="">--SELECT--</option>
             <option value="AL">ALABAMA</option>
             <option value="AK">ALASKA</option>
@@ -105,8 +105,8 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Postal Code</label>
-          <input type="text" class="form-control" [(ngModel)]="person.addressPostalCode" />
+          <label for="postalCode">Postal Code</label>
+          <input id="postalCode" type="text" class="form-control" [(ngModel)]="person.addressPostalCode" />
         </div>
       </div>
     </div>
@@ -115,54 +115,55 @@
 
 <div class="card">
   <div class="card-header">
+    <!--suppress HtmlFormInputWithoutLabel -->
     <input type="checkbox" [ngModel]="!!secondary" (ngModelChange)="toggleSecondary($event)" /> Secondary
   </div>
   <div class="card-body" *ngIf="secondary">
     <div class="row">
       <div class="col-md-4">
         <div class="form-group">
-          <label>First Name</label>
-          <input type="text" class="form-control" [(ngModel)]="secondary.firstName" />
+          <label for="secondaryFirstName">First Name</label>
+          <input id="secondaryFirstName" type="text" class="form-control" [(ngModel)]="secondary.firstName" />
         </div>
         <div class="form-group">
-          <label>Last Name</label>
-          <input type="text" class="form-control" [(ngModel)]="secondary.lastName" />
+          <label for="secondaryLastName">Last Name</label>
+          <input id="secondaryLastName" type="text" class="form-control" [(ngModel)]="secondary.lastName" />
         </div>
         <div class="form-group">
-          <label>Email</label>
-          <input type="text" class="form-control" [(ngModel)]="secondary.email" email="true" placeholder="joe@somewhere.com" #secondaryEmail="ngModel" [class.is-invalid]="secondaryEmail.errors?.email" />
+          <label for="secondaryEmail">Email</label>
+          <input id="secondaryEmail" type="text" class="form-control" [(ngModel)]="secondary.email" email="true" placeholder="joe@somewhere.com" #secondaryEmail="ngModel" [class.is-invalid]="secondaryEmail.errors?.email" />
         </div>
         <div class="form-group">
-          <label>Mobile Phone</label>
-          <input type="text" class="form-control" [(ngModel)]="secondary.mobile" pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" placeholder="(XXX) XXX-XXXX" #secondaryMobile="ngModel" [class.is-invalid]="secondaryMobile.errors?.pattern" />
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="form-group">
-          <label>Organization</label>
-          <input type="text" class="form-control" [ngModel]="Person.getOrganizationName(person, secondary)" (ngModelChange)="Person.setOrganizationName(person, secondary, $event)" />
-        </div>
-        <div class="form-group">
-          <label>Title</label>
-          <input type="text" class="form-control" [(ngModel)]="secondary.organizationTitle" />
-        </div>
-        <div class="form-group">
-          <label>Office Phone</label>
-          <input type="text" class="form-control" [(ngModel)]="secondary.office" pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" placeholder="(XXX) XXX-XXXX" #secondaryOffice="ngModel" [class.is-invalid]="secondaryOffice.errors?.pattern" />
+          <label for="secondaryMobile">Mobile Phone</label>
+          <input id="secondaryMobile" type="text" class="form-control" [(ngModel)]="secondary.mobile" pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" placeholder="(XXX) XXX-XXXX" #secondaryMobile="ngModel" [class.is-invalid]="secondaryMobile.errors?.pattern" />
         </div>
       </div>
       <div class="col-md-4">
         <div class="form-group">
-          <label>Street Address</label>
-          <input type="text" class="form-control" [(ngModel)]="secondary.addressLine" />
+          <label for="secondaryOrganizationName">Organization</label>
+          <input id="secondaryOrganizationName" type="text" class="form-control" [ngModel]="Person.getOrganizationName(person, secondary)" (ngModelChange)="Person.setOrganizationName(person, secondary, $event)" />
         </div>
         <div class="form-group">
-          <label>City</label>
-          <input type="text" class="form-control" [(ngModel)]="secondary.addressCity" />
+          <label for="secondaryOrganizationTitle">Title</label>
+          <input id="secondaryOrganizationTitle" type="text" class="form-control" [(ngModel)]="secondary.organizationTitle" />
         </div>
         <div class="form-group">
-          <label>State</label>
-          <select class="form-control" [(ngModel)]="secondary.addressState">
+          <label for="secondaryOffice">Office Phone</label>
+          <input id="secondaryOffice" type="text" class="form-control" [(ngModel)]="secondary.office" pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" placeholder="(XXX) XXX-XXXX" #secondaryOffice="ngModel" [class.is-invalid]="secondaryOffice.errors?.pattern" />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="secondaryStreet">Street Address</label>
+          <input id="secondaryStreet" type="text" class="form-control" [(ngModel)]="secondary.addressLine" />
+        </div>
+        <div class="form-group">
+          <label for="secondaryCity">City</label>
+          <input id="secondaryCity" type="text" class="form-control" [(ngModel)]="secondary.addressCity" />
+        </div>
+        <div class="form-group">
+          <label for="secondaryState">State</label>
+          <select id="secondaryState" class="form-control" [(ngModel)]="secondary.addressState">
             <option value="">--SELECT--</option>
             <option value="AL">ALABAMA</option>
             <option value="AK">ALASKA</option>
@@ -220,8 +221,8 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Postal Code</label>
-          <input type="text" class="form-control" [(ngModel)]="secondary.addressPostalCode" />
+          <label for="secondaryPostal">Postal Code</label>
+          <input id="secondaryPostal" type="text" class="form-control" [(ngModel)]="secondary.addressPostalCode" />
         </div>
       </div>
     </div>

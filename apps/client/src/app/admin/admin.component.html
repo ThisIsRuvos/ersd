@@ -45,8 +45,8 @@
       </div>
 
       <div class="form-group">
-        <label>Message</label>
-        <textarea class="form-control" rows="6" [(ngModel)]="uploadMessage" [class.is-invalid]="!uploadMessage"></textarea>
+        <label for="uploadMessage">Message</label>
+        <textarea id="uploadMessage" class="form-control" rows="6" [(ngModel)]="uploadMessage" [class.is-invalid]="!uploadMessage"></textarea>
       </div>
 
       <button type="button" class="btn btn-primary" (click)="upload()" [disabled]="!uploadFile || !uploadMessage">Upload</button>
@@ -58,13 +58,13 @@
       <div class="alert alert-info">This will send an email message directly to each of the user's contact email address (which may be different than the email address the user uses for subscriptions).</div>
 
       <div class="form-group">
-        <label>Subject</label>
-        <input type="text" class="form-control" [(ngModel)]="emailRequest.subject" [class.is-invalid]="!emailRequest.subject" />
+        <label for="subject">Subject</label>
+        <input id="subject" type="text" class="form-control" [(ngModel)]="emailRequest.subject" [class.is-invalid]="!emailRequest.subject" />
       </div>
 
       <div class="form-group">
-        <label>Message to be sent</label>
-        <textarea class="form-control" rows="6" [(ngModel)]="emailRequest.message" [class.is-invalid]="!emailRequest.message"></textarea>
+        <label for="emailMessage">Message to be sent</label>
+        <textarea id="emailMessage" class="form-control" rows="6" [(ngModel)]="emailRequest.message" [class.is-invalid]="!emailRequest.message"></textarea>
       </div>
 
       <button type="button" class="btn btn-primary" [disabled]="!emailRequest.subject || !emailRequest.message" (click)="sendEmail()">Send</button>

@@ -303,12 +303,12 @@ describe('check-contact-info', () => {
           expect(person.extension[2].url).toBe(Constants.extensions.expirationSentCount);
           expect(person.extension[2].valueInteger).toBe(3);
 
-          const lastExpirationSent = moment(person.extension[1].valueDateTime);
-          expect(lastExpirationSent.year()).toBe(moment().year());
-          expect(lastExpirationSent.month()).toBe(moment().month());
-          expect(lastExpirationSent.date()).toBe(moment().date());
-          expect(lastExpirationSent.hour()).toBe(moment().hour());
-          expect(lastExpirationSent.minute()).toBe(moment().minute());
+          const les = moment(person.extension[1].valueDateTime);
+          expect(les.year()).toBe(moment().year());
+          expect(les.month()).toBe(moment().month());
+          expect(les.date()).toBe(moment().date());
+          expect(les.hour()).toBe(moment().hour());
+          expect(les.minute()).toBe(moment().minute());
         } catch (ex) {
           console.error('Person being updated did not match expectations: ' + ex.message);
           return false;
