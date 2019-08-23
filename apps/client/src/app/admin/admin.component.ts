@@ -57,10 +57,6 @@ export class AdminComponent implements OnInit {
   editUser(user: IPerson) {
     const modalRef = this.modalService.open(AdminEditPersonComponent, { size: 'lg' });
     modalRef.componentInstance.id = user.id;
-
-    modalRef.result.then((results) => {
-
-    });
   }
 
   handleFileInput(files: FileList) {
@@ -72,7 +68,7 @@ export class AdminComponent implements OnInit {
     this.uploadFile = files.item(0);
 
     const fileReader = new FileReader();
-    fileReader.onload = (e) => {
+    fileReader.onload = () => {
       this.uploadFileContent = <string> fileReader.result;
     };
     fileReader.readAsText(this.uploadFile);

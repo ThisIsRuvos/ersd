@@ -1,6 +1,4 @@
-import { Body, Controller, Get, HttpService, Logger, Post, Req, UseGuards } from '@nestjs/common';
-import { EmailSubscriptionInfo, RestSubscriptionInfo, SmsSubscriptionInfo, UserSubscriptions } from '../../../../../libs/ersdlib/src/lib/user-subscriptions';
-import { UserController } from '../user/user.controller';
+import { Body, Controller, HttpService, Logger, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthRequest } from '../auth-module/auth-request';
 import { BaseController } from '../base.controller';
@@ -77,6 +75,7 @@ export class UploadController extends BaseController {
       const resultsBundle = <IBundle>results.data;
 
       if (resultsBundle.resourceType !== 'Bundle' || !resultsBundle.entry || resultsBundle.entry.length !== 1) {
+        // noinspection ExceptionCaughtLocallyJS
         throw new Error('Unexpected response from the FHIR server');
       }
 

@@ -55,7 +55,7 @@ export class FhirController extends BaseController {
 
   @All()
   async getData(@Req() request: Request) {
-    const person = await this.assertApiKey(request);
+    await this.assertApiKey(request);
     let fhirPart = request.originalUrl.substring('/api/fhir'.length);
 
     if (fhirPart.startsWith('/')) {
@@ -77,7 +77,7 @@ export class FhirController extends BaseController {
     }
 
     const restrictedResourceTypes = serverConfig.restrictedResourceTypes ?
-      serverConfig.restrictedResourceTypes.map((resourceType) => resourceType.toLowerCase()) :
+      serverConfig.restrictedResourceTypes.map((rt) => rt.toLowerCase()) :
       [];
 
     if (restrictedResourceTypes.indexOf(resourceType.toLowerCase()) >= 0) {

@@ -39,7 +39,7 @@ export class ApiKeysComponent implements OnInit {
       .catch((err) => {
         this.message = getErrorString(err);
         this.messageIsError = true;
-      })
+      });
 
     this.baseAddress = location.origin + '/api/fhir';
   }

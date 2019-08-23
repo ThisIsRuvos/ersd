@@ -40,14 +40,17 @@ export class AuthService {
   }
 
   public login() {
+    // noinspection JSIgnoredPromiseFromCall
     this.keycloakService.login();
   }
 
   public register() {
+    // noinspection JSIgnoredPromiseFromCall
     this.keycloakService.register();
   }
 
   public logout() {
+    // noinspection JSIgnoredPromiseFromCall
     this.keycloakService.logout();
     this.loggedIn = false;
     this.profile = null;

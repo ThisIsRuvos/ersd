@@ -191,7 +191,7 @@ export class UserController extends BaseController {
       return;
     }
 
-    this.logger.log(`The person's account has expired. Checking their subscriptiosn to see if any should be re-activated`);
+    this.logger.log(`The person's account has expired. Checking their subscriptions to see if any should be re-activated`);
 
     const getSubscriptionsPromises = (person.extension || [])
       .filter((ext) => {

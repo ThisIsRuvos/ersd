@@ -62,7 +62,7 @@ export class CheckContactInfo {
 
     setTimeout(async () => {
       // Set the next interval (recursive)
-      CheckContactInfo.executeTimer(checker, duration);
+      await CheckContactInfo.executeTimer(checker, duration);
     }, duration * 1000);
   }
 
@@ -97,6 +97,8 @@ export class CheckContactInfo {
     }
 
     const checker = new CheckContactInfo(fhirServerBase, contactInfoConfig, emailConfig);
+
+    // noinspection JSIgnoredPromiseFromCall
     CheckContactInfo.executeTimer(checker, contactInfoConfig.checkDurationSeconds);
   }
 
