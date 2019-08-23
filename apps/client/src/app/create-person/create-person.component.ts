@@ -4,6 +4,7 @@ import { Person } from '../../../../../libs/kdslib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
 import { getErrorString } from '../../../../../libs/kdslib/src/lib/get-error-string';
 import { KeycloakProfile } from '../auth.service';
+import { formatPhone } from '../../../../../libs/kdslib/src/lib/helper';
 
 @Component({
   selector: 'kds-create-person',
@@ -29,20 +30,6 @@ export class CreatePersonComponent implements OnInit {
       .catch((err) => this.message = getErrorString(err));
   }
 
-  private formatPhone(value: string) {
-    if (!value) {
-      return;
-    }
-
-    const stripped = value.replace(/[^0-9]/g, '');
-
-    if (stripped.length === 10) {
-      return '(' + stripped.substring(0, 3) + ') ' + stripped.substring(3, 6) + '-' + stripped.substring(6, 10);
-    }
-
-    return stripped;
-  }
-
   private getProfileAttributes(...names: string[]) {
     if (names) {
       for (let i = 0; i < names.length; i++) {
@@ -66,8 +53,8 @@ export class CreatePersonComponent implements OnInit {
       this.person.firstName = this.profile.firstName;
       this.person.lastName = this.profile.lastName;
       this.person.email = this.profile.email;
-      this.person.mobile = this.formatPhone(this.getProfileAttributes('mobile', 'cell'));
-      this.person.office = this.formatPhone(this.getProfileAttribute('office'));
+      this.person.mobile = formatPhone(this.getProfileAttributes('mobile', 'cell'));
+      this.person.office = formatPhone(this.getProfileAttribute('office'));
       this.person.addressLine = this.getProfileAttributes('street', 'address', 'line');
       this.person.addressCity = this.getProfileAttribute('city');
       this.person.addressState = this.getProfileAttributes('state', 'st');

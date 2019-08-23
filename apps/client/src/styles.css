@@ -41,3 +41,8 @@ nav .nav-link, .navbar-brand {
 .jumbotron {
   background-color: #F8F9F9 !important;
 }
+
+.help-block {
+  margin: 15px;
+  color: gray;
+}
