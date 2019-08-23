@@ -318,10 +318,7 @@ export class UserController extends BaseController {
     await this.httpService.put<IPerson>(url, body).toPromise();
   }
 
-  @Delete(':id')
-  async deleteUser(@Req() request: AuthRequest, @Param('id') id: string) {
-    this.assertAdmin(request);
-
+  private async deleteUserById(id: string) {
     this.logger.log(`Deleting person ${id}. Retrieving the Person resource to determine what all should be deleted.`);
 
     const url = this.buildFhirUrl('Person', id);
@@ -362,5 +359,22 @@ export class UserController extends BaseController {
     await this.httpService.delete(url).toPromise();
 
     this.logger.log(`Done deleting person ${person.id}`);
+  }
+
+  @Delete(':me')
+  async deleteMe(@Req() request: AuthRequest) {
+    const me = await this.getMyPerson(request);
+
+    if (!me) {
+      throw new Error('No Person found for the logged in user');
+    }
+
+    this.deleteUserById(me.id);
+  }
+
+  @Delete(':id')
+  async deleteUser(@Req() request: AuthRequest, @Param('id') id: string) {
+    this.assertAdmin(request);
+    this.deleteUserById(id);
   }
 }

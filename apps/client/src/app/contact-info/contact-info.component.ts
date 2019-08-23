@@ -32,6 +32,17 @@ export class ContactInfoComponent implements OnInit {
       });
   }
 
+  public delete() {
+    if (!confirm('Are you sure you want to delete your account? You will no longer receive any notifications/communications from ERSD.')) {
+      return;
+    }
+
+    this.httpClient.delete('/api/user/me').toPromise()
+      .then(() => {
+        this.authService.logout();
+      });
+  }
+
   ngOnInit() {
     this.httpClient.get<IPerson>('/api/user/me').toPromise()
       .then((person: IPerson) => this.person = new Person(person))
