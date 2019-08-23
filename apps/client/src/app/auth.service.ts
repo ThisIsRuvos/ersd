@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 import { Keycloak } from 'keycloak-angular/lib/core/services/keycloak.service';
-import { IPerson } from '../../../../libs/kdslib/src/lib/person';
+import { IPerson } from '../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreatePersonComponent } from './create-person/create-person.component';

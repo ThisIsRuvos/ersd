@@ -1,9 +1,9 @@
 import { All, BadRequestException, Controller, HttpService, Req, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
 import { BaseController } from '../base.controller';
-import { Constants } from '../../../../../libs/kdslib/src/lib/constants';
-import { IBundle } from '../../../../../libs/kdslib/src/lib/bundle';
-import { Person } from '../../../../../libs/kdslib/src/lib/person';
+import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
+import { IBundle } from '../../../../../libs/ersdlib/src/lib/bundle';
+import { Person } from '../../../../../libs/ersdlib/src/lib/person';
 import * as config from 'config';
 import { IServerConfig } from '../server-config';
 import { map } from 'rxjs/operators';

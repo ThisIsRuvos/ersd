@@ -15,12 +15,12 @@ import {
 } from '@nestjs/common';
 import { BaseController } from '../base.controller';
 import { AuthGuard } from '@nestjs/passport';
-import { IPerson, Person } from '../../../../../libs/kdslib/src/lib/person';
+import { IPerson, Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { AuthRequest } from '../auth-module/auth-request';
-import { Constants } from '../../../../../libs/kdslib/src/lib/constants';
-import { IBundle } from '../../../../../libs/kdslib/src/lib/bundle';
-import { Subscription } from '../../../../../libs/kdslib/src/lib/subscription';
-import { IEmailRequest } from '../../../../../libs/kdslib/src/lib/email-request';
+import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
+import { IBundle } from '../../../../../libs/ersdlib/src/lib/bundle';
+import { Subscription } from '../../../../../libs/ersdlib/src/lib/subscription';
+import { IEmailRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
 import * as nodemailer from 'nodemailer';
 import * as config from 'config';
 import { IEmailConfig } from '../email-config';

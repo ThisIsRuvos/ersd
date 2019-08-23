@@ -1,10 +1,10 @@
 import {HttpService, Logger} from '@nestjs/common';
 import {IServerConfigContactInfo} from './app/server-config';
 import {buildFhirUrl} from './app/helper';
-import {IBundle} from '../../../libs/kdslib/src/lib/bundle';
-import {Person} from '../../../libs/kdslib/src/lib/person';
-import {Constants} from '../../../libs/kdslib/src/lib/constants';
-import {Subscription} from '../../../libs/kdslib/src/lib/subscription';
+import {IBundle} from '../../../libs/ersdlib/src/lib/bundle';
+import {Person} from '../../../libs/ersdlib/src/lib/person';
+import {Constants} from '../../../libs/ersdlib/src/lib/constants';
+import {Subscription} from '../../../libs/ersdlib/src/lib/subscription';
 import {IEmailConfig} from './app/email-config';
 
 import * as path from 'path';

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { IPerson, Person } from '../../../../../libs/kdslib/src/lib/person';
+import { IPerson, Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
-import { getErrorString } from '../../../../../libs/kdslib/src/lib/get-error-string';
+import { getErrorString } from '../../../../../libs/ersdlib/src/lib/get-error-string';
 
 @Component({
   selector: 'kds-contact-info',

@@ -1,8 +1,8 @@
 import { CheckContactInfo } from './check-contact-info';
-import { IBundle } from '../../../libs/kdslib/src/lib/bundle';
-import { IPerson } from '../../../libs/kdslib/src/lib/person';
-import { Constants } from '../../../libs/kdslib/src/lib/constants';
-import { Subscription } from '../../../libs/kdslib/src/lib/subscription';
+import { IBundle } from '../../../libs/ersdlib/src/lib/bundle';
+import { IPerson } from '../../../libs/ersdlib/src/lib/person';
+import { Constants } from '../../../libs/ersdlib/src/lib/constants';
+import { Subscription } from '../../../libs/ersdlib/src/lib/subscription';
 import { IServerConfigContactInfo } from './app/server-config';
 import { IEmailConfig } from './app/email-config';
 
@@ -136,7 +136,7 @@ describe('check-contact-info', () => {
           console.error('Person being updated did not match expectations: ' + ex.message);
           return false;
         }
-        
+
         return true;
       })
       .reply(200);

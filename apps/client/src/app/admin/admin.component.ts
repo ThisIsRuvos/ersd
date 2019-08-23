@@ -1,12 +1,12 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { IPerson, Person } from '../../../../../libs/kdslib/src/lib/person';
+import { IPerson, Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
-import { getErrorString } from '../../../../../libs/kdslib/src/lib/get-error-string';
+import { getErrorString } from '../../../../../libs/ersdlib/src/lib/get-error-string';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AdminEditPersonComponent } from './edit-person/edit-person.component';
 import { AuthService } from '../auth.service';
-import { IUploadRequest } from '../../../../../libs/kdslib/src/lib/upload-request';
-import { IEmailRequest } from '../../../../../libs/kdslib/src/lib/email-request';
+import { IUploadRequest } from '../../../../../libs/ersdlib/src/lib/upload-request';
+import { IEmailRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
 
 @Component({
   selector: 'kds-admin',

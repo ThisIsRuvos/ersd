@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Person } from '../../../../../libs/kdslib/src/lib/person';
+import { Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
-import { getErrorString } from '../../../../../libs/kdslib/src/lib/get-error-string';
+import { getErrorString } from '../../../../../libs/ersdlib/src/lib/get-error-string';
 import { KeycloakProfile } from '../auth.service';
-import { formatPhone } from '../../../../../libs/kdslib/src/lib/helper';
+import { formatPhone } from '../../../../../libs/ersdlib/src/lib/helper';
 
 @Component({
   selector: 'kds-create-person',

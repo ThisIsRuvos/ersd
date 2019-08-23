@@ -7,7 +7,7 @@
       "root": "apps/client/",
       "sourceRoot": "apps/client/src",
       "projectType": "application",
-      "prefix": "kds",
+      "prefix": "ersd",
       "schematics": {},
       "architect": {
         "build": {
@@ -180,9 +180,9 @@
         }
       }
     },
-    "kdslib": {
-      "root": "libs/kdslib",
-      "sourceRoot": "libs/kdslib/src",
+    "ersdlib": {
+      "root": "libs/ersdlib",
+      "sourceRoot": "libs/ersdlib/src",
       "projectType": "library",
       "prefix": "kds",
       "architect": {
@@ -190,8 +190,8 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "libs/kdslib/tsconfig.lib.json",
-              "libs/kdslib/tsconfig.spec.json"
+              "libs/ersdlib/tsconfig.lib.json",
+              "libs/ersdlib/tsconfig.spec.json"
             ],
             "exclude": ["**/node_modules/**"]
           }
@@ -199,8 +199,8 @@
         "test": {
           "builder": "@nrwl/builders:jest",
           "options": {
-            "jestConfig": "libs/kdslib/jest.config.js",
-            "tsConfig": "libs/kdslib/tsconfig.spec.json"
+            "jestConfig": "libs/ersdlib/jest.config.js",
+            "tsConfig": "libs/ersdlib/tsconfig.spec.json"
           }
         }
       },

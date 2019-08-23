@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { UserSubscriptions } from '../../../../../libs/kdslib/src/lib/user-subscriptions';
+import { UserSubscriptions } from '../../../../../libs/ersdlib/src/lib/user-subscriptions';
 import { NgModel } from '@angular/forms';
-import { getErrorString } from '../../../../../libs/kdslib/src/lib/get-error-string';
-import { generateKey } from '../../../../../libs/kdslib/src/lib/generate-key';
+import { getErrorString } from '../../../../../libs/ersdlib/src/lib/get-error-string';
+import { generateKey } from '../../../../../libs/ersdlib/src/lib/generate-key';
 import { AuthService } from '../auth.service';
-import { formatPhone } from '../../../../../libs/kdslib/src/lib/helper';
+import { formatPhone } from '../../../../../libs/ersdlib/src/lib/helper';
 
 @Component({
   selector: 'kds-subscription',

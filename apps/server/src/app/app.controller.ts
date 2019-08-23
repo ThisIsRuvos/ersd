@@ -1,7 +1,7 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import * as config from 'config';
-import { IClientConfig } from '../../../../libs/kdslib/src/lib/client-config';
+import { IClientConfig } from '../../../../libs/ersdlib/src/lib/client-config';
 
 const clientConfig = <IClientConfig> config.get('client');
 

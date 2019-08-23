@@ -1,13 +1,13 @@
 import { Body, Controller, Get, HttpService, Logger, Post, Req, UseGuards } from '@nestjs/common';
-import { EmailSubscriptionInfo, RestSubscriptionInfo, SmsSubscriptionInfo, UserSubscriptions } from '../../../../../libs/kdslib/src/lib/user-subscriptions';
+import { EmailSubscriptionInfo, RestSubscriptionInfo, SmsSubscriptionInfo, UserSubscriptions } from '../../../../../libs/ersdlib/src/lib/user-subscriptions';
 import { UserController } from '../user/user.controller';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthRequest } from '../auth-module/auth-request';
 import { BaseController } from '../base.controller';
-import { Constants } from '../../../../../libs/kdslib/src/lib/constants';
-import { IUploadRequest } from '../../../../../libs/kdslib/src/lib/upload-request';
+import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
+import { IUploadRequest } from '../../../../../libs/ersdlib/src/lib/upload-request';
 import { Fhir } from 'fhir/fhir';
-import { IBundle } from '../../../../../libs/kdslib/src/lib/bundle';
+import { IBundle } from '../../../../../libs/ersdlib/src/lib/bundle';
 
 @Controller('upload')
 export class UploadController extends BaseController {

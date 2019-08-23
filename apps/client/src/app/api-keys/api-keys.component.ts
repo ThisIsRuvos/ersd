@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { IUserApiKeys } from '../../../../../libs/kdslib/src/lib/user-api-keys';
-import { getErrorString } from '../../../../../libs/kdslib/src/lib/get-error-string';
-import { generateKey } from '../../../../../libs/kdslib/src/lib/generate-key';
+import { IUserApiKeys } from '../../../../../libs/ersdlib/src/lib/user-api-keys';
+import { getErrorString } from '../../../../../libs/ersdlib/src/lib/get-error-string';
+import { generateKey } from '../../../../../libs/ersdlib/src/lib/generate-key';
 
 @Component({
   selector: 'kds-api-keys',
