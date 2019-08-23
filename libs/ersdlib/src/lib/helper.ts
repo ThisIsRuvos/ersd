@@ -1,3 +1,4 @@
+import { IHumanName } from './human-name';
 
 export function formatPhone(value: string) {
   if (!value) {
@@ -11,4 +12,14 @@ export function formatPhone(value: string) {
   }
 
   return stripped;
+}
+
+export function formatHumanName(name: IHumanName) {
+  if (name.family && name.given && name.given.length > 0) {
+    return name.given.join(' ') + ' ' + name.family;
+  } else if (name.family) {
+    return name.family;
+  } else if (name.given && name.given.length > 0) {
+    return name.given.join(' ');
+  }
 }

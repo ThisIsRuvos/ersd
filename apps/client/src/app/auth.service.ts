@@ -5,6 +5,7 @@ import { IPerson } from '../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreatePersonComponent } from './create-person/create-person.component';
+import { formatHumanName } from '../../../../libs/ersdlib/src/lib/helper';
 
 export interface KeycloakProfile extends Keycloak.KeycloakProfile {
   attributes: {
@@ -28,8 +29,13 @@ export class AuthService {
   }
 
   public get fullName(): string {
-    if (this.loggedIn && this.profile) {
-      return `${this.profile.firstName} ${this.profile.lastName}`;
+    if (this.loggedIn) {
+      if (this.person && this.person.name && this.person.name.length > 0) {
+        return formatHumanName(this.person.name[0]);
+      }
+      if (this.profile) {
+        return `${this.profile.firstName} ${this.profile.lastName}`;
+      }
     }
 
     return 'Not logged in';
