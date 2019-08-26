@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import * as config from 'config';
 import { IServerConfig } from '../server-config';
 
-const serverConfig = <IServerConfig> config.get('server');
+const serverConfig = <IServerConfig> config.server;
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

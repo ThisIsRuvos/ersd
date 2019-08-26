@@ -9,8 +9,8 @@ import * as config from 'config';
 import { CheckContactInfo } from './check-contact-info';
 import { IEmailConfig } from './app/email-config';
 
-const serverConfig = <IServerConfig> config.get('server');
-const emailConfig = <IEmailConfig> config.get('email');
+const serverConfig = <IServerConfig> config.server;
+const emailConfig = <IEmailConfig> config.email;
 const logger = new Logger('bootstrap');
 
 async function bootstrap() {

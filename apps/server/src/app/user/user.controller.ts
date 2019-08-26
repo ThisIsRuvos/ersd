@@ -31,8 +31,8 @@ import { InvalidModuleConfigException } from '@nestjs/common/decorators/modules/
 import { IServerConfig } from '../server-config';
 import { buildFhirUrl } from '../helper';
 
-const emailConfig = <IEmailConfig> config.get('email');
-const serverConfig = <IServerConfig> config.get('server');
+const emailConfig = <IEmailConfig> config.email;
+const serverConfig = <IServerConfig> config.server;
 
 @Controller('user')
 @UseGuards(AuthGuard())

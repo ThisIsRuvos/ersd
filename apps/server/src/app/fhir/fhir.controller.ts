@@ -9,7 +9,7 @@ import { IServerConfig } from '../server-config';
 import { map } from 'rxjs/operators';
 import { joinUrl } from '../helper';
 
-const serverConfig = <IServerConfig> config.get('server');
+const serverConfig = <IServerConfig> config.server;
 
 @Controller('fhir')
 export class FhirController extends BaseController {

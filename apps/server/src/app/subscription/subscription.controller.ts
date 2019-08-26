@@ -12,7 +12,7 @@ import { IOperationOutcome } from '../../../../../libs/ersdlib/src/lib/operation
 import * as config from 'config';
 import { IServerConfig } from '../server-config';
 
-const serverConfig = <IServerConfig> config.get('server');
+const serverConfig = <IServerConfig> config.server;
 const authPrefix = 'Authorization: Bearer ';
 
 @Controller('subscription')
