@@ -166,3 +166,5 @@ The following table indicates what KeyCloak custom attributes are recognized by 
 | City | city | | |
 | State | state | st | |
 | Postal Code | postal | postalCode | zip |
+
+Refer to the [this link](https://medium.com/@auscunningham/create-a-custom-theme-for-keycloak-8781207be604) for guidance on how to create a custom keylcoak template that captures custom fields (such as the fields listed in the table above).
