@@ -1,0 +1,21 @@
+.home-grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  
+  grid-gap: 1rem;
+}
+
+.home-grid-item {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 7px;
+  text-align: center;
+}
+
+.home-grid-item-1 {
+  grid-column: 1 / span 3;
+  background-color: transparent;
+  color: white;
+  text-align: center;
+  font-weight: 200;
+}

@@ -28,12 +28,6 @@ div.footer {
   padding-top: 10px;
 }
 
-.nav-link, .navbar-brand {
-  font-family: Lucida Bright,Georgia,serif;
-  font-weight: bold;
-  color: white !important;
-}
-
 .bg-aims {
   background-color: #30B1BD !important;
 }
