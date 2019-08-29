@@ -61,3 +61,8 @@ p {
 img {
   height: 100px;
 }
+
+a {
+  text-decoration: none;
+  color: white;
+}

@@ -3,8 +3,8 @@
 <div class="card">
   <div class="card-header">Primary</div>
   <div class="card-body">
-    <div class="row">
-      <div class="col-md-4">
+    <div class="">
+      <div class="">
         <div class="form-group">
           <label>First Name</label>
           <input type="text" class="form-control" [(ngModel)]="person.firstName" required="required" #firstName="ngModel" [class.is-invalid]="firstName.errors?.required" />
@@ -22,7 +22,7 @@
           <input type="text" class="form-control" [(ngModel)]="person.mobile" pattern="^\d{3}-\d{3}-\d{4}$" placeholder="XXX-XXX-XXXX" #mobile="ngModel" [class.is-invalid]="mobile.errors?.pattern" />
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="">
         <div class="form-group">
           <label>Organization</label>
           <input type="text" class="form-control" [ngModel]="Person.getOrganizationName(person, person)" (ngModelChange)="Person.setOrganizationName(person, person, $event)" />
@@ -36,7 +36,7 @@
           <input type="text" class="form-control" [(ngModel)]="person.office" pattern="^\d{3}-\d{3}-\d{4}$" required="required" placeholder="XXX-XXX-XXXX" #office="ngModel" [class.is-invalid]="office.errors?.pattern || office.errors?.required" />
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="">
         <div class="form-group">
           <label>Street Address</label>
           <input type="text" class="form-control" [(ngModel)]="person.addressLine" />
@@ -117,9 +117,9 @@
   <div class="card-header">
     <input type="checkbox" [ngModel]="!!secondary" (ngModelChange)="toggleSecondary($event)" /> Secondary
   </div>
-  <div class="card-body" *ngIf="secondary">
-    <div class="row">
-      <div class="col-md-4">
+  <div class="card-body" *ngIf="true">
+    <div class="">
+      <div class="">
         <div class="form-group">
           <label>First Name</label>
           <input type="text" class="form-control" [(ngModel)]="secondary.firstName" />
@@ -137,7 +137,7 @@
           <input type="text" class="form-control" [(ngModel)]="secondary.mobile" pattern="^\d{3}-\d{3}-\d{4}$" placeholder="XXX-XXX-XXXX" #secondaryMobile="ngModel" [class.is-invalid]="secondaryMobile.errors?.pattern" />
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="">
         <div class="form-group">
           <label>Organization</label>
           <input type="text" class="form-control" [ngModel]="Person.getOrganizationName(person, secondary)" (ngModelChange)="Person.setOrganizationName(person, secondary, $event)" />
@@ -151,7 +151,7 @@
           <input type="text" class="form-control" [(ngModel)]="secondary.office" pattern="^\d{3}-\d{3}-\d{4}$" placeholder="XXX-XXX-XXXX" #secondaryOffice="ngModel" [class.is-invalid]="secondaryOffice.errors?.pattern" />
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="">
         <div class="form-group">
           <label>Street Address</label>
           <input type="text" class="form-control" [(ngModel)]="secondary.addressLine" />
