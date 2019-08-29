@@ -7,12 +7,12 @@ nav {
   top: 0;
 }
 
-nav > a > img {
+/* nav > a > img {
   position: absolute;
   width: 45px;
   height: 45px;
   margin-top: -7px;
-}
+} */
 
 nav > a > span {
   margin-left: 45px;
@@ -48,4 +48,8 @@ main.container {
 .nav-link {
   color: black;
   font-family: 'Work Sans', sans-serif;
+}
+
+.ersd-logo {
+  height: 30px;
 }
