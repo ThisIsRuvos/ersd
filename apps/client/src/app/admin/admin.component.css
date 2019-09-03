@@ -3,8 +3,14 @@ table > thead > tr > th:last-child {
 }
 
 .admin-container {
-  padding: 170px 0;
+  padding: 170px 50px;
   position: relative;
+  
+}
+
+.admin-users-container {
+  background-color: rgba(222, 226, 230, 1);
+  padding: 50px;
 }
 
 .section-heading {

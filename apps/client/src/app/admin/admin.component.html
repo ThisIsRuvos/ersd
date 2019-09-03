@@ -5,7 +5,7 @@
   
 
   <div class="alert" *ngIf="message" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError">{{message}}</div>
-
+  <div class='admin-users-container'>
   <ngb-tabset>
     <ngb-tab title="Users">
       <ng-template ngbTabContent>
@@ -75,4 +75,5 @@
       </ng-template>
     </ngb-tab>
   </ngb-tabset>
+</div>
 </div>

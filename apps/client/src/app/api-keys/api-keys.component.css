@@ -40,3 +40,7 @@ input[type=text] {
   top: 90px;
   left: 0;
 }
+
+.api-key-label {
+  color: white;
+}
