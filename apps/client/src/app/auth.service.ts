@@ -1,17 +1,24 @@
 import { Injectable } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 import { Keycloak } from 'keycloak-angular/lib/core/services/keycloak.service';
-import { IPerson } from '../../../../libs/kdslib/src/lib/person';
+import { IPerson } from '../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreatePersonComponent } from './create-person/create-person.component';
+import { formatHumanName } from '../../../../libs/ersdlib/src/lib/helper';
+
+export interface KeycloakProfile extends Keycloak.KeycloakProfile {
+  attributes: {
+    [key: string]: string[];
+  };
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   public loggedIn: boolean;
-  public profile: Keycloak.KeycloakProfile;
+  public profile: KeycloakProfile;
   public roles: string[];
   public person: IPerson;
 
@@ -22,8 +29,13 @@ export class AuthService {
   }
 
   public get fullName(): string {
-    if (this.loggedIn && this.profile) {
-      return `${this.profile.firstName} ${this.profile.lastName}`;
+    if (this.loggedIn) {
+      if (this.person && this.person.name && this.person.name.length > 0) {
+        return formatHumanName(this.person.name[0]);
+      }
+      if (this.profile) {
+        return `${this.profile.firstName} ${this.profile.lastName}`;
+      }
     }
 
     return 'Not logged in';
@@ -34,10 +46,17 @@ export class AuthService {
   }
 
   public login() {
+    // noinspection JSIgnoredPromiseFromCall
     this.keycloakService.login();
   }
 
+  public register() {
+    // noinspection JSIgnoredPromiseFromCall
+    this.keycloakService.register();
+  }
+
   public logout() {
+    // noinspection JSIgnoredPromiseFromCall
     this.keycloakService.logout();
     this.loggedIn = false;
     this.profile = null;
@@ -71,7 +90,7 @@ export class AuthService {
       })
       .then((data) => {
         if (data) {
-          this.profile = <Keycloak.KeycloakProfile> data[0];
+          this.profile = <KeycloakProfile> data[0];
           this.roles = <string[]> data[1];
 
           const kc = this.keycloakService.getKeycloakInstance();

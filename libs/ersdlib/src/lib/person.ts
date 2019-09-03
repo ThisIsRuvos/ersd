@@ -200,7 +200,7 @@ export class Person implements IPerson {
   public set organizationTitle(value: string) {
     this.extension = this.extension || [];
 
-    let foundExtension = this.extension.find((extension) => extension.url === Constants.extensions.organizationTitle);;
+    let foundExtension = this.extension.find((extension) => extension.url === Constants.extensions.organizationTitle);
 
     if (!foundExtension) {
       foundExtension = {
@@ -236,42 +236,42 @@ export class Person implements IPerson {
 
     foundOffice.value = value;
   }
-  
+
   public get addressLine() {
     if (this.address && this.address.length > 0 && this.address[0].line && this.address[0].line.length > 0) {
       return this.address[0].line[0];
     }
   }
-  
+
   public set addressLine(value: string) {
     this.address = this.address || [];
-    
+
     if (this.address.length === 0) {
       this.address.push({});
     }
 
     this.address[0].line = this.address[0].line || [];
-    
+
     if (this.address[0].line.length === 0) {
       this.address[0].line.push(value);
     } else {
       this.address[0].line[0] = value;
     }
   }
-  
+
   public get addressCity() {
     if (this.address && this.address.length > 0) {
       return this.address[0].city;
     }
   }
-  
+
   public set addressCity(value: string) {
     this.address = this.address || [];
 
     if (this.address.length === 0) {
       this.address.push({});
     }
-    
+
     this.address[0].city = value;
   }
 

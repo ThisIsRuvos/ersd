@@ -1,12 +1,11 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { IPerson, Person } from '../../../../../../libs/kdslib/src/lib/person';
+import { IPerson, Person } from '../../../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
-import { getErrorString } from '../../../../../../libs/kdslib/src/lib/get-error-string';
+import { getErrorString } from '../../../../../../libs/ersdlib/src/lib/get-error-string';
 import { EditPersonComponent } from '../../edit-person/edit-person.component';
 
 @Component({
-  selector: 'kds-admin-edit-person',
   templateUrl: './edit-person.component.html',
   styleUrls: ['./edit-person.component.css']
 })

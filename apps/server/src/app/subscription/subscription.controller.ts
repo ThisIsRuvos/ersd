@@ -1,18 +1,18 @@
 import { Body, Controller, Get, HttpService, Post, Req, UseGuards } from '@nestjs/common';
-import { EmailSubscriptionInfo, RestSubscriptionInfo, SmsSubscriptionInfo, UserSubscriptions } from '../../../../../libs/kdslib/src/lib/user-subscriptions';
+import { EmailSubscriptionInfo, RestSubscriptionInfo, SmsSubscriptionInfo, UserSubscriptions } from '../../../../../libs/ersdlib/src/lib/user-subscriptions';
 import { UserController } from '../user/user.controller';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthRequest } from '../auth-module/auth-request';
-import { ISubscription, Subscription } from '../../../../../libs/kdslib/src/lib/subscription';
+import { ISubscription, Subscription } from '../../../../../libs/ersdlib/src/lib/subscription';
 import { BaseController } from '../base.controller';
-import { Constants } from '../../../../../libs/kdslib/src/lib/constants';
-import { IPerson, Person } from '../../../../../libs/kdslib/src/lib/person';
+import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
+import { IPerson, Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { AxiosResponse } from 'axios';
-import { IOperationOutcome } from '../../../../../libs/kdslib/src/lib/operation-outcome';
+import { IOperationOutcome } from '../../../../../libs/ersdlib/src/lib/operation-outcome';
 import * as config from 'config';
 import { IServerConfig } from '../server-config';
 
-const serverConfig = <IServerConfig> config.get('server');
+const serverConfig = <IServerConfig> config.server;
 const authPrefix = 'Authorization: Bearer ';
 
 @Controller('subscription')
@@ -205,7 +205,7 @@ export class SubscriptionController extends BaseController {
 
       this.enableSubscription(current);
 
-      const mobile = updated.mobilePhone.replace(/-/g, '');
+      const mobile = updated.mobilePhone.replace(/[^0-9]/g, '');
       let email = `mailto:${mobile}`;
 
       switch (updated.carrier) {

@@ -1,15 +1,15 @@
 import { All, BadRequestException, Controller, HttpService, Req, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
 import { BaseController } from '../base.controller';
-import { Constants } from '../../../../../libs/kdslib/src/lib/constants';
-import { IBundle } from '../../../../../libs/kdslib/src/lib/bundle';
-import { Person } from '../../../../../libs/kdslib/src/lib/person';
+import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
+import { IBundle } from '../../../../../libs/ersdlib/src/lib/bundle';
+import { Person } from '../../../../../libs/ersdlib/src/lib/person';
 import * as config from 'config';
 import { IServerConfig } from '../server-config';
 import { map } from 'rxjs/operators';
 import { joinUrl } from '../helper';
 
-const serverConfig = <IServerConfig> config.get('server');
+const serverConfig = <IServerConfig> config.server;
 
 @Controller('fhir')
 export class FhirController extends BaseController {
@@ -55,7 +55,7 @@ export class FhirController extends BaseController {
 
   @All()
   async getData(@Req() request: Request) {
-    const person = await this.assertApiKey(request);
+    await this.assertApiKey(request);
     let fhirPart = request.originalUrl.substring('/api/fhir'.length);
 
     if (fhirPart.startsWith('/')) {
@@ -77,7 +77,7 @@ export class FhirController extends BaseController {
     }
 
     const restrictedResourceTypes = serverConfig.restrictedResourceTypes ?
-      serverConfig.restrictedResourceTypes.map((resourceType) => resourceType.toLowerCase()) :
+      serverConfig.restrictedResourceTypes.map((rt) => rt.toLowerCase()) :
       [];
 
     if (restrictedResourceTypes.indexOf(resourceType.toLowerCase()) >= 0) {

@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc/libs/kdslib",
+    "outDir": "../../dist/out-tsc/libs/ersdlib",
     "module": "commonjs",
     "types": ["jest", "node"]
   },

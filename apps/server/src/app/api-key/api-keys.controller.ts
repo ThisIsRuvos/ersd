@@ -3,10 +3,10 @@ import { UserController } from '../user/user.controller';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthRequest } from '../auth-module/auth-request';
 import { BaseController } from '../base.controller';
-import { Constants } from '../../../../../libs/kdslib/src/lib/constants';
-import { Person } from '../../../../../libs/kdslib/src/lib/person';
-import { IUserApiKeys } from '../../../../../libs/kdslib/src/lib/user-api-keys';
-import { ICoding } from '../../../../../libs/kdslib/src/lib/coding';
+import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
+import { Person } from '../../../../../libs/ersdlib/src/lib/person';
+import { IUserApiKeys } from '../../../../../libs/ersdlib/src/lib/user-api-keys';
+import { ICoding } from '../../../../../libs/ersdlib/src/lib/coding';
 
 @Controller('api-keys')
 export class ApiKeysController extends BaseController {

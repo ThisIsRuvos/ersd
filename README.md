@@ -125,3 +125,46 @@ The templates used to email may contain the following parameters:
 | {last_name} | The last name of the user |
 | {expiration_date} | The date that the user's contact information expires |
 | {portal_link} | An http:// value/link to the ERSD portal |
+
+## HAPI Notes
+
+### Uploading Bundles
+
+HAPI does not currently accept storing any Bundle resources with a type that is not "collection". If you attempt to upload a Bundle with a type of "searchset" or "transaction", the HAPI FHIR server will respond to the ERSD server with the following error:
+
+`Unable to store a Bundle resource on this server with a Bundle.type value of: searchset`
+
+The HAPI team has been asked to change this so that Bundle resources may be stored with all possible "type" values. They have agreed to make the change, but have not committed to a date.
+
+## KeyCloak Notes
+
+### Setting up the application for ERSD in KeyCloak
+
+You must properly configure the "Web Origins" and "Valid Redirect URIs" properties of the application in KeyCloak. For example, if your ERSD installation is installed at https://ersd.mycompany.com then you must set the "Web Origins" property to "https://ersd.mycompany.com" and the "Valid Redirect URIs" should be "https://ersd.mycompany.com/*".
+
+### Reverse Proxy
+To successfully reverse proxy a KeyCloak installation, you must modify the `standalone.xml` file to include `proxy-address-forwarding="true"` and `redirect-socket="proxy-https"` to the `<http-listener>` element and change the `<socket-binding>` element to have a port of "443". For example:
+
+```
+<http-listener name="default" socket-binding="http" proxy-address-forwarding="true" redirect-socket="proxy-https" enable-http2="true"/>
+<socket-binding name="https" port="443"/>
+```
+
+### Registration Attributes
+
+ERSD attempts to reuse information from the KeyCloak account to make the registration process in ERSD quicker/easier for the end-user.
+
+"First Name", "Last Name" and "Email" should always be available from KeyCloak to ERSD, as those are required fields for KeyCloak and are automatically provided to ERSD during authentication.
+
+The following table indicates what KeyCloak custom attributes are recognized by ERSD. These custom attributes can be captured as part of custom templates used by the KeyCloak registration screen; custom configuration of KeyCloak would be required to have KeyCloak capture these custom attributes.
+
+| ERSD Field | KC  Attr 1 | KC Attr 2 | KC Attr 3 |
+| ---------- | --------------- | -------------- | -------------- |
+| Mobile Phone | mobile | cell | |
+| Office Phone | office | | |
+| Street Address | street | address | line |
+| City | city | | |
+| State | state | st | |
+| Postal Code | postal | postalCode | zip |
+
+Refer to the [this link](https://medium.com/@auscunningham/create-a-custom-theme-for-keycloak-8781207be604) for guidance on how to create a custom keylcoak template that captures custom fields (such as the fields listed in the table above).

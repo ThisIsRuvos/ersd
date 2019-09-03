@@ -25,7 +25,7 @@ export interface IServerConfigContactInfo {
       text: string;
     };
   };
-};
+}
 
 export interface IServerConfig {
   port: number;

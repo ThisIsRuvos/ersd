@@ -36,13 +36,17 @@
         </li>
         <li class="nav-item clickable" *ngIf="authService.loggedIn">
           <a class="nav-link" (click)="authService.logout()">
-            <i class="fas fa-sign-out-alt"></i> Sign out
+            <i class="fas fa-sign-out-alt"></i> Logout
           </a>
         </li>
         <li class="nav-item clickable" *ngIf="!authService.loggedIn">
           <a class="nav-link" (click)="authService.login()">
-            <i class="fas fa-sign-in-alt"></i> Sign in
+            <i class="fas fa-sign-in-alt"></i> Login
           </a>
+        </li>
+        <li class="nav-item clickable" *ngIf="!authService.loggedIn">
+          <a class="nav-link" (click)="authService.register()">
+          <i class="fas fa-user-plus"></i> Register>
         </li>
       </ul>
     </div>

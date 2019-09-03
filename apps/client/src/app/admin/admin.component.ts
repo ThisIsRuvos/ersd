@@ -1,15 +1,14 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { IPerson, Person } from '../../../../../libs/kdslib/src/lib/person';
+import { IPerson, Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
-import { getErrorString } from '../../../../../libs/kdslib/src/lib/get-error-string';
+import { getErrorString } from '../../../../../libs/ersdlib/src/lib/get-error-string';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AdminEditPersonComponent } from './edit-person/edit-person.component';
 import { AuthService } from '../auth.service';
-import { IUploadRequest } from '../../../../../libs/kdslib/src/lib/upload-request';
-import { IEmailRequest } from '../../../../../libs/kdslib/src/lib/email-request';
+import { IUploadRequest } from '../../../../../libs/ersdlib/src/lib/upload-request';
+import { IEmailRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
 
 @Component({
-  selector: 'kds-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
@@ -58,10 +57,6 @@ export class AdminComponent implements OnInit {
   editUser(user: IPerson) {
     const modalRef = this.modalService.open(AdminEditPersonComponent, { size: 'lg' });
     modalRef.componentInstance.id = user.id;
-
-    modalRef.result.then((results) => {
-
-    });
   }
 
   handleFileInput(files: FileList) {
@@ -73,7 +68,7 @@ export class AdminComponent implements OnInit {
     this.uploadFile = files.item(0);
 
     const fileReader = new FileReader();
-    fileReader.onload = (e) => {
+    fileReader.onload = () => {
       this.uploadFileContent = <string> fileReader.result;
     };
     fileReader.readAsText(this.uploadFile);

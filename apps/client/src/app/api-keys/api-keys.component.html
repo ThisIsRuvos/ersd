@@ -16,17 +16,16 @@
     </p>
   </div>
 
-  <div class="form-group">
-    <label class="api-key-label">Inbound API Key</label>
-    <div class="input-group">
-      <input type="text" class="form-control" [(ngModel)]="apiKeys.inbound" />
-      <div class="input-group-btn">
-        <button type="button" class="btn btn-dark" (click)="apiKeys.inbound = generateKey()">Re-generate</button>
-      </div>
+<div class="form-group">
+  <label for="inboundApiKey" class="api-key-label">Inbound API Key</label>
+  <div class="input-group">
+    <input id="inboundApiKey" type="text" class="form-control" [(ngModel)]="apiKeys.inbound" />
+    <div class="input-group-btn">
+      <button type="button" class="btn btn-dark" (click)="apiKeys.inbound = generateKey()">Re-generate</button>
     </div>
   </div>
-
-  <div class="footer">
-    <button type="button" class="btn btn-primary" (click)="save()">Save</button>
-  </div>
 </div>
+
+<p>
+  <button type="button" class="btn btn-primary" (click)="save()">Save</button>
+</p>

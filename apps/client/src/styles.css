@@ -53,8 +53,15 @@ div.footer {
   margin-top: 10px;
 }
 
+/*noinspection ALL*/
 .tab-pane {
   padding-top: 10px;
+}
+
+nav .nav-link, .navbar-brand {
+  font-family: Lucida Bright,Georgia,serif;
+  font-weight: bold;
+  color: white !important;
 }
 
 .bg-aims {
@@ -63,4 +70,9 @@ div.footer {
 
 .jumbotron {
   background-color: #F8F9F9 !important;
+}
+
+.help-block {
+  margin: 15px;
+  color: gray;
 }
