@@ -1,0 +1,30 @@
+.contact-information-container {
+  padding: 170px 0;
+  position: relative;
+}
+
+.section-heading {
+  color: white;
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: 1.7rem;
+  position: relative;
+  letter-spacing: 7px;
+}
+
+.section-heading::after {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 1.5px;
+  background-color: #fff;
+  opacity: 0.3;
+  top: 46px;
+  left: -20px;
+}
+
+.heading-container {
+  position: absolute;
+  top: 90px;
+  left: 0;
+}

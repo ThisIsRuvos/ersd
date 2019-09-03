@@ -20,6 +20,35 @@ div.footer {
   margin-bottom: 10px;
 }
 
+.modal-content {
+  max-width: 1140px !important;
+  margin: 0 150px !important;
+  height: 100% !important;
+  overflow-y: scroll !important;
+  position: absolute !important;
+  top: 0 !important;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.modal-footer {
+  border: none !important;
+}
+
+.modal-footer > button {
+  color: white !important;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #b12c36 !important;
+  border-color: #b12c36 !important;
+}
+
+.custom-class {
+  background-color:red;
+}
+
 .tab-pane.active > div.card:first-child {
   margin-top: 10px;
 }

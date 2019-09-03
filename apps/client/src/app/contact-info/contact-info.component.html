@@ -1,9 +1,14 @@
-<h2>Contact Information</h2>
+<div class='contact-information-container'>
+  <div class='heading-container'>
+    <h2 class='section-heading'>Contact Information</h2>
+  </div>
+  
 
-<div class="alert" *ngIf="message" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError">{{message}}</div>
+  <div class="alert" *ngIf="message" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError">{{message}}</div>
 
-<kds-edit-person [person]="person" *ngIf="person"></kds-edit-person>
+  <kds-edit-person [person]="person" *ngIf="person"></kds-edit-person>
 
-<div class="footer">
-  <button type="button" class="btn btn-primary" (click)="save()">Save</button>
+  <div class="footer">
+    <button type="button" class="btn btn-primary" (click)="save()">Save</button>
+  </div>
 </div>
