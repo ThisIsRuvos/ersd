@@ -36,15 +36,7 @@ nav > li > a {
   font-family: 'Work Sans', sans-serif;
 }
 
-main.container {
-  /* padding: 100px 0px; */
-  /* margin: 0 auto; */
-  /* position: fixed;
-  top: 50%;
-  left: 50%; */
-  /* bring your own prefixes */
-  /* transform: translate(-50%, -50%); */
-}
+
 
 .nav-link {
   color: black;
@@ -53,4 +45,15 @@ main.container {
 
 .ersd-logo {
   height: 30px;
+}
+
+.ersd-bg-img {
+  padding-top: 150px;
+}
+
+.ersd-bg-img > img {
+
+  display: block;
+  height: 100px;
+  margin: auto;
 }

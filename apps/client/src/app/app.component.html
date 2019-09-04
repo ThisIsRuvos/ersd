@@ -52,6 +52,9 @@
     <div *ngIf="homeLink.isActive || authService.person">
       <router-outlet></router-outlet>
     </div>
+    <div class='ersd-bg-img'>
+        <img src='../../assets/ersd-logo-full.png'/>
+    </div>
     <div class="jumbotron" *ngIf="!homeLink.isActive && !authService.loggedIn">
       <h3>You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()">login</a> to continue.</h3>
     </div>
