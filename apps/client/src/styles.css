@@ -63,6 +63,7 @@ div.footer {
 
 .modal-dialog {
   height: 100%;
+  margin: 0 auto;
 }
 
 .register-button {
@@ -80,3 +81,12 @@ div.footer {
   color: white !important;
 }
 
+.save-button {
+  background-color: #b12c36 !important;
+  color: white !important;
+}
+
+.save-button:hover {
+  background-color: #87111A !important;
+  color: white !important;
+}
