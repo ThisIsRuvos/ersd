@@ -4,114 +4,111 @@
   </div>
   
 
-  <div class="alert" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError" *ngIf="message">{{message}}</div>
-  
-  <div class="">
-    <div>
-      <div class="card" *ngIf="userSubscriptions.emailSubscription">
-        <div class="card-header">
-          EMAIL SUBSCRIPTION
+<div class="alert" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError" *ngIf="message">{{message}}</div>
+
+<div>
+  <div>
+    <div class="card" *ngIf="userSubscriptions.emailSubscription">
+      <div class="card-header">
+        Email subscription
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label for="emailSubscriptionEmail">Email Address</label>
+          <input id="emailSubscriptionEmail" type="text" class="form-control" placeholder="joe@somewhere.com"
+                 [(ngModel)]="userSubscriptions.emailSubscription.emailAddress"
+                 [class.is-invalid]="emailAddress.errors?.email || emailAddress.errors?.required"
+                 email="true"
+                 required="required"
+                 #emailAddress="ngModel" />
         </div>
-        <div class="card-body">
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="text" class="form-control" placeholder="joe@somewhere.com"
-                    [(ngModel)]="userSubscriptions.emailSubscription.emailAddress"
-                    [class.is-invalid]="emailAddress.errors?.email || emailAddress.errors?.required"
-                    email="true"
-                    required="required"
-                    #emailAddress="ngModel" />
-          </div>
-  
-          <div class="form-group">
-            <input type="checkbox" [(ngModel)]="userSubscriptions.emailSubscription.includeArtifacts" /> Include changed artifacts
-          </div>
-  
-          <div class="form-group" *ngIf="userSubscriptions.emailSubscription.includeArtifacts || userSubscriptions.emailSubscription.format">
-            <label>Format</label>
-            <select class="form-control" [(ngModel)]="userSubscriptions.emailSubscription.format">
-              <option value="json">JSON</option>
-              <option value="xml">XML</option>
-            </select>
-          </div>
+
+        <div class="form-group">
+          <!--suppress HtmlFormInputWithoutLabel -->
+          <input type="checkbox" [(ngModel)]="userSubscriptions.emailSubscription.includeArtifacts" /> Include changed artifacts
+        </div>
+
+        <div class="form-group" *ngIf="userSubscriptions.emailSubscription.includeArtifacts || userSubscriptions.emailSubscription.format">
+          <label for="emailSubscriptionFormat">Format</label>
+          <select id="emailSubscriptionFormat" class="form-control" [(ngModel)]="userSubscriptions.emailSubscription.format">
+            <option value="json">JSON</option>
+            <option value="xml">XML</option>
+          </select>
         </div>
       </div>
     </div>
-  
-    <div>
-      <div class="card">
-        <div class="card-header">
-          <input type="checkbox" [ngModel]="!!userSubscriptions.restSubscription" (ngModelChange)="toggleRest($event)" /> REST hook subscription
-          <!-- <input type="checkbox" id="rest-toggle" class="checkbox" [ngModel]="!!userSubscriptions.restSubscription" (ngModelChange)="toggleRest($event)"/> -->
-          REST HOOK SUBSCRIPTION
-          <!-- <label for="rest-toggle" class="switch"></label> -->
+  </div>
+
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <!--suppress HtmlFormInputWithoutLabel -->
+        <input type="checkbox" [ngModel]="!!userSubscriptions.restSubscription" (ngModelChange)="toggleRest($event)" /> REST hook subscription
+      </div>
+      <div class="card-body" *ngIf="userSubscriptions.restSubscription">
+        <div class="form-group">
+          <label for="restSubscriptionEndpoint">REST Endpoint</label>
+          <input id="restSubscriptionEndpoint" type="text" class="form-control"
+                 [(ngModel)]="userSubscriptions.restSubscription.endpoint"
+                 [class.is-invalid]="restEndpoint.errors?.pattern || restEndpoint.errors?.required"
+                 required="required"
+                 pattern="^http(s)?:\/\/(.{2,})+(:[\d]+)?(.+)?"
+                 #restEndpoint="ngModel" />
         </div>
-        <div class="card-body" *ngIf="userSubscriptions.restSubscription">
-          <div class="form-group">
-            <label>REST Endpoint</label>
-            <input type="text" class="form-control"
-                    [(ngModel)]="userSubscriptions.restSubscription.endpoint"
-                    [class.is-invalid]="restEndpoint.errors?.pattern || restEndpoint.errors?.required"
-                    required="required"
-                    pattern="^http(s)?:\/\/(.{2,})+(:[\d]+)?(.+)?"
-                    #restEndpoint="ngModel" />
-          </div>
-  
-          <div class="form-group">
-            <label>
-              Authorization/API Key
-              <i class="fas fa-question-circle" ngbTooltip="This is an optional field that represents an authorization bearer key that gets sent with the rest-hook notification."></i>
-            </label>
-            <div class="input-group">
-              <input type="text" class="form-control" [(ngModel)]="userSubscriptions.restSubscription.authorization" />
-              <div class="input-group-btn">
-                <button type="button" class="btn btn-secondary" (click)="userSubscriptions.restSubscription.authorization = generateKey()">Generate</button>
-              </div>
+
+        <div class="form-group">
+          <label for="restSubscriptionAuthorization">
+            Authorization/API Key
+            <i class="fas fa-question-circle" ngbTooltip="This is an optional field that represents an authorization bearer key that gets sent with the rest-hook notification."></i>
+          </label>
+          <div class="input-group">
+            <input id="restSubscriptionAuthorization" type="text" class="form-control" [(ngModel)]="userSubscriptions.restSubscription.authorization" />
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-secondary" (click)="userSubscriptions.restSubscription.authorization = generateKey()">Generate</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-  
-    <div>
-      <div class="card">
-        <div class="card-header">
-          <input type="checkbox" [ngModel]="!!userSubscriptions.smsSubscription" (ngModelChange)="toggleSms($event)" /> SMS Subscription
-          <!-- <input type="checkbox" id="sms-toggle" class="checkbox" [ngModel]="!!userSubscriptions.smsSubscription" (ngModelChange)="toggleSms($event)"/> -->
-          SMS SUBSCRIPTION
-          <!-- <label for="sms-toggle" class="switch"></label> -->
+  </div>
+
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <!--suppress HtmlFormInputWithoutLabel -->
+        <input type="checkbox" [ngModel]="!!userSubscriptions.smsSubscription" (ngModelChange)="toggleSms($event)" /> SMS Subscription
+      </div>
+      <div class="card-body" *ngIf="userSubscriptions.smsSubscription">
+        <div class="form-group">
+          <label for="smsSubscriptionCarrier">Carrier</label>
+          <select id="smsSubscriptionCarrier" class="form-control"
+                  [(ngModel)]="userSubscriptions.smsSubscription.carrier"
+                  [class.is-invalid]="carrier.errors?.required"
+                  required="required"
+                  #carrier="ngModel">
+            <option [ngValue]="undefined">SELECT</option>
+            <option value="verizon">Verizon</option>
+            <option value="at&t">AT&T</option>
+            <option value="sprint">Sprint</option>
+            <option value="tmobile">T-Mobile</option>
+          </select>
         </div>
-        <div class="card-body" *ngIf="userSubscriptions.smsSubscription">
-          <div class="form-group">
-            <label>Carrier</label>
-            <select class="form-control"
-                    [(ngModel)]="userSubscriptions.smsSubscription.carrier"
-                    [class.is-invalid]="carrier.errors?.required"
-                    required="required"
-                    #carrier="ngModel">
-              <option [ngValue]="undefined">SELECT</option>
-              <option value="verizon">Verizon</option>
-              <option value="at&t">AT&T</option>
-              <option value="sprint">Sprint</option>
-              <option value="tmobile">T-Mobile</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Mobile Phone</label>
-            <input type="text" class="form-control" placeholder="XXX-XXX-XXXX"
-                    [(ngModel)]="userSubscriptions.smsSubscription.mobilePhone"
-                    [class.is-invalid]="mobile.errors?.required || mobile.errors?.pattern"
-                    pattern="^\d{3}-?\d{3}-?\d{4}$"
-                    required="required"
-                    #mobile="ngModel" />
-          </div>
+        <div class="form-group">
+          <label for="smsSubscriptionMobile">Mobile Phone</label>
+          <input id="smsSubscriptionMobile" type="text" class="form-control" placeholder="(XXX) XXX-XXXX"
+                 [(ngModel)]="userSubscriptions.smsSubscription.mobilePhone"
+                 [class.is-invalid]="mobile.errors?.required || mobile.errors?.pattern"
+                 pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$"
+                 required="required"
+                 #mobile="ngModel" />
+          <div class="help-block">SMS-based subscriptions are email subscriptions sent to addresses that are constructed based on the mobile phone carrier's SMS email address. Each mobile phone carrier supported in this implementation has an email address associated with phone numbers that sends an SMS text message to the destination mobile phone.</div>
         </div>
       </div>
     </div>
   </div>
-  
-  <div class="footer">
-    <button type="button" class="btn btn-primary" [disabled]="!isValid" (click)="save()">Save</button>
+
+  <div class="col-md-12">
+    <button type="button" class="btn btn-primary save-button" [disabled]="!isValid" (click)="save()">Save</button>
   </div>
-    
+</div>
 </div>
