@@ -117,7 +117,7 @@
   <div class="card-header">
     <input type="checkbox" [ngModel]="!!secondary" (ngModelChange)="toggleSecondary($event)" /> Secondary
   </div>
-  <div class="card-body" *ngIf="true">
+  <div class="card-body" *ngIf="secondary">
     <div class="">
       <div class="">
         <div class="form-group">

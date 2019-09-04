@@ -41,12 +41,12 @@
     <div>
       <div class="card">
         <div class="card-header">
-          <!-- <input type="checkbox" [ngModel]="!!userSubscriptions.restSubscription" (ngModelChange)="toggleRest($event)" /> REST hook subscription -->
-          <input type="checkbox" id="rest-toggle" class="checkbox" [ngModel]="!!userSubscriptions.restSubscription" (ngModelChange)="toggleRest($event)"/>
+          <input type="checkbox" [ngModel]="!!userSubscriptions.restSubscription" (ngModelChange)="toggleRest($event)" /> REST hook subscription
+          <!-- <input type="checkbox" id="rest-toggle" class="checkbox" [ngModel]="!!userSubscriptions.restSubscription" (ngModelChange)="toggleRest($event)"/> -->
           REST HOOK SUBSCRIPTION
-          <label for="rest-toggle" class="switch"></label>
+          <!-- <label for="rest-toggle" class="switch"></label> -->
         </div>
-        <div class="card-body" *ngIf=true>
+        <div class="card-body" *ngIf="userSubscriptions.restSubscription">
           <div class="form-group">
             <label>REST Endpoint</label>
             <input type="text" class="form-control"
@@ -76,12 +76,12 @@
     <div>
       <div class="card">
         <div class="card-header">
-          <!-- <input type="checkbox" [ngModel]="!!userSubscriptions.smsSubscription" (ngModelChange)="toggleSms($event)" /> SMS Subscription -->
-          <input type="checkbox" id="sms-toggle" class="checkbox" [ngModel]="!!userSubscriptions.smsSubscription" (ngModelChange)="toggleSms($event)"/>
+          <input type="checkbox" [ngModel]="!!userSubscriptions.smsSubscription" (ngModelChange)="toggleSms($event)" /> SMS Subscription
+          <!-- <input type="checkbox" id="sms-toggle" class="checkbox" [ngModel]="!!userSubscriptions.smsSubscription" (ngModelChange)="toggleSms($event)"/> -->
           SMS SUBSCRIPTION
-          <label for="sms-toggle" class="switch"></label>
+          <!-- <label for="sms-toggle" class="switch"></label> -->
         </div>
-        <div class="card-body" *ngIf=true>
+        <div class="card-body" *ngIf="userSubscriptions.smsSubscription">
           <div class="form-group">
             <label>Carrier</label>
             <select class="form-control"
