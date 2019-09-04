@@ -64,3 +64,12 @@ div.footer {
 .jumbotron {
   background-color: #F8F9F9 !important;
 }
+
+.modal-backdrop {
+  display: none;
+}
+
+.modal-dialog {
+  height: 100%;
+}
+
