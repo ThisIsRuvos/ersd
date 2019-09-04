@@ -22,7 +22,6 @@ div.footer {
 
 .modal-content {
   max-width: 1140px !important;
-  margin: 0 150px !important;
   height: 100% !important;
   overflow-y: scroll !important;
   position: absolute !important;
@@ -63,10 +62,6 @@ div.footer {
 
 .jumbotron {
   background-color: #F8F9F9 !important;
-}
-
-.modal-backdrop {
-  display: none;
 }
 
 .modal-dialog {
