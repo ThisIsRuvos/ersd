@@ -49,8 +49,15 @@ div.footer {
   margin-top: 10px;
 }
 
+/*noinspection ALL*/
 .tab-pane {
   padding-top: 10px;
+}
+
+nav .nav-link, .navbar-brand {
+  font-family: Lucida Bright,Georgia,serif;
+  font-weight: bold;
+  color: white !important;
 }
 
 .bg-aims {
@@ -89,4 +96,9 @@ div.footer {
 .save-button:hover {
   background-color: #87111A !important;
   color: white !important;
+}
+
+.help-block {
+  margin: 15px;
+  color: gray;
 }

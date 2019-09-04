@@ -4,7 +4,7 @@ import * as config from 'config';
 import { IServerConfig } from './server-config';
 import { buildFhirUrl } from './helper';
 
-const serverConfig = <IServerConfig> config.get('server');
+const serverConfig = <IServerConfig> config.server;
 
 export class BaseController {
   protected assertAdmin(request: AuthRequest) {

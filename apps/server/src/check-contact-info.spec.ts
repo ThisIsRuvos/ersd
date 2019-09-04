@@ -1,8 +1,8 @@
 import { CheckContactInfo } from './check-contact-info';
-import { IBundle } from '../../../libs/kdslib/src/lib/bundle';
-import { IPerson } from '../../../libs/kdslib/src/lib/person';
-import { Constants } from '../../../libs/kdslib/src/lib/constants';
-import { Subscription } from '../../../libs/kdslib/src/lib/subscription';
+import { IBundle } from '../../../libs/ersdlib/src/lib/bundle';
+import { IPerson } from '../../../libs/ersdlib/src/lib/person';
+import { Constants } from '../../../libs/ersdlib/src/lib/constants';
+import { Subscription } from '../../../libs/ersdlib/src/lib/subscription';
 import { IServerConfigContactInfo } from './app/server-config';
 import { IEmailConfig } from './app/email-config';
 
@@ -40,7 +40,7 @@ const contactInfoConfig: IServerConfigContactInfo = {
   }
 };
 const emailConfig: IEmailConfig = {
-  from: 'subscriptions@kds.com',
+  from: 'subscriptions@ersd.com',
   host: 'some-smtp-host',
   port: 25
 };
@@ -136,7 +136,7 @@ describe('check-contact-info', () => {
           console.error('Person being updated did not match expectations: ' + ex.message);
           return false;
         }
-        
+
         return true;
       })
       .reply(200);
@@ -303,12 +303,12 @@ describe('check-contact-info', () => {
           expect(person.extension[2].url).toBe(Constants.extensions.expirationSentCount);
           expect(person.extension[2].valueInteger).toBe(3);
 
-          const lastExpirationSent = moment(person.extension[1].valueDateTime);
-          expect(lastExpirationSent.year()).toBe(moment().year());
-          expect(lastExpirationSent.month()).toBe(moment().month());
-          expect(lastExpirationSent.date()).toBe(moment().date());
-          expect(lastExpirationSent.hour()).toBe(moment().hour());
-          expect(lastExpirationSent.minute()).toBe(moment().minute());
+          const les = moment(person.extension[1].valueDateTime);
+          expect(les.year()).toBe(moment().year());
+          expect(les.month()).toBe(moment().month());
+          expect(les.date()).toBe(moment().date());
+          expect(les.hour()).toBe(moment().hour());
+          expect(les.minute()).toBe(moment().minute());
         } catch (ex) {
           console.error('Person being updated did not match expectations: ' + ex.message);
           return false;

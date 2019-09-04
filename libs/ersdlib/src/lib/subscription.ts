@@ -1,6 +1,5 @@
 import { IDomainResource } from './domain-resource';
 import { IContactPoint } from './contact-point';
-import * as config from 'config';
 
 export interface ISubscriptionChannel {
   type: 'rest-hook'|'email'|'sms';

@@ -15,12 +15,12 @@ import {
 } from '@nestjs/common';
 import { BaseController } from '../base.controller';
 import { AuthGuard } from '@nestjs/passport';
-import { IPerson, Person } from '../../../../../libs/kdslib/src/lib/person';
+import { IPerson, Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { AuthRequest } from '../auth-module/auth-request';
-import { Constants } from '../../../../../libs/kdslib/src/lib/constants';
-import { IBundle } from '../../../../../libs/kdslib/src/lib/bundle';
-import { Subscription } from '../../../../../libs/kdslib/src/lib/subscription';
-import { IEmailRequest } from '../../../../../libs/kdslib/src/lib/email-request';
+import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
+import { IBundle } from '../../../../../libs/ersdlib/src/lib/bundle';
+import { Subscription } from '../../../../../libs/ersdlib/src/lib/subscription';
+import { IEmailRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
 import * as nodemailer from 'nodemailer';
 import * as config from 'config';
 import { IEmailConfig } from '../email-config';
@@ -31,8 +31,8 @@ import { InvalidModuleConfigException } from '@nestjs/common/decorators/modules/
 import { IServerConfig } from '../server-config';
 import { buildFhirUrl } from '../helper';
 
-const emailConfig = <IEmailConfig> config.get('email');
-const serverConfig = <IServerConfig> config.get('server');
+const emailConfig = <IEmailConfig> config.email;
+const serverConfig = <IServerConfig> config.server;
 
 @Controller('user')
 @UseGuards(AuthGuard())
@@ -191,7 +191,7 @@ export class UserController extends BaseController {
       return;
     }
 
-    this.logger.log(`The person's account has expired. Checking their subscriptiosn to see if any should be re-activated`);
+    this.logger.log(`The person's account has expired. Checking their subscriptions to see if any should be re-activated`);
 
     const getSubscriptionsPromises = (person.extension || [])
       .filter((ext) => {
@@ -318,10 +318,7 @@ export class UserController extends BaseController {
     await this.httpService.put<IPerson>(url, body).toPromise();
   }
 
-  @Delete(':id')
-  async deleteUser(@Req() request: AuthRequest, @Param('id') id: string) {
-    this.assertAdmin(request);
-
+  private async deleteUserById(id: string) {
     this.logger.log(`Deleting person ${id}. Retrieving the Person resource to determine what all should be deleted.`);
 
     const url = this.buildFhirUrl('Person', id);
@@ -362,5 +359,22 @@ export class UserController extends BaseController {
     await this.httpService.delete(url).toPromise();
 
     this.logger.log(`Done deleting person ${person.id}`);
+  }
+
+  @Delete(':me')
+  async deleteMe(@Req() request: AuthRequest) {
+    const me = await this.getMyPerson(request);
+
+    if (!me) {
+      throw new Error('No Person found for the logged in user');
+    }
+
+    this.deleteUserById(me.id);
+  }
+
+  @Delete(':id')
+  async deleteUser(@Req() request: AuthRequest, @Param('id') id: string) {
+    this.assertAdmin(request);
+    this.deleteUserById(id);
   }
 }

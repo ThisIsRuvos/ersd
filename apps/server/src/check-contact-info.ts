@@ -1,10 +1,10 @@
 import {HttpService, Logger} from '@nestjs/common';
 import {IServerConfigContactInfo} from './app/server-config';
 import {buildFhirUrl} from './app/helper';
-import {IBundle} from '../../../libs/kdslib/src/lib/bundle';
-import {Person} from '../../../libs/kdslib/src/lib/person';
-import {Constants} from '../../../libs/kdslib/src/lib/constants';
-import {Subscription} from '../../../libs/kdslib/src/lib/subscription';
+import {IBundle} from '../../../libs/ersdlib/src/lib/bundle';
+import {Person} from '../../../libs/ersdlib/src/lib/person';
+import {Constants} from '../../../libs/ersdlib/src/lib/constants';
+import {Subscription} from '../../../libs/ersdlib/src/lib/subscription';
 import {IEmailConfig} from './app/email-config';
 
 import * as path from 'path';
@@ -62,7 +62,7 @@ export class CheckContactInfo {
 
     setTimeout(async () => {
       // Set the next interval (recursive)
-      CheckContactInfo.executeTimer(checker, duration);
+      await CheckContactInfo.executeTimer(checker, duration);
     }, duration * 1000);
   }
 
@@ -97,6 +97,8 @@ export class CheckContactInfo {
     }
 
     const checker = new CheckContactInfo(fhirServerBase, contactInfoConfig, emailConfig);
+
+    // noinspection JSIgnoredPromiseFromCall
     CheckContactInfo.executeTimer(checker, contactInfoConfig.checkDurationSeconds);
   }
 

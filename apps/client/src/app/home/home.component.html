@@ -28,3 +28,6 @@
     </div>
 </div>
 
+<h2>Welcome to the Electronic Reporting and Surveillance Distribution portal!</h2>
+
+<h3 *ngIf="!authService.loggedIn">You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()"><i class="fas fa-sign-in-alt"></i>&nbsp;login</a> or <a href="javascript:void(0)" (click)="authService.register()"><i class="fas fa-user-plus"></i>&nbsp;register</a> to continue.</h3>

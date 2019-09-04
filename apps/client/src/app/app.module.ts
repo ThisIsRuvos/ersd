@@ -16,7 +16,7 @@ import { AuthService } from './auth.service';
 import { CreatePersonComponent } from './create-person/create-person.component';
 import { EditPersonComponent } from './edit-person/edit-person.component';
 import { AdminEditPersonComponent } from './admin/edit-person/edit-person.component';
-import { IClientConfig } from '../../../../libs/kdslib/src/lib/client-config';
+import { IClientConfig } from '../../../../libs/ersdlib/src/lib/client-config';
 
 const appRoutes: Routes = [
   { path: 'admin',            component: AdminComponent },

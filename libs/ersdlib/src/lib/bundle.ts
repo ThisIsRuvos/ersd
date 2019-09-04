@@ -8,7 +8,7 @@ export interface IBundleEntry {
     method: 'GET'|'POST'|'PUT'|'DELETE';
     url: string;
   };
-};
+}
 
 export interface IBundle extends IDomainResource {
   resourceType: 'Bundle';

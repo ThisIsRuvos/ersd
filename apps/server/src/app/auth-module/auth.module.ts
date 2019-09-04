@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 import * as config from 'config';
 import { IServerConfig } from '../server-config';
 
-const serverConfig = <IServerConfig> config.get('server');
+const serverConfig = <IServerConfig> config.server;
 
 @Module({
   imports: [

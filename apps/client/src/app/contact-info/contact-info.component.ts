@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { IPerson, Person } from '../../../../../libs/kdslib/src/lib/person';
+import { IPerson, Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
-import { getErrorString } from '../../../../../libs/kdslib/src/lib/get-error-string';
+import { getErrorString } from '../../../../../libs/ersdlib/src/lib/get-error-string';
+import { AuthService } from '../auth.service';
 
 @Component({
-  selector: 'kds-contact-info',
   templateUrl: './contact-info.component.html',
   styleUrls: ['./contact-info.component.css']
 })
@@ -13,7 +13,7 @@ export class ContactInfoComponent implements OnInit {
   public message: string;
   public messageIsError: boolean;
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private authService: AuthService) { }
 
   public save() {
     this.message = null;
@@ -24,10 +24,22 @@ export class ContactInfoComponent implements OnInit {
         this.person = new Person(person);
         this.message = 'Saved contact information!';
         this.messageIsError = false;
+        this.authService.checkSession();
       })
       .catch((err) => {
         this.message = getErrorString(err);
         this.messageIsError = true;
+      });
+  }
+
+  public delete() {
+    if (!confirm('Are you sure you want to delete your account? You will no longer receive any notifications/communications from ERSD.')) {
+      return;
+    }
+
+    this.httpClient.delete('/api/user/me').toPromise()
+      .then(() => {
+        this.authService.logout();
       });
   }
 
