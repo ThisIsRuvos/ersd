@@ -34,9 +34,6 @@ div.footer {
   border: none !important;
 }
 
-.modal-footer > button {
-  color: white !important;
-}
 
 .btn-primary {
   color: #fff;
@@ -66,5 +63,20 @@ div.footer {
 
 .modal-dialog {
   height: 100%;
+}
+
+.register-button {
+  background-color: #b12c36 !important;
+  color: white !important;
+}
+
+.register-button:hover {
+  background-color: #87111A !important;
+  color: white !important;
+}
+
+.register-button:disabled {
+  background-color: #D7525C !important;
+  color: white !important;
 }
 
