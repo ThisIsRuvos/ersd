@@ -56,4 +56,5 @@ nav > li > a {
   display: block;
   height: 100px;
   margin: auto;
+  margin-bottom: 100px;
 }
