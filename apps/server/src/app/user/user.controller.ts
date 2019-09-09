@@ -1,3 +1,7 @@
+import * as SMTPConnection from 'nodemailer/lib/smtp-connection';
+import * as Mail from 'nodemailer/lib/mailer';
+import * as nodemailer from 'nodemailer';
+
 import {
   Body,
   Controller,
@@ -13,54 +17,44 @@ import {
   Req,
   UseGuards
 } from '@nestjs/common';
-import { BaseController } from '../base.controller';
-import { AuthGuard } from '@nestjs/passport';
-import { IPerson, Person } from '../../../../../libs/ersdlib/src/lib/person';
-import { AuthRequest } from '../auth-module/auth-request';
-import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
-import { IBundle } from '../../../../../libs/ersdlib/src/lib/bundle';
-import { Subscription } from '../../../../../libs/ersdlib/src/lib/subscription';
-import { IEmailRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
-import * as nodemailer from 'nodemailer';
-import * as config from 'config';
-import { IEmailConfig } from '../email-config';
-import * as SMTPConnection from 'nodemailer/lib/smtp-connection';
-import * as Mail from 'nodemailer/lib/mailer';
-import { SentMessageInfo } from 'nodemailer/lib/smtp-transport';
-import { InvalidModuleConfigException } from '@nestjs/common/decorators/modules/exceptions/invalid-module-config.exception';
-import { IServerConfig } from '../server-config';
-import { buildFhirUrl } from '../helper';
-
-const emailConfig = <IEmailConfig> config.email;
-const serverConfig = <IServerConfig> config.server;
+import {AuthGuard} from '@nestjs/passport';
+import {IPerson, Person} from '../../../../../libs/ersdlib/src/lib/person';
+import {AuthRequest} from '../auth-module/auth-request';
+import {Constants} from '../../../../../libs/ersdlib/src/lib/constants';
+import {IBundle} from '../../../../../libs/ersdlib/src/lib/bundle';
+import {Subscription} from '../../../../../libs/ersdlib/src/lib/subscription';
+import {IEmailRequest} from '../../../../../libs/ersdlib/src/lib/email-request';
+import {SentMessageInfo} from 'nodemailer/lib/smtp-transport';
+import {InvalidModuleConfigException} from '@nestjs/common/decorators/modules/exceptions/invalid-module-config.exception';
+import {buildFhirUrl} from '../helper';
+import {AppService} from '../app.service';
 
 @Controller('user')
 @UseGuards(AuthGuard())
-export class UserController extends BaseController {
+export class UserController {
   private readonly logger = new Logger(UserController.name);
 
-  constructor(private httpService: HttpService) {
-    super();
+  constructor(private httpService: HttpService, protected appService: AppService) {
   }
 
   @Post('email')
   async emailAllPeople(@Req() request: AuthRequest, @Body() body: IEmailRequest) {
-    this.assertAdmin(request);
+    this.appService.assertAdmin(request);
 
-    if (!emailConfig.host || !emailConfig.port) {
+    if (!this.appService.emailConfig.host || !this.appService.emailConfig.port) {
       throw new InvalidModuleConfigException('Email has not been configured on this server');
     }
 
     const transportOptions: SMTPConnection.Options = {
-      host: emailConfig.host,
-      port: emailConfig.port,
-      requireTLS: emailConfig.tls
+      host: this.appService.emailConfig.host,
+      port: this.appService.emailConfig.port,
+      requireTLS: this.appService.emailConfig.tls
     };
 
-    if (emailConfig.username && emailConfig.password) {
+    if (this.appService.emailConfig.username && this.appService.emailConfig.password) {
       transportOptions.auth = {
-        user: emailConfig.username,
-        pass: emailConfig.password
+        user: this.appService.emailConfig.username,
+        pass: this.appService.emailConfig.password
       };
     }
 
@@ -89,7 +83,7 @@ export class UserController extends BaseController {
     const sendPromises = filteredPeople
       .map((person) => {
         const mailMessage: Mail.Options = {
-          from: emailConfig.from,
+          from: this.appService.emailConfig.from,
           to: person.email,
           subject: body.subject,
           text: body.message
@@ -113,12 +107,12 @@ export class UserController extends BaseController {
 
   @Get()
   async getAllPeople(@Req() request: AuthRequest): Promise<Person[]> {
-    this.assertAdmin(request);
+    this.appService.assertAdmin(request);
 
     let people: Person[] = [];
     const getNext = (url?: string): Promise<void> => {
       if (!url) {
-        url = this.buildFhirUrl('Person', null, { _summary: true });
+        url = this.appService.buildFhirUrl('Person', null, { _summary: true });
       }
 
       return new Promise((resolve, reject) => {
@@ -157,7 +151,7 @@ export class UserController extends BaseController {
     this.logger.log(`Searching for existing person with identifier ${identifierQuery}`);
 
     const results = await this.httpService.request<IBundle>({
-      url: this.buildFhirUrl('Person', null, { identifier: identifierQuery }),
+      url: this.appService.buildFhirUrl('Person', null, { identifier: identifierQuery }),
       headers: {
         'cache-control': 'no-cache'
       }
@@ -178,10 +172,10 @@ export class UserController extends BaseController {
   }
 
   async enableSubscriptions(person: Person) {
-    const maxNotifications = serverConfig.contactInfo ? serverConfig.contactInfo.maxNotifications : 0;
+    const maxNotifications = this.appService.serverConfig.contactInfo ? this.appService.serverConfig.contactInfo.maxNotifications : 0;
 
     // Subscriptions aren't enable, so we shouldn't turn the subscriptions on.
-    if (!serverConfig.enableSubscriptions) {
+    if (!this.appService.serverConfig.enableSubscriptions) {
       return;
     }
 
@@ -202,7 +196,7 @@ export class UserController extends BaseController {
       })
       .map((ext) => {
         const split = ext.valueReference.reference.split('/');
-        const subscriptionUrl = buildFhirUrl(serverConfig.fhirServerBase, 'Subscription', split[1]);
+        const subscriptionUrl = buildFhirUrl(this.appService.serverConfig.fhirServerBase, 'Subscription', split[1]);
         return this.httpService.get<Subscription>(subscriptionUrl).toPromise();
       });
 
@@ -216,7 +210,7 @@ export class UserController extends BaseController {
         const subscription = result.data;
         subscription.status = 'requested';
 
-        const subscriptionUrl = this.buildFhirUrl('Subscription', subscription.id);
+        const subscriptionUrl = this.appService.buildFhirUrl('Subscription', subscription.id);
         return this.httpService.put<Subscription>(subscriptionUrl, subscription).toPromise();
       });
 
@@ -247,14 +241,14 @@ export class UserController extends BaseController {
     }
 
     if (!existingPerson) {
-      const newSubscriptionUrl = this.buildFhirUrl('Subscription');
+      const newSubscriptionUrl = this.appService.buildFhirUrl('Subscription');
       let newSubscriptionResults;
       let newSubscription = new Subscription();
-      newSubscription.criteria = serverConfig.subscriptionCriteria;
+      newSubscription.criteria = this.appService.serverConfig.subscriptionCriteria;
       newSubscription.channel.type = 'email';
       newSubscription.channel.endpoint = 'mailto:' + updatePerson.email;
       newSubscription.channel.payload = 'application/xml';    // Default payload to JSON (for now)
-      newSubscription.status = serverConfig.enableSubscriptions ? 'requested' : 'off';
+      newSubscription.status = this.appService.serverConfig.enableSubscriptions ? 'requested' : 'off';
 
       this.logger.log(`Person does not already exist. Creating default subscriptions for new person via url: ${newSubscriptionUrl}`);
 
@@ -288,7 +282,7 @@ export class UserController extends BaseController {
     try {
       updatePersonRequest = await this.httpService.request<Person>({
         method: existingPerson ? 'PUT' : 'POST',
-        url: this.buildFhirUrl('Person', existingPerson ? existingPerson.id : ''),
+        url: this.appService.buildFhirUrl('Person', existingPerson ? existingPerson.id : ''),
         data: updatePerson
       }).toPromise();
     } catch (ex) {
@@ -303,25 +297,25 @@ export class UserController extends BaseController {
 
   @Get(':id')
   async getUser(@Req() request: AuthRequest, @Param('id') id: string): Promise<Person> {
-    this.assertAdmin(request);
+    this.appService.assertAdmin(request);
 
-    const url = this.buildFhirUrl('Person', id);
+    const url = this.appService.buildFhirUrl('Person', id);
     const results = await this.httpService.get<Person>(url).toPromise();
     return results.data;
   }
 
   @Put(':id')
   async updateUser(@Req() request: AuthRequest, @Param('id') id: string, @Body() body: Person) {
-    this.assertAdmin(request);
+    this.appService.assertAdmin(request);
 
-    const url = this.buildFhirUrl('Person', id);
+    const url = this.appService.buildFhirUrl('Person', id);
     await this.httpService.put<IPerson>(url, body).toPromise();
   }
 
   private async deleteUserById(id: string) {
     this.logger.log(`Deleting person ${id}. Retrieving the Person resource to determine what all should be deleted.`);
 
-    const url = this.buildFhirUrl('Person', id);
+    const url = this.appService.buildFhirUrl('Person', id);
 
     const getResults = await this.httpService.get<Person>(url).toPromise();
     const person = getResults.data;
@@ -343,7 +337,7 @@ export class UserController extends BaseController {
 
           this.logger.log(`Deleting subscription ${split[1]} associated with person ${person.id}`);
 
-          const subscriptionUrl = this.buildFhirUrl('Subscription', split[1]);
+          const subscriptionUrl = this.appService.buildFhirUrl('Subscription', split[1]);
           return this.httpService.delete(subscriptionUrl).toPromise();
         });
 
@@ -374,7 +368,7 @@ export class UserController extends BaseController {
 
   @Delete(':id')
   async deleteUser(@Req() request: AuthRequest, @Param('id') id: string) {
-    this.assertAdmin(request);
+    this.appService.assertAdmin(request);
     this.deleteUserById(id);
   }
 }

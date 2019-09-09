@@ -1,20 +1,15 @@
-import { All, BadRequestException, Controller, HttpService, Req, UnauthorizedException } from '@nestjs/common';
-import { Request } from 'express';
-import { BaseController } from '../base.controller';
-import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
-import { IBundle } from '../../../../../libs/ersdlib/src/lib/bundle';
-import { Person } from '../../../../../libs/ersdlib/src/lib/person';
-import * as config from 'config';
-import { IServerConfig } from '../server-config';
-import { map } from 'rxjs/operators';
-import { joinUrl } from '../helper';
-
-const serverConfig = <IServerConfig> config.server;
+import {All, BadRequestException, Controller, HttpService, Req, UnauthorizedException} from '@nestjs/common';
+import {Request} from 'express';
+import {Constants} from '../../../../../libs/ersdlib/src/lib/constants';
+import {IBundle} from '../../../../../libs/ersdlib/src/lib/bundle';
+import {Person} from '../../../../../libs/ersdlib/src/lib/person';
+import {map} from 'rxjs/operators';
+import {joinUrl} from '../helper';
+import {AppService} from '../app.service';
 
 @Controller('fhir')
-export class FhirController extends BaseController {
-  constructor(private httpService: HttpService) {
-    super();
+export class FhirController {
+  constructor(private httpService: HttpService, private appService: AppService) {
   }
 
   private assertApiKey(request: Request): Promise<Person> {
@@ -35,7 +30,7 @@ export class FhirController extends BaseController {
     }
 
     const tagQuery = `${Constants.tags.inboundApiKey}|${authorization}`;
-    const url = this.buildFhirUrl('Person', null, { _tag: tagQuery });
+    const url = this.appService.buildFhirUrl('Person', null, { _tag: tagQuery });
 
     return this.httpService.get<IBundle>(url).toPromise()
       .then((results) => {
@@ -76,15 +71,15 @@ export class FhirController extends BaseController {
       resourceType = resourceType.substring(0, resourceType.indexOf('?'));
     }
 
-    const restrictedResourceTypes = serverConfig.restrictedResourceTypes ?
-      serverConfig.restrictedResourceTypes.map((rt) => rt.toLowerCase()) :
+    const restrictedResourceTypes = this.appService.serverConfig.restrictedResourceTypes ?
+      this.appService.serverConfig.restrictedResourceTypes.map((rt) => rt.toLowerCase()) :
       [];
 
     if (restrictedResourceTypes.indexOf(resourceType.toLowerCase()) >= 0) {
       throw new BadRequestException(`Requests for the resource type ${resourceType} are not allowed`);
     }
 
-    const fhirUrl = joinUrl(serverConfig.fhirServerBase, fhirPart);
+    const fhirUrl = joinUrl(this.appService.serverConfig.fhirServerBase, fhirPart);
 
     const headers = request.headers;
     delete headers['authorization'];

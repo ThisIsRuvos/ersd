@@ -1,28 +1,25 @@
-import { Body, Controller, Get, HttpService, Post, Req, UseGuards } from '@nestjs/common';
-import { EmailSubscriptionInfo, RestSubscriptionInfo, SmsSubscriptionInfo, UserSubscriptions } from '../../../../../libs/ersdlib/src/lib/user-subscriptions';
-import { UserController } from '../user/user.controller';
-import { AuthGuard } from '@nestjs/passport';
-import { AuthRequest } from '../auth-module/auth-request';
-import { ISubscription, Subscription } from '../../../../../libs/ersdlib/src/lib/subscription';
-import { BaseController } from '../base.controller';
-import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
-import { IPerson, Person } from '../../../../../libs/ersdlib/src/lib/person';
-import { AxiosResponse } from 'axios';
-import { IOperationOutcome } from '../../../../../libs/ersdlib/src/lib/operation-outcome';
-import * as config from 'config';
-import { IServerConfig } from '../server-config';
+import {Body, Controller, Get, HttpService, Post, Req, UseGuards} from '@nestjs/common';
+import {EmailSubscriptionInfo, RestSubscriptionInfo, SmsSubscriptionInfo, UserSubscriptions} from '../../../../../libs/ersdlib/src/lib/user-subscriptions';
+import {UserController} from '../user/user.controller';
+import {AuthGuard} from '@nestjs/passport';
+import {AuthRequest} from '../auth-module/auth-request';
+import {ISubscription, Subscription} from '../../../../../libs/ersdlib/src/lib/subscription';
+import {Constants} from '../../../../../libs/ersdlib/src/lib/constants';
+import {IPerson, Person} from '../../../../../libs/ersdlib/src/lib/person';
+import {AxiosResponse} from 'axios';
+import {IOperationOutcome} from '../../../../../libs/ersdlib/src/lib/operation-outcome';
+import {IServerConfig} from '../server-config';
+import {AppService} from '../app.service';
 
-const serverConfig = <IServerConfig> config.server;
 const authPrefix = 'Authorization: Bearer ';
 
 @Controller('subscription')
-export class SubscriptionController extends BaseController {
-  constructor(private httpService: HttpService) {
-    super();
+export class SubscriptionController {
+  constructor(private httpService: HttpService, private appService: AppService) {
   }
 
   private getSubscription(id: string): Promise<Subscription> {
-    const url = this.buildFhirUrl('Subscription', id);
+    const url = this.appService.buildFhirUrl('Subscription', id);
 
     return new Promise((resolve, reject) => {
       this.httpService.get<ISubscription>(url).toPromise()
@@ -34,7 +31,7 @@ export class SubscriptionController extends BaseController {
   @Get()
   @UseGuards(AuthGuard())
   async getSubscriptions(@Req() request: AuthRequest): Promise<UserSubscriptions> {
-    const userController = new UserController(this.httpService);
+    const userController = new UserController(this.httpService, this.appService);
     const person = await userController.getMyPerson(request);
 
     if (person && person.extension) {
@@ -99,7 +96,7 @@ export class SubscriptionController extends BaseController {
   }
 
   private enableSubscription(subscription: Subscription) {
-    if (serverConfig.enableSubscriptions) {
+    if (this.appService.serverConfig.enableSubscriptions) {
       subscription.status = 'requested';
     } else {
       subscription.status = 'off';
@@ -110,13 +107,13 @@ export class SubscriptionController extends BaseController {
     const method = current ? 'PUT' : 'POST';
 
     if (current && !updated) {
-      const deleteUrl = this.buildFhirUrl('Subscription', current.id);
+      const deleteUrl = this.appService.buildFhirUrl('Subscription', current.id);
       return this.httpService.delete(deleteUrl).toPromise();
     } else if (updated) {
       if (!current) {
         current = new Subscription();
         current.channel.type = 'email';
-        current.criteria = serverConfig.subscriptionCriteria;
+        current.criteria = this.appService.serverConfig.subscriptionCriteria;
       }
 
       this.enableSubscription(current);
@@ -142,7 +139,7 @@ export class SubscriptionController extends BaseController {
 
       return this.httpService.request({
         method: method,
-        url: this.buildFhirUrl('Subscription', current ? current.id : null),
+        url: this.appService.buildFhirUrl('Subscription', current ? current.id : null),
         data: current
       }).toPromise();
     }
@@ -154,13 +151,13 @@ export class SubscriptionController extends BaseController {
     const method = current ? 'PUT' : 'POST';
 
     if (current && !updated) {
-      const deleteUrl = this.buildFhirUrl('Subscription', current.id);
+      const deleteUrl = this.appService.buildFhirUrl('Subscription', current.id);
       return this.httpService.delete(deleteUrl).toPromise();
     } else if (updated) {
       if (!current) {
         current = new Subscription();
         current.channel.type = 'rest-hook';
-        current.criteria = serverConfig.subscriptionCriteria;
+        current.criteria = this.appService.serverConfig.subscriptionCriteria;
       }
 
       this.enableSubscription(current);
@@ -182,7 +179,7 @@ export class SubscriptionController extends BaseController {
 
       return this.httpService.request({
         method: method,
-        url: this.buildFhirUrl('Subscription', current ? current.id : null),
+        url: this.appService.buildFhirUrl('Subscription', current ? current.id : null),
         data: current
       }).toPromise();
     }
@@ -194,13 +191,13 @@ export class SubscriptionController extends BaseController {
     const method = current ? 'PUT' : 'POST';
 
     if (current && !updated) {
-      const deleteUrl = this.buildFhirUrl('Subscription', current.id);
+      const deleteUrl = this.appService.buildFhirUrl('Subscription', current.id);
       return this.httpService.delete(deleteUrl).toPromise();
     } else if (updated) {
       if (!current) {
         current = new Subscription();
         current.channel.type = 'email';
-        current.criteria = serverConfig.subscriptionCriteria;
+        current.criteria = this.appService.serverConfig.subscriptionCriteria;
       }
 
       this.enableSubscription(current);
@@ -229,7 +226,7 @@ export class SubscriptionController extends BaseController {
 
       return this.httpService.request({
         method: method,
-        url: this.buildFhirUrl('Subscription', current ? current.id : null),
+        url: this.appService.buildFhirUrl('Subscription', current ? current.id : null),
         data: current
       }).toPromise();
     }
@@ -264,7 +261,7 @@ export class SubscriptionController extends BaseController {
   @Post()
   @UseGuards(AuthGuard())
   async updateSubscriptions(@Req() request: AuthRequest, @Body() userSubscriptions: UserSubscriptions): Promise<UserSubscriptions> {
-    const userController = new UserController(this.httpService);
+    const userController = new UserController(this.httpService, this.appService);
     const person = await userController.getMyPerson(request);
 
     if (person && person.extension) {
@@ -306,7 +303,7 @@ export class SubscriptionController extends BaseController {
               this.ensureSubscription(person, smsSubscription, updatedSmsSubscription ? updatedSmsSubscription.data : undefined);
 
             if (updatedPerson) {
-              const updatePersonUrl = this.buildFhirUrl('Person', person.id);
+              const updatePersonUrl = this.appService.buildFhirUrl('Person', person.id);
               return this.httpService.put(updatePersonUrl, person).toPromise();
             }
           })

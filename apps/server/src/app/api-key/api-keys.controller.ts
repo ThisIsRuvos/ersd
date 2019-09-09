@@ -1,23 +1,22 @@
-import { Body, Controller, Get, HttpService, Post, Req, UseGuards } from '@nestjs/common';
-import { UserController } from '../user/user.controller';
-import { AuthGuard } from '@nestjs/passport';
-import { AuthRequest } from '../auth-module/auth-request';
-import { BaseController } from '../base.controller';
-import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
-import { Person } from '../../../../../libs/ersdlib/src/lib/person';
-import { IUserApiKeys } from '../../../../../libs/ersdlib/src/lib/user-api-keys';
-import { ICoding } from '../../../../../libs/ersdlib/src/lib/coding';
+import {Body, Controller, Get, HttpService, Post, Req, UseGuards} from '@nestjs/common';
+import {UserController} from '../user/user.controller';
+import {AuthGuard} from '@nestjs/passport';
+import {AuthRequest} from '../auth-module/auth-request';
+import {Constants} from '../../../../../libs/ersdlib/src/lib/constants';
+import {Person} from '../../../../../libs/ersdlib/src/lib/person';
+import {IUserApiKeys} from '../../../../../libs/ersdlib/src/lib/user-api-keys';
+import {ICoding} from '../../../../../libs/ersdlib/src/lib/coding';
+import {AppService} from '../app.service';
 
 @Controller('api-keys')
-export class ApiKeysController extends BaseController {
-  constructor(private httpService: HttpService) {
-    super();
+export class ApiKeysController {
+  constructor(private httpService: HttpService, private appService: AppService) {
   }
 
   @Get()
   @UseGuards(AuthGuard())
   async getApiKeys(@Req() request: AuthRequest): Promise<IUserApiKeys> {
-    const userController = new UserController(this.httpService);
+    const userController = new UserController(this.httpService, this.appService);
     const person = await userController.getMyPerson(request);
     const response: IUserApiKeys = {};
     const meta = person.meta || {};
@@ -32,7 +31,7 @@ export class ApiKeysController extends BaseController {
   }
 
   private addOrRemoveTag(personId: string, tag: ICoding, operation: '$meta-add' | '$meta-delete') {
-    const url = this.buildFhirUrl('Person', personId, null, operation);
+    const url = this.appService.buildFhirUrl('Person', personId, null, operation);
     const body = {
       resourceType: 'Parameters',
       parameter: [{
@@ -48,7 +47,7 @@ export class ApiKeysController extends BaseController {
   @Post()
   @UseGuards(AuthGuard())
   async updateApiKeys(@Req() request: AuthRequest, @Body() apiKeys: IUserApiKeys) {
-    const userController = new UserController(this.httpService);
+    const userController = new UserController(this.httpService, this.appService);
     const person = await userController.getMyPerson(request);
 
     person.meta = person.meta || {};
