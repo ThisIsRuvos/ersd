@@ -96,3 +96,7 @@ div.footer {
   margin: 15px;
   color: gray;
 }
+
+.btn-danger {
+  margin-left: 10px !important;
+}
