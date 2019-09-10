@@ -3,11 +3,10 @@
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: 200px min-content;
   grid-gap: 2rem;
-  padding: 150px 50px;
+  padding: 150px 50px 300px 50px;
 }
 
 .home-grid-item {
-  /* background-color: #043236; */
   background-color: #094045;
   padding: 20px;
   border-radius: 7px;

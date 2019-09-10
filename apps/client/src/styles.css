@@ -100,3 +100,41 @@ div.footer {
 .btn-danger {
   margin-left: 10px !important;
 }
+
+.app-container {
+  position: relative;
+}
+
+.ersd-footer {
+
+  padding-bottom: 10px;
+  color: rgba(255,255,255, 0.8);
+  font-weight: 300;
+  text-align: center;
+  line-height: 20px;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  padding: 0 50px;
+}
+
+.footer-heading {
+  font-size: 1.2rem;
+  color: white;
+  font-weight: 500;
+  line-height: 50px;
+}
+
+.footer-contact-email {
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.footer-contact-email:hover {
+  color: #b12c36;
+}
+
