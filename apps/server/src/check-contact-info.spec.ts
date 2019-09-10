@@ -1,14 +1,14 @@
-import { CheckContactInfo } from './check-contact-info';
-import { IBundle } from '../../../libs/ersdlib/src/lib/bundle';
-import { IPerson } from '../../../libs/ersdlib/src/lib/person';
-import { Constants } from '../../../libs/ersdlib/src/lib/constants';
-import { Subscription } from '../../../libs/ersdlib/src/lib/subscription';
-import { IServerConfigContactInfo } from './app/server-config';
-import { IEmailConfig } from './app/email-config';
-
 import * as path from 'path';
 import nock from 'nock';
 import moment from 'moment';
+
+import {CheckContactInfo} from './check-contact-info';
+import {IBundle} from '../../../libs/ersdlib/src/lib/bundle';
+import {IPerson} from '../../../libs/ersdlib/src/lib/person';
+import {Constants} from '../../../libs/ersdlib/src/lib/constants';
+import {Subscription} from '../../../libs/ersdlib/src/lib/subscription';
+import {IServerConfigContactInfo} from './app/server-config';
+import {IEmailConfig} from './app/email-config';
 
 nock.disableNetConnect();
 
@@ -17,6 +17,7 @@ jest.mock('nodemailer');
 const fhirServerBase = 'http://test-fhir-server.com';
 const contactInfoConfig: IServerConfigContactInfo = {
   checkCountPerPage: 5,
+  checkDurationSeconds: 60,
   expiration: {
     value: 365,
     unit: 'days'

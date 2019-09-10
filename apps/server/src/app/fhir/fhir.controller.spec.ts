@@ -1,12 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FhirController } from './fhir.controller';
+import { AppService } from '../app.service';
+import { HttpModule } from '@nestjs/common';
 
 describe('Fhir Controller', () => {
   let module: TestingModule;
-  
+
   beforeAll(async () => {
     module = await Test.createTestingModule({
       controllers: [FhirController],
+      imports: [HttpModule],
+      providers: [AppService]
     }).compile();
   });
   it('should be defined', () => {
