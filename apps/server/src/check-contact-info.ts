@@ -66,20 +66,20 @@ export class CheckContactInfo {
     }, duration * 1000);
   }
 
-  static execute(fhirServerBase: string, contactInfoConfig: IServerConfigContactInfo, emailConfig: IEmailConfig) {
+  static async execute(fhirServerBase: string, contactInfoConfig: IServerConfigContactInfo, emailConfig: IEmailConfig) {
     const hasConfigurations =
       contactInfoConfig &&
-      contactInfoConfig.checkDurationSeconds &&
+      contactInfoConfig.checkDurationSeconds > 0 &&
       contactInfoConfig.checkCountPerPage > 0 &&
       contactInfoConfig.maxNotifications > 0 &&
       contactInfoConfig.templates &&
       contactInfoConfig.templates.expired &&
-      contactInfoConfig.templates.expired.subject &&
-      contactInfoConfig.templates.expired.text &&
-      contactInfoConfig.templates.expired.html &&
-      contactInfoConfig.templates.expiring.subject &&
-      contactInfoConfig.templates.expiring.text &&
-      contactInfoConfig.templates.expiring.html &&
+      !!contactInfoConfig.templates.expired.subject &&
+      !!contactInfoConfig.templates.expired.text &&
+      !!contactInfoConfig.templates.expired.html &&
+      !!contactInfoConfig.templates.expiring.subject &&
+      !!contactInfoConfig.templates.expiring.text &&
+      !!contactInfoConfig.templates.expiring.html &&
       contactInfoConfig.expiration &&
       contactInfoConfig.expiration.value &&
       contactInfoConfig.expiration.unit &&
@@ -87,9 +87,9 @@ export class CheckContactInfo {
       contactInfoConfig.notificationInterval.value &&
       contactInfoConfig.notificationInterval.unit &&
       emailConfig &&
-      emailConfig.host &&
-      emailConfig.port &&
-      emailConfig.from;
+      !!emailConfig.host &&
+      emailConfig.port > 0 &&
+      !!emailConfig.from;
 
     if (!hasConfigurations) {
       this.logger.error('Sever is not configured with necessary information to check contact information for expiration');
@@ -99,7 +99,7 @@ export class CheckContactInfo {
     const checker = new CheckContactInfo(fhirServerBase, contactInfoConfig, emailConfig);
 
     // noinspection JSIgnoredPromiseFromCall
-    CheckContactInfo.executeTimer(checker, contactInfoConfig.checkDurationSeconds);
+    await CheckContactInfo.executeTimer(checker, contactInfoConfig.checkDurationSeconds);
   }
 
   private async getAllPeople(url?: string): Promise<IBundle> {

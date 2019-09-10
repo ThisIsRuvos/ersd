@@ -13,9 +13,15 @@ describe('AppService', () => {
     service = app.get<AppService>(AppService);
   });
 
-  describe('getData', () => {
-    it('should return "Welcome to server!"', () => {
-      expect(service.getData()).toEqual({message: 'Welcome to server!'});
+  describe('assertAdmin', () => {
+    it('should throw an error when the user is not an admin', () => {
+
+    });
+  });
+
+  describe('buildFhirUrl', () => {
+    it('should create a properly formatted fhir server url', () => {
+
     });
   });
 });

@@ -1,24 +1,24 @@
-import { Body, Controller, HttpService, Logger, Post, Req, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { AuthRequest } from '../auth-module/auth-request';
-import { BaseController } from '../base.controller';
-import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
-import { IUploadRequest } from '../../../../../libs/ersdlib/src/lib/upload-request';
-import { Fhir } from 'fhir/fhir';
-import { IBundle } from '../../../../../libs/ersdlib/src/lib/bundle';
+import {Body, Controller, HttpService, Logger, Post, Req, UseGuards} from '@nestjs/common';
+import {AuthGuard} from '@nestjs/passport';
+import {AuthRequest} from '../auth-module/auth-request';
+import {Constants} from '../../../../../libs/ersdlib/src/lib/constants';
+import {IUploadRequest} from '../../../../../libs/ersdlib/src/lib/upload-request';
+import {Fhir} from 'fhir/fhir';
+import {IBundle} from '../../../../../libs/ersdlib/src/lib/bundle';
+import {AppService} from '../app.service';
+import { IOperationOutcome } from '../../../../../libs/ersdlib/src/lib/operation-outcome';
 
 @Controller('upload')
-export class UploadController extends BaseController {
+export class UploadController {
   private readonly logger = new Logger();
 
-  constructor(private httpService: HttpService) {
-    super();
+  constructor(private httpService: HttpService, private appService: AppService) {
   }
 
   @Post()
   @UseGuards(AuthGuard())
   async upload(@Req() request: AuthRequest, @Body() body: IUploadRequest) {
-    this.assertAdmin(request);
+    this.appService.assertAdmin(request);
 
     this.logger.log('Admin is uploading a document');
 
@@ -36,47 +36,33 @@ export class UploadController extends BaseController {
       resource = JSON.parse(body.fileContent);
     }
 
-    // Attach the message to the resource being uploaded
-    this.logger.log('Creating an extension on the resource being upload that includes the message from the admin');
+    // Attach the message to the bundle being uploaded
+    if (body.message && resource.resourceType === 'Bundle') {
+      const bundle = <IBundle> resource;
 
-    resource.extension = resource.extension || [];
-    let foundMessage = resource.extension.find((extension) => extension.url === Constants.extensions.notificationMessage);
+      this.logger.log('Creating an extension on the first entry in the bundle being upload that includes the message from the admin');
 
-    if (!foundMessage) {
-      foundMessage = {
-        url: Constants.extensions.notificationMessage
-      };
-      resource.extension.push(foundMessage);
+      if (bundle.entry && bundle.entry.length > 0) {
+        const firstEntry = bundle.entry[0];
+
+        firstEntry.extension = firstEntry.extension || [];
+        firstEntry.extension.push({
+          url: Constants.extensions.notificationMessage,
+          valueString: body.message
+        });
+      }
     }
-
-    foundMessage.valueString = body.message;
-
-    // Create a transaction bundle to import into the FHIR server
-    this.logger.log('Creating a transaction bundle to send to the FHIR server');
-
-    const transaction: IBundle = {
-      resourceType: 'Bundle',
-      type: 'transaction',
-      entry: [{
-        resource: resource,
-        request: {
-          method: resource.id ? 'PUT' : 'POST',
-          url: resource.resourceType + (resource.id ? '/' + resource.id : '')
-        }
-      }]
-    };
-
-    const transactionUrl = this.buildFhirUrl();
 
     this.logger.log('Posting the transaction to the FHIR server');
 
     try {
-      const results = await this.httpService.post<IBundle>(transactionUrl, transaction).toPromise();
-      const resultsBundle = <IBundle>results.data;
+      const requestUrl = this.appService.buildFhirUrl(resource.resourceType, resource.id);
+      let response;
 
-      if (resultsBundle.resourceType !== 'Bundle' || !resultsBundle.entry || resultsBundle.entry.length !== 1) {
-        // noinspection ExceptionCaughtLocallyJS
-        throw new Error('Unexpected response from the FHIR server');
+      if (resource.id) {
+        response = await this.httpService.put(requestUrl, resource).toPromise();
+      } else {
+        response = await this.httpService.post(requestUrl, resource).toPromise();
       }
 
       this.logger.log('Done uploading to FHIR server');

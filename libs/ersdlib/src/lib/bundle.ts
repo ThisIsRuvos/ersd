@@ -1,7 +1,9 @@
 import { IDomainResource } from './domain-resource';
 import { IIdentifier } from './identifier';
+import { IExtension } from './extension';
 
 export interface IBundleEntry {
+  extension?: IExtension[];
   fullUrl?: string;
   resource?: IDomainResource;
   request?: {
