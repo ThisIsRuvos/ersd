@@ -223,6 +223,7 @@ export class SubscriptionController {
       }
 
       current.channel.endpoint = email;
+      current.channel.payload = 'application/json';   // This is required by HAPI to send an email notification
 
       return this.httpService.request({
         method: method,
