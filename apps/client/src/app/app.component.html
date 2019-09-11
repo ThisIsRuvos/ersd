@@ -1,63 +1,74 @@
-<nav class="navbar navbar-expand-md navbar-dark bg-aims mb-4">
-  <a class="navbar-brand" href="#" title="Electronic Reporting and Surveillance Distribution">
-    <!--suppress HtmlUnknownTarget -->
-    <img src="/assets/distribute_vertical_top_right.png" alt="Electronic Reporting and Surveillance Distribution" />
-    <span>ERSD</span>
-  </a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarCollapse">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item" [class.active]="homeLink.isActive">
-        <a class="nav-link" routerLink="/home" routerLinkActive #homeLink="routerLinkActive">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item" *ngIf="authService.loggedIn" [class.active]="subscriptionLink.isActive">
-        <a class="nav-link" routerLink="/subscription" routerLinkActive #subscriptionLink="routerLinkActive">Subscription</a>
-      </li>
-      <li class="nav-item" *ngIf="authService.loggedIn" [class.active]="apiKeysLink.isActive">
-        <a class="nav-link" routerLink="/api-keys" routerLinkActive #apiKeysLink="routerLinkActive">FHIR Server</a>
-      </li>
-      <li class="nav-item" *ngIf="authService.loggedIn" [class.active]="contactInfoLink.isActive">
-        <a class="nav-link" routerLink="/contact-info" routerLinkActive #contactInfoLink="routerLinkActive">Contact Info</a>
-      </li>
-      <li class="nav-item" *ngIf="authService.loggedIn && authService.isAdmin" [class.active]="adminLink.isActive">
-        <a class="nav-link" routerLink="/admin" routerLinkActive #adminLink="routerLinkActive">Admin</a>
-      </li>
-    </ul>
+<div class='app-container'>
+    <nav class="navbar navbar-expand-md navbar-dark bg-aims">
+      <a class="navbar-brand" href="#" title="Electronic Reporting and Surveillance Distribution">
+        <img class='ersd-logo' src="/assets/ersd-logo.png" />
+       
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item" [class.active]="homeLink.isActive">
+            <a class="nav-link" routerLink="/home" routerLinkActive #homeLink="routerLinkActive">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item" *ngIf="authService.loggedIn" [class.active]="subscriptionLink.isActive">
+            <a class="nav-link" routerLink="/subscription" routerLinkActive #subscriptionLink="routerLinkActive">Subscription</a>
+          </li>
+          <li class="nav-item" *ngIf="authService.loggedIn" [class.active]="apiKeysLink.isActive">
+            <a class="nav-link" routerLink="/api-keys" routerLinkActive #apiKeysLink="routerLinkActive">FHIR Server</a>
+          </li>
+          <li class="nav-item" *ngIf="authService.loggedIn" [class.active]="contactInfoLink.isActive">
+            <a class="nav-link" routerLink="/contact-info" routerLinkActive #contactInfoLink="routerLinkActive">Contact Info</a>
+          </li>
+          <li class="nav-item" *ngIf="authService.loggedIn && authService.isAdmin" [class.active]="adminLink.isActive">
+            <a class="nav-link" routerLink="/admin" routerLinkActive #adminLink="routerLinkActive">Admin</a>
+          </li>
+        </ul>
+      </div>
+      <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item" *ngIf="authService.loggedIn">
+            <a class="nav-link" routerLink="/contact-info">
+              <i class="fas fa-user"></i>
+              {{authService.fullName}}
+            </a>
+          </li>
+          <li class="nav-item clickable" *ngIf="authService.loggedIn">
+            <a class="nav-link" (click)="authService.logout()">
+              <i class="fas fa-sign-out-alt"></i> Sign out
+            </a>
+          </li>
+          <li class="nav-item clickable" *ngIf="!authService.loggedIn">
+            <a class="nav-link" (click)="authService.login()">
+              <i class="fas fa-sign-in-alt"></i> Sign in
+            </a>
+          </li>
+          <li class="nav-item clickable" *ngIf="!authService.loggedIn">
+            <a class="nav-link" (click)="authService.register()">
+              <i class="fas fa-user-plus"></i> Register
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    
+    <main role="main" class="container">
+      <div *ngIf="homeLink.isActive || authService.person">
+        <router-outlet></router-outlet>
+      </div>
+      <div class='ersd-bg-img' *ngIf="!homeLink.isActive && !authService.loggedIn">
+          <img src='../../assets/ersd-logo-full.png'/>
+      </div>
+      <div class="jumbotron" *ngIf="!homeLink.isActive && !authService.loggedIn">
+        <!-- <h3>You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()">login</a> to continue.</h3> -->
+        <h3 *ngIf="!authService.loggedIn">You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()"><i class="fas fa-sign-in-alt"></i>&nbsp;login</a> or <a href="javascript:void(0)" (click)="authService.register()"><i class="fas fa-user-plus"></i>&nbsp;register</a> to continue.</h3>
+      </div>
+    </main>
+    <div class='ersd-footer'>
+      <div class='footer-heading'>Contact Us:</div>
+      <p>For general eRSD inquiries please contact: <a href='mailto:eCR-Info@aimsplatform.org' class='footer-contact-email'>eCR-Info@aimsplatform.org</a></p>
+      <p>For eRSD technical problems and support please contact the eRSD Services Support Team at <a href="mailto:informatics.support@aphl.org?subject=eCR" class='footer-contact-email'>informatics.support@aphl.org</a>, please include "eRSD" in the subject line.</p>
+    </div>
   </div>
-  <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
-    <ul class="navbar-nav ml-auto">
-      <li class="nav-item" *ngIf="authService.loggedIn">
-        <a class="nav-link" routerLink="/contact-info">
-          <i class="fas fa-user"></i>
-          {{authService.fullName}}
-        </a>
-      </li>
-      <li class="nav-item clickable" *ngIf="authService.loggedIn">
-        <a class="nav-link" (click)="authService.logout()">
-          <i class="fas fa-sign-out-alt"></i> Sign out
-        </a>
-      </li>
-      <li class="nav-item clickable" *ngIf="!authService.loggedIn">
-        <a class="nav-link" (click)="authService.login()">
-          <i class="fas fa-sign-in-alt"></i> Login
-        </a>
-      </li>
-      <li class="nav-item clickable" *ngIf="!authService.loggedIn">
-        <a class="nav-link" (click)="authService.register()">
-          <i class="fas fa-user-plus"></i> Register
-        </a>
-      </li>
-    </ul>
-  </div>
-</nav>
-
-<main role="main" class="container">
-  <div class="jumbotron" *ngIf="homeLink.isActive || authService.person">
-    <router-outlet></router-outlet>
-  </div>
-  <div class="jumbotron" *ngIf="!homeLink.isActive && !authService.loggedIn">
-    <h3>You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()"><i class="fas fa-sign-in-alt"></i>&nbsp;login</a> or <a href="javascript:void(0)" (click)="authService.register()"><i class="fas fa-user-plus"></i>&nbsp;register</a> to continue.</h3>
-  </div>
-</main>
+  

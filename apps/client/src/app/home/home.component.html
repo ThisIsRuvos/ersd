@@ -1,3 +1,33 @@
-<h2>Welcome to the Electronic Reporting and Surveillance Distribution portal!</h2>
+<div class='home-grid-container'>
+    <div class='home-grid-item home-grid-item-1'>
+        <img src='../../assets/ersd-logo-full.png'/>
+    </div>
+    <div class='home-grid-item'>
+      <a routerLink="/subscription">
+        <div class='home-grid-item-container'>
+          <i class="fas fa-inbox"></i>
+          <p>Subscription<br> Management</p>
+        </div>        
+      </a>
+    </div>
+    <div class='home-grid-item'>
+      <a routerLink="/api-keys">
+        <div class='home-grid-item-container'>
+          <i class="fas fa-server"></i>
+          <p>FHIR Server</p>  
+        </div>
+      </a>
+    </div>
+    <div class='home-grid-item'>
+      <a routerLink="/contact-info">
+        <div class='home-grid-item-container'>
+          <i class="fas fa-cog"></i>
+          <p>Settings</p>  
+        </div>
+      </a>      
+    </div>
+</div>
 
-<h3 *ngIf="!authService.loggedIn">You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()"><i class="fas fa-sign-in-alt"></i>&nbsp;login</a> or <a href="javascript:void(0)" (click)="authService.register()"><i class="fas fa-user-plus"></i>&nbsp;register</a> to continue.</h3>
+
+
+<!-- <h3 *ngIf="!authService.loggedIn">You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()"><i class="fas fa-sign-in-alt"></i>&nbsp;login</a> or <a href="javascript:void(0)" (click)="authService.register()"><i class="fas fa-user-plus"></i>&nbsp;register</a> to continue.</h3> -->

@@ -2,12 +2,47 @@ nav li {
   white-space: pre;
 }
 
+div.footer {
+  /* position: fixed;
+  bottom: 0px;
+  left: 0px; */
+  height: 47px;
+  width: 100%;
+  background-color: transparent;
+  padding: 5px;
+}
+
 .clickable {
   cursor: pointer;
 }
 
 .card {
   margin-bottom: 10px;
+}
+
+.modal-content {
+  max-width: 1140px !important;
+  height: 100% !important;
+  overflow-y: scroll !important;
+  position: absolute !important;
+  top: 0 !important;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.modal-footer {
+  border: none !important;
+}
+
+
+.btn-primary {
+  color: #fff;
+  background-color: #b12c36 !important;
+  border-color: #b12c36 !important;
+}
+
+.custom-class {
+  background-color:red;
 }
 
 .tab-pane.active > div.card:first-child {
@@ -19,12 +54,6 @@ nav li {
   padding-top: 10px;
 }
 
-nav .nav-link, .navbar-brand {
-  font-family: Lucida Bright,Georgia,serif;
-  font-weight: bold;
-  color: white !important;
-}
-
 .bg-aims {
   background-color: #30B1BD !important;
 }
@@ -33,7 +62,79 @@ nav .nav-link, .navbar-brand {
   background-color: #F8F9F9 !important;
 }
 
+.modal-dialog {
+  height: 100%;
+  margin: 0 auto;
+}
+
+.register-button {
+  background-color: #b12c36 !important;
+  color: white !important;
+}
+
+.register-button:hover {
+  background-color: #87111A !important;
+  color: white !important;
+}
+
+.register-button:disabled {
+  background-color: #D7525C !important;
+  color: white !important;
+}
+
+.save-button {
+  background-color: #b12c36 !important;
+  color: white !important;
+}
+
+.save-button:hover {
+  background-color: #87111A !important;
+  color: white !important;
+}
+
 .help-block {
   margin: 15px;
   color: gray;
 }
+
+.btn-danger {
+  margin-left: 10px !important;
+}
+
+.app-container {
+  position: relative;
+}
+
+.ersd-footer {
+
+  padding-bottom: 10px;
+  color: rgba(255,255,255, 0.8);
+  font-weight: 300;
+  text-align: center;
+  line-height: 20px;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  padding: 0 50px;
+}
+
+.footer-heading {
+  font-size: 1.2rem;
+  color: white;
+  font-weight: 500;
+  line-height: 50px;
+}
+
+.footer-contact-email {
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.footer-contact-email:hover {
+  color: #b12c36;
+}
+

@@ -1,11 +1,13 @@
-<div class="modal-header">
-  <h4 class="modal-title">New User Registration</h4>
-</div>
-<div class="modal-body">
-  <div class="alert alert-danger" *ngIf="message">{{message}}</div>
+<div class='create-person-container'>
+  <div class='heading-container'>
+    <h2 class='section-heading'>New User Registration</h2>
+  </div>
+  <div class="modal-body">
+    <div class="alert alert-danger" *ngIf="message">{{message}}</div>
 
-  <ersd-edit-person [person]="person" #editPerson></ersd-edit-person>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-outline-dark" (click)="ok()" [disabled]="!editPerson.isValid">OK</button>
+    <ersd-edit-person [person]="person" #editPerson></ersd-edit-person>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn register-button" (click)="ok()" [disabled]="!editPerson.isValid">OK</button>
+  </div>
 </div>

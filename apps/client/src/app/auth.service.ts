@@ -69,7 +69,7 @@ export class AuthService {
 
   public checkSession() {
     const createUser = () => {
-      const modalRef = this.modalService.open(CreatePersonComponent, { size: 'lg', backdrop: 'static' });
+      const modalRef = this.modalService.open(CreatePersonComponent, { size: 'lg', backdrop: 'static'});
       modalRef.componentInstance.profile = this.profile;
 
       modalRef.result

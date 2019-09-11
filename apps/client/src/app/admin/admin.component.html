@@ -1,73 +1,79 @@
-<h2>Administration</h2>
+<div class='admin-container'>
+  <div class='heading-container'>
+    <h2 class='section-heading'>Administration</h2>
+  </div>
+  
 
-<div class="alert" *ngIf="message" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError">{{message}}</div>
+  <div class="alert" *ngIf="message" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError">{{message}}</div>
+  <div class='admin-users-container'>
+  <ngb-tabset>
+    <ngb-tab title="Users">
+      <ng-template ngbTabContent>
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>&nbsp;</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let user of users">
+            <td>{{user.firstName}}</td>
+            <td>{{user.lastName}}</td>
+            <td>{{user.email}}</td>
+            <td>
+              <div class="pull-right">
+                <button type="button" class="btn btn-dark" title="Edit this user's contact details" (click)="editUser(user)">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button type="button" class="btn btn-dark" title="Remove this user's contact information and their subscriptions" (click)="deleteUser(user)">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </ng-template>
+    </ngb-tab>
 
-<ngb-tabset>
-  <ngb-tab title="Users">
-    <ng-template ngbTabContent>
-      <table class="table table-striped">
-        <thead>
-        <tr>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Email</th>
-          <th>&nbsp;</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let user of users">
-          <td>{{user.firstName}}</td>
-          <td>{{user.lastName}}</td>
-          <td>{{user.email}}</td>
-          <td>
-            <div class="pull-right">
-              <button type="button" class="btn btn-dark" title="Edit this user's contact details" (click)="editUser(user)">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button type="button" class="btn btn-dark" title="Remove this user's contact information and their subscriptions" (click)="deleteUser(user)">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </ng-template>
-  </ngb-tab>
+    <ngb-tab title="Upload">
+      <ng-template ngbTabContent>
+        <div class="alert alert-info">Uploading new artifacts will send out notifications to subscribers.</div>
 
-  <ngb-tab title="Upload">
-    <ng-template ngbTabContent>
-      <div class="alert alert-info">Uploading new artifacts will send out notifications to subscribers.</div>
+        <div class="form-group">
+          <label>Bundle XML File</label>
+          <input type="file" class="form-control" (change)="handleFileInput($event.target.files)" #fileUploadField [class.is-invalid]="!uploadFile" />
+        </div>
 
-      <div class="form-group">
-        <label>Bundle XML File</label>
-        <input type="file" class="form-control" (change)="handleFileInput($event.target.files)" #fileUploadField [class.is-invalid]="!uploadFile" />
-      </div>
+        <div class="form-group">
+          <label for="uploadMessage">Message</label>
+          <textarea id="uploadMessage" class="form-control" rows="6" [(ngModel)]="uploadMessage" [class.is-invalid]="!uploadMessage"></textarea>
+        </div>
 
-      <div class="form-group">
-        <label for="uploadMessage">Message</label>
-        <textarea id="uploadMessage" class="form-control" rows="6" [(ngModel)]="uploadMessage" [class.is-invalid]="!uploadMessage"></textarea>
-      </div>
+        <button type="button" class="btn btn-primary" (click)="upload()" [disabled]="!uploadFile || !uploadMessage">Upload</button>
+      </ng-template>
+    </ngb-tab>
 
-      <button type="button" class="btn btn-primary" (click)="upload()" [disabled]="!uploadFile || !uploadMessage">Upload</button>
-    </ng-template>
-  </ngb-tab>
+    <ngb-tab title="Messages">
+      <ng-template ngbTabContent>
+        <div class="alert alert-info">This will send an email message directly to each of the user's contact email address (which may be different than the email address the user uses for subscriptions).</div>
 
-  <ngb-tab title="Messages">
-    <ng-template ngbTabContent>
-      <div class="alert alert-info">This will send an email message directly to each of the user's contact email address (which may be different than the email address the user uses for subscriptions).</div>
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <input id="subject" type="text" class="form-control" [(ngModel)]="emailRequest.subject" [class.is-invalid]="!emailRequest.subject" />
+        </div>
 
-      <div class="form-group">
-        <label for="subject">Subject</label>
-        <input id="subject" type="text" class="form-control" [(ngModel)]="emailRequest.subject" [class.is-invalid]="!emailRequest.subject" />
-      </div>
+        <div class="form-group">
+          <label for="emailMessage">Message to be sent</label>
+          <textarea id="emailMessage" class="form-control" rows="6" [(ngModel)]="emailRequest.message" [class.is-invalid]="!emailRequest.message"></textarea>
+        </div>
 
-      <div class="form-group">
-        <label for="emailMessage">Message to be sent</label>
-        <textarea id="emailMessage" class="form-control" rows="6" [(ngModel)]="emailRequest.message" [class.is-invalid]="!emailRequest.message"></textarea>
-      </div>
-
-      <button type="button" class="btn btn-primary" [disabled]="!emailRequest.subject || !emailRequest.message" (click)="sendEmail()">Send</button>
-    </ng-template>
-  </ngb-tab>
-</ngb-tabset>
+        <button type="button" class="btn btn-primary" [disabled]="!emailRequest.subject || !emailRequest.message" (click)="sendEmail()">Send</button>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>
+</div>
+</div>

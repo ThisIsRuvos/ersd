@@ -1,10 +1,60 @@
-nav > a > img {
+nav {
+  margin-bottom: 0px;
+  background-image: url(../assets/nav-bg.png);
+  background-size: cover;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 100;
+}
+
+/* nav > a > img {
   position: absolute;
   width: 45px;
   height: 45px;
   margin-top: -7px;
-}
+} */
 
 nav > a > span {
   margin-left: 45px;
+}
+
+nav > li > a {
+  color: black;
+}
+
+
+.app-container {
+
+  min-height: 100vh;
+  min-width: 100vw;
+  background: url(../assets/background.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  font-family: 'Work Sans', sans-serif;
+}
+
+
+
+.nav-link {
+  color: black;
+  font-family: 'Work Sans', sans-serif;
+}
+
+.ersd-logo {
+  height: 30px;
+}
+
+.ersd-bg-img {
+  padding-top: 150px;
+}
+
+.ersd-bg-img > img {
+
+  display: block;
+  height: 100px;
+  margin: auto;
+  margin-bottom: 100px;
 }
