@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-md navbar-dark bg-aims">
       <a class="navbar-brand" href="#" title="Electronic Reporting and Surveillance Distribution">
         <img class='ersd-logo' src="/assets/ersd-logo.png" />
-       
+
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -52,16 +52,15 @@
         </ul>
       </div>
     </nav>
-    
+
     <main role="main" class="container">
-      <div *ngIf="homeLink.isActive || authService.person">
+      <div *ngIf="authService.person">
         <router-outlet></router-outlet>
       </div>
-      <div class='ersd-bg-img' *ngIf="!homeLink.isActive && !authService.loggedIn">
+      <div class='ersd-bg-img' *ngIf="!authService.loggedIn">
           <img src='../../assets/ersd-logo-full.png'/>
       </div>
-      <div class="jumbotron" *ngIf="!homeLink.isActive && !authService.loggedIn">
-        <!-- <h3>You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()">login</a> to continue.</h3> -->
+      <div class="jumbotron" *ngIf="!authService.loggedIn">
         <h3 *ngIf="!authService.loggedIn">You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()"><i class="fas fa-sign-in-alt"></i>&nbsp;login</a> or <a href="javascript:void(0)" (click)="authService.register()"><i class="fas fa-user-plus"></i>&nbsp;register</a> to continue.</h3>
       </div>
     </main>
@@ -71,4 +70,3 @@
       <p>For eRSD technical problems and support please contact the eRSD Services Support Team at <a href="mailto:informatics.support@aphl.org?subject=eCR" class='footer-contact-email'>informatics.support@aphl.org</a>, please include "eRSD" in the subject line.</p>
     </div>
   </div>
-  
