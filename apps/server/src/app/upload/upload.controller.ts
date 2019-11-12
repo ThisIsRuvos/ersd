@@ -42,11 +42,11 @@ export class UploadController {
 
       this.logger.log('Creating an extension on the first entry in the bundle being upload that includes the message from the admin');
 
-      if (bundle.entry && bundle.entry.length > 0) {
-        const firstEntry = bundle.entry[0];
+      if (bundle.entry && bundle.entry.length > 0 && bundle.entry[0].resource) {
+        const firstResource = bundle.entry[0].resource;
 
-        firstEntry.extension = firstEntry.extension || [];
-        firstEntry.extension.push({
+        firstResource.extension = firstResource.extension || [];
+        firstResource.extension.push({
           url: Constants.extensions.notificationMessage,
           valueString: body.message
         });
