@@ -57,10 +57,10 @@
       <div *ngIf="homeLink.isActive || authService.person">
         <router-outlet></router-outlet>
       </div>
-      <div class='ersd-bg-img' *ngIf="!homeLink.isActive && !authService.loggedIn">
+      <div class='ersd-bg-img' *ngIf="!authService.loggedIn">
           <img src='../../assets/ersd-logo-full.png'/>
       </div>
-      <div class="jumbotron" *ngIf="!homeLink.isActive && !authService.loggedIn">
+      <div class="jumbotron" *ngIf="!authService.loggedIn">
         <!-- <h3>You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()">login</a> to continue.</h3> -->
         <h3 *ngIf="!authService.loggedIn">You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()"><i class="fas fa-sign-in-alt"></i>&nbsp;login</a> or <a href="javascript:void(0)" (click)="authService.register()"><i class="fas fa-user-plus"></i>&nbsp;register</a> to continue.</h3>
       </div>
