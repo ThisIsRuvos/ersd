@@ -129,7 +129,10 @@ export class UserController {
               const foundNext = bundle.link.find((link) => link.relation === 'next');
 
               if (foundNext) {
-                getNext(foundNext.url)
+                const nextParams = foundNext.url.substring(foundNext.url.indexOf('?'));
+                const nextUrl = this.appService.serverConfig.fhirServerBase + nextParams;
+
+                getNext(nextUrl)
                   .then(() => resolve())
                   .catch((err) => reject(err));
               } else {
@@ -355,7 +358,7 @@ export class UserController {
     this.logger.log(`Done deleting person ${person.id}`);
   }
 
-  @Delete(':me')
+  @Delete('me')
   async deleteMe(@Req() request: AuthRequest) {
     const me = await this.getMyPerson(request);
 
