@@ -17,7 +17,7 @@ RUN ng build server
 FROM node
 RUN mkdir -p /ersd/server && mkdir /ersd/client
 WORKDIR /ersd
-COPY local.json /ersd/server/config/
+
 COPY --from=build-ersd /ersd/node_modules/. /ersd/node_modules/
 COPY --from=build-ersd /ersd/dist/apps/client/. /ersd/client/
 COPY --from=build-ersd /ersd/dist/apps/server/. /ersd/server/
