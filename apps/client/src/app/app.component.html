@@ -16,7 +16,7 @@
             <a class="nav-link" routerLink="/subscription" routerLinkActive #subscriptionLink="routerLinkActive">Subscription</a>
           </li>
           <li class="nav-item" *ngIf="authService.loggedIn" [class.active]="apiKeysLink.isActive">
-            <a class="nav-link" routerLink="/api-keys" routerLinkActive #apiKeysLink="routerLinkActive">FHIR Server</a>
+            <a class="nav-link" routerLink="/api-keys" routerLinkActive #apiKeysLink="routerLinkActive">Polling</a>
           </li>
           <li class="nav-item" *ngIf="authService.loggedIn" [class.active]="contactInfoLink.isActive">
             <a class="nav-link" routerLink="/contact-info" routerLinkActive #contactInfoLink="routerLinkActive">Contact Info</a>
