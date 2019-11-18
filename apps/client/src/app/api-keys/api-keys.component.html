@@ -3,16 +3,19 @@
     <h2 class='section-heading'>Polling Management</h2>
   </div>
   
+  <div class='page-info api-keys-info'>
+    <p>Please configure your API key below in order to establish authentication to poll the eRSD server for content.</p>            
+  </div>
 
   <div class="alert" *ngIf="message" [class.alert-success]="!messageIsError" [class.alert-danger]="messageIsError">{{message}}</div>
 
   <div class="alert alert-info">
-    <p>The base address for the FHIR server is: <strong><a href="{{baseAddress}}" target="_new">{{baseAddress}}</a></strong></p>
+    <p>The base address for the FHIR server is: <strong><a href="https://ersd.aimsplatform.org/api/fhir">https://ersd.aimsplatform.org/api/fhir</a></strong></p>
     <p>The FHIR server cannot be accessed without authentication. To authenticate, specify an API key in the field below and "Save" the API key so that it is associated with your user/profile. When making a request to the FHIR server specified above, include an "Authorization" header with a value of "Bearer XXX".</p>
     <p class="example-authorization" *ngIf="apiKeys.inbound"><strong>Authorization: Bearer {{apiKeys.inbound}}</strong></p>
     <p>
-      Alternatively, you may specify the API key in an query parameter as part of the URL for the request: <br/>
-      <a href="{{baseAddress}}/metadata?api-key={{apiKeys.inbound}}" target="_new">{{baseAddress}}/metadata?api-key={{apiKeys.inbound}}</a>
+      Alternatively, you may specify the API key in a query parameter as part of the URL for the request: <br/>
+      <a href="https://ersd.aimsplatform.org/api/fhir/metadata?api-key=">https://ersd.aimsplatform.org/api/fhir/metadata?api-key={{apiKeys.inbound}}</a>
     </p>
   </div>
 
