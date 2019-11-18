@@ -3,7 +3,10 @@
       <h2 class='section-heading'>Subscription Management</h2>
     </div>
     
-  
+    <div class='page-info subscription-info'>
+      <p>Please choose your eRSD subscription(s) below.  Email subscription is required, and you may add an additional SMS or REST subscription as well.  You will be contacted based on your preferences with any important information related to eRSD, or with routine or emergent updates.</p>            
+    </div>
+
   <div class="alert" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError" *ngIf="message">{{message}}</div>
   
   <div>

@@ -71,7 +71,7 @@ a {
 
 
 
-.home-page-info {
+.page-info {
   grid-column: 1 / span 3;
   background-color: transparent;
   color: white;
@@ -82,23 +82,23 @@ a {
   margin-top: -40px;
 }
 
-.home-page-info p {
+.page-info p {
   font-size: 0.9rem;
   font-weight: 300;
 
 }
 
-.home-page-info-email {
+.page-info-email {
   color: white;
   font-weight: 600;
   font-size: .9rem;
   text-decoration: none;
 }
 
-.home-page-info-email:hover {
+.page-info-email:hover {
   color: #b12c36;
 }
 
-.home-page-info-heading {
+.page-info-heading {
   font-weight: 600;
 }
