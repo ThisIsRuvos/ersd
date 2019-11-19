@@ -1,17 +1,19 @@
-import {Body, Controller, Get, HttpService, Post, Req, UseGuards} from '@nestjs/common';
-import {EmailSubscriptionInfo, RestSubscriptionInfo, SmsSubscriptionInfo, UserSubscriptions} from '../../../../../libs/ersdlib/src/lib/user-subscriptions';
-import {UserController} from '../user/user.controller';
-import {AuthGuard} from '@nestjs/passport';
-import {AuthRequest} from '../auth-module/auth-request';
-import {ISubscription, Subscription} from '../../../../../libs/ersdlib/src/lib/subscription';
-import {Constants} from '../../../../../libs/ersdlib/src/lib/constants';
-import {IPerson, Person} from '../../../../../libs/ersdlib/src/lib/person';
-import {AxiosResponse} from 'axios';
-import {IOperationOutcome} from '../../../../../libs/ersdlib/src/lib/operation-outcome';
-import {IServerConfig} from '../server-config';
-import {AppService} from '../app.service';
-
-const authPrefix = 'Authorization: Bearer ';
+import { Body, Controller, Get, HttpService, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  EmailSubscriptionInfo,
+  RestSubscriptionInfo,
+  SmsSubscriptionInfo,
+  UserSubscriptions
+} from '../../../../../libs/ersdlib/src/lib/user-subscriptions';
+import { UserController } from '../user/user.controller';
+import { AuthGuard } from '@nestjs/passport';
+import { AuthRequest } from '../auth-module/auth-request';
+import { ISubscription, Subscription } from '../../../../../libs/ersdlib/src/lib/subscription';
+import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
+import { IPerson, Person } from '../../../../../libs/ersdlib/src/lib/person';
+import { AxiosResponse } from 'axios';
+import { IOperationOutcome } from '../../../../../libs/ersdlib/src/lib/operation-outcome';
+import { AppService } from '../app.service';
 
 @Controller('subscription')
 export class SubscriptionController {
@@ -57,6 +59,7 @@ export class SubscriptionController {
   private buildUserSubscriptions(emailSubscription: Subscription, restSubscription: Subscription, smsSubscription: Subscription): UserSubscriptions {
     const userSubscriptions = new UserSubscriptions();
 
+    // email
     if (emailSubscription && emailSubscription.channel && emailSubscription.channel.endpoint) {
       userSubscriptions.emailSubscription = {
         emailAddress: emailSubscription.channel.endpoint.startsWith('mailto:') ?
@@ -65,15 +68,18 @@ export class SubscriptionController {
         includeArtifacts: !!emailSubscription.channel.payload
       };
 
-      if (emailSubscription.channel.payload === 'application/json') {
-        userSubscriptions.emailSubscription.format = 'json';
-      } else if (emailSubscription.channel.payload === 'application/xml') {
-        userSubscriptions.emailSubscription.format = 'xml';
+      if (emailSubscription.channel.payload) {
+        if (emailSubscription.channel.payload.startsWith('application/json')) {
+          userSubscriptions.emailSubscription.format = 'json';
+        } else if (emailSubscription.channel.payload.startsWith('application/xml')) {
+          userSubscriptions.emailSubscription.format = 'xml';
+        }
       }
     }
 
+    // rest
     if (restSubscription && restSubscription.channel && restSubscription.channel.endpoint) {
-      const authorizationHeader = (restSubscription.channel.header || []).find(h => h.startsWith(authPrefix));
+      const authorizationHeader = (restSubscription.channel.header || []).find(h => h.startsWith(Constants.authPrefix));
 
       userSubscriptions.restSubscription = {
         endpoint: restSubscription.channel.endpoint
@@ -81,10 +87,11 @@ export class SubscriptionController {
 
       if (authorizationHeader) {
         userSubscriptions.restSubscription.authorization =
-          authorizationHeader.substring(authPrefix.length);
+          authorizationHeader.substring(Constants.authPrefix.length);
       }
     }
 
+    // sms
     if (smsSubscription && smsSubscription.channel && smsSubscription.channel.endpoint) {
       userSubscriptions.smsSubscription = {
         carrier: smsSubscription.smsCarrier,
@@ -125,10 +132,10 @@ export class SubscriptionController {
       if (updated.includeArtifacts) {
         switch (updated.format) {
           case 'json':
-            current.channel.payload = 'application/json';
+            current.channel.payload = 'application/json;bodytext=' + Buffer.from(Constants.defaultEmailBody).toString('base64');
             break;
           case 'xml':
-            current.channel.payload = 'application/xml';
+            current.channel.payload = 'application/xml;bodytext=' + Buffer.from(Constants.defaultEmailBody).toString('base64');
             break;
           default:
             throw new Error('Unexpected format specified for email subscription');
@@ -166,14 +173,14 @@ export class SubscriptionController {
 
       if (updated.authorization) {
         current.channel.header = current.channel.header || [];
-        let authorizationHeader = (current.channel.header || []).find(h => h.startsWith(authPrefix));
+        let authorizationHeader = (current.channel.header || []).find(h => h.startsWith(Constants.authPrefix));
 
         if (!authorizationHeader) {
-          authorizationHeader = authPrefix + updated.authorization;
+          authorizationHeader = Constants.authPrefix + updated.authorization;
           current.channel.header.push(authorizationHeader);
         } else if (authorizationHeader) {
           const index = current.channel.header.indexOf(authorizationHeader);
-          current.channel.header[index] = authPrefix + updated.authorization;
+          current.channel.header[index] = Constants.authPrefix + updated.authorization;
         }
       }
 

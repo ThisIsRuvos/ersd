@@ -129,7 +129,10 @@ export class UserController {
               const foundNext = bundle.link.find((link) => link.relation === 'next');
 
               if (foundNext) {
-                getNext(foundNext.url)
+                const nextParams = foundNext.url.substring(foundNext.url.indexOf('?'));
+                const nextUrl = this.appService.serverConfig.fhirServerBase + nextParams;
+
+                getNext(nextUrl)
                   .then(() => resolve())
                   .catch((err) => reject(err));
               } else {
@@ -247,7 +250,7 @@ export class UserController {
       newSubscription.criteria = this.appService.serverConfig.subscriptionCriteria;
       newSubscription.channel.type = 'email';
       newSubscription.channel.endpoint = 'mailto:' + updatePerson.email;
-      newSubscription.channel.payload = 'application/xml';    // Default payload to JSON (for now)
+      newSubscription.channel.payload = 'application/xml;bodytext=' + Buffer.from(Constants.defaultEmailBody).toString('base64');    // Default payload to JSON (for now)
       newSubscription.status = this.appService.serverConfig.enableSubscriptions ? 'requested' : 'off';
 
       this.logger.log(`Person does not already exist. Creating default subscriptions for new person via url: ${newSubscriptionUrl}`);
@@ -355,7 +358,7 @@ export class UserController {
     this.logger.log(`Done deleting person ${person.id}`);
   }
 
-  @Delete(':me')
+  @Delete('me')
   async deleteMe(@Req() request: AuthRequest) {
     const me = await this.getMyPerson(request);
 
