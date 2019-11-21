@@ -60,6 +60,8 @@ div.footer {
 
 .jumbotron {
   background-color: #F8F9F9 !important;
+  text-align: center;
+  margin: 0 auto;
 }
 
 .modal-dialog {
@@ -107,11 +109,12 @@ div.footer {
 
 .ersd-footer {
   margin-top: 10px;
+  font-size: 0.9rem;
   padding-bottom: 10px;
   color: rgba(255,255,255, 0.8);
   font-weight: 300;
   text-align: center;
-  line-height: 20px;
+  line-height: 15px;
   position: absolute;
   bottom: 10px;
   left: 0;
@@ -121,7 +124,7 @@ div.footer {
 }
 
 .footer-heading {
-  font-size: 1.2rem;
+  font-size: .9rem;
   color: white;
   font-weight: 500;
   line-height: 50px;
@@ -130,7 +133,7 @@ div.footer {
 .footer-contact-email {
   color: white;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: .9rem;
   text-decoration: none;
 }
 
@@ -138,3 +141,80 @@ div.footer {
   color: #b12c36;
 }
 
+.home-grid-container {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-template-rows: repeat(3, min-content);
+  grid-gap: 3rem;
+  padding: 150px 50px 300px 50px;
+  margin: 0 auto;
+}
+
+
+.home-grid-item:hover  {
+   transform: scale(1.1, 1.1);
+}
+
+.home-grid-item-1:hover  {
+   transform: scale(1, 1);
+}
+
+.home-grid-item-1 {
+  grid-column: 1 / span 3;
+  background-color: transparent;
+  color: white;
+  text-align: center;
+  font-weight: 200;
+  box-shadow: none;
+  border: none;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.home-grid-item-1 img {
+  height: 100px;
+}
+
+
+
+.page-info {
+  grid-column: 1 / span 3;
+  background-color: transparent;
+  color: white;
+  text-align: center;
+  font-weight: 300;
+  box-shadow: none;
+  border: none;
+  margin-top: -40px;
+}
+
+.page-info p {
+  font-size: 0.9rem;
+  font-weight: 300;
+  
+}
+
+.page-info-email {
+  color: white;
+  font-weight: 600;
+  font-size: .9rem;
+  text-decoration: none;
+}
+
+.page-info-email:hover {
+  color: #b12c36;
+}
+
+.page-info-heading {
+  font-weight: 600;
+}
+
+.unauthenticated-message {
+  grid-column: 1 / span 3;
+  width: 100%;
+  background-color: #F8F9F9 !important;
+  text-align: center;
+  margin: 0 auto;
+  padding: 20px 50px;
+  border-radius: 5px;
+}

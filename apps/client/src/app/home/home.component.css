@@ -2,8 +2,8 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: 200px min-content;
-  grid-gap: 2rem;
-  padding: 150px 50px 300px 50px;
+  grid-gap: 3rem;
+  padding: 150px 50px 200px 50px;
 }
 
 .home-grid-item {
@@ -38,6 +38,7 @@
   box-shadow: none;
   border: none;
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 i {
@@ -66,4 +67,38 @@ img {
 a {
   text-decoration: none;
   color: white;
+}
+
+
+
+.page-info {
+  grid-column: 1 / span 3;
+  background-color: transparent;
+  color: white;
+  text-align: center;
+  font-weight: 300;
+  box-shadow: none;
+  border: none;
+  margin-top: -40px;
+}
+
+.page-info p {
+  font-size: 0.9rem;
+  font-weight: 300;
+
+}
+
+.page-info-email {
+  color: white;
+  font-weight: 600;
+  font-size: .9rem;
+  text-decoration: none;
+}
+
+.page-info-email:hover {
+  color: #b12c36;
+}
+
+.page-info-heading {
+  font-weight: 600;
 }
