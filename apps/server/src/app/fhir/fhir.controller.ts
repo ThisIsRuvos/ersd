@@ -79,7 +79,28 @@ export class FhirController {
       throw new BadRequestException(`Requests for the resource type ${resourceType} are not allowed`);
     }
 
-    const fhirUrl = joinUrl(this.appService.serverConfig.fhirServerBase, fhirPart);
+    let queryParams;
+
+    if (fhirPart.indexOf('?') > 0) {
+      queryParams = fhirPart.substring(fhirPart.indexOf('?') + 1);
+      fhirPart = fhirPart.substring(0, fhirPart.indexOf('?'));
+
+      const queryParamsSplit = queryParams.split('&');
+
+      for (let i = queryParamsSplit.length - 1; i >= 0; i--) {
+        if (queryParamsSplit[i].startsWith('api-key=')) {
+          queryParamsSplit.splice(i, 1);
+        }
+      }
+
+      queryParams = queryParamsSplit.join('&');
+    }
+
+    let fhirUrl = joinUrl(this.appService.serverConfig.fhirServerBase, fhirPart);
+
+    if (queryParams) {
+      fhirUrl += '?' + queryParams;
+    }
 
     const headers = request.headers;
     delete headers['authorization'];
