@@ -18,7 +18,12 @@
             "main": "apps/client/src/main.ts",
             "polyfills": "apps/client/src/polyfills.ts",
             "tsConfig": "apps/client/tsconfig.app.json",
-            "assets": ["apps/client/src/favicon.ico", "apps/client/src/assets"],
+            "assets": [
+              "apps/client/src/favicon.ico",
+              "apps/client/src/robots.txt",
+              "apps/client/src/sitemap.txt",
+              "apps/client/src/assets"
+            ],
             "styles": [
               "apps/client/src/styles.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.css",
