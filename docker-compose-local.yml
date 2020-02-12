@@ -9,9 +9,15 @@ services:
     ports:
       - 8081:8080
     environment:
-      DATASOURCE_DRIVER: 'org.apache.derby.jdbc.EmbeddedDriver'
-      DATASOURCE_URL: 'jdbc:derby:directory:target/jpaserver_derby_files;create=true'
-      HIBERNATE_DIALECT: 'ca.uhn.fhir.jpa.util.DerbyTenSevenHapiFhirDialect'
+      DATASOURCE_USERNAME: hapi_user
+      DATASOURCE_PASSWORD: S3cretP8ss
+      DATASOURCE_DRIVER: org.h2.Driver
+      DATASOURCE_URL: jdbc:h2:file:/var/lib/jetty/target/database/h2
+      HIBERNATE_DIALECT: org.hibernate.dialect.H2Dialect
+    volumes:
+      - hapi-fhir-data:/var/lib/jetty/target
+    depends_on:
+      - aws-smtp-relay
   keycloak:
     image: jboss/keycloak:7.0.0
     ports:
@@ -19,6 +25,10 @@ services:
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
+    volumes:
+      - keycloak-data:/opt/jboss/keycloak/
+    depends_on:
+      - aws-smtp-relay
   web:
     build: .
     ports:
@@ -26,3 +36,9 @@ services:
     volumes:
       - ./dist/apps:/ersd
       - ./node_modules:/ersd/server/node_modules
+    depends_on:
+      - hapi-fhir
+      - keycloak
+volumes:
+  hapi-fhir-data:
+  keycloak-data:
