@@ -24,6 +24,10 @@
           <li class="nav-item" *ngIf="authService.loggedIn && authService.isAdmin" [class.active]="adminLink.isActive">
             <a class="nav-link" routerLink="/admin" routerLinkActive #adminLink="routerLinkActive">Admin</a>
           </li>
+          <li class="nav-item" *ngIf="authService.loggedIn">
+            <button type="button" class="btn btn-outline-danger">Download</button>
+          </li>
+          
         </ul>
       </div>
       <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
