@@ -21,5 +21,7 @@ export class DownloadController {
 
   @Post()
   @UseGuards(AuthGuard())
-  async download(@Req() request: AuthRequest, @Body() body: IDownloadRequest) {}
+  async download(@Req() request: AuthRequest, @Body() body: IDownloadRequest) {
+    console.log(body);
+  }
 }
