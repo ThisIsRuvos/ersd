@@ -10,7 +10,6 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { AuthRequest } from '../auth-module/auth-request';
 import { AppService } from '../app.service';
-import { IDownloadRequest } from '../../../../../libs/ersdlib/src/lib/download-request';
 
 @Controller('download')
 export class DownloadController {
@@ -21,7 +20,7 @@ export class DownloadController {
 
   @Post()
   @UseGuards(AuthGuard())
-  async download(@Req() request: AuthRequest, @Body() body: IDownloadRequest) {
-    console.log(body);
+  async download(@Req() request: AuthRequest, @Body() body: any) {
+    console.log('request body: ', body);
   }
 }

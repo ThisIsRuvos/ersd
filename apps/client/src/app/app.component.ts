@@ -2,9 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from './auth.service';
 import { HttpClient } from '@angular/common/http';
 
-// import { IDownloadRequest } from '../../../../../libs/ersdlib/src/lib/download-request';
-import { IDownloadRequest } from '../../../../libs/ersdlib/src/lib/download-request';
-
 @Component({
   selector: 'ersd-root',
   templateUrl: './app.component.html',
@@ -20,11 +17,7 @@ export class AppComponent implements OnInit {
     this.authService.checkSession();
   }
 
-  request: IDownloadRequest = {
-    fileContent: 'Download Content',
-    fileName: 'Downloaded File Name',
-    message: 'Download Message'
-  };
+  request: any = {};
 
   download() {
     this.httpClient
