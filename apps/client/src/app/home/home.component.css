@@ -12,21 +12,21 @@
   border-radius: 7px;
   text-align: center;
   color: white;
-  box-shadow: 0px 13px 10px -7px rgba(0, 0, 0,0.1);
+  box-shadow: 0px 13px 10px -7px rgba(0, 0, 0, 0.1);
   transition: all 0.4s ease;
-  border:solid 1px #043236;
- 
-  -webkit-box-shadow: 0px 6px 0px #043236;;
-  -moz-box-shadow: 0px 6px 0px #043236;;
-  box-shadow: 0px 6px 0px #043236;;
+  border: solid 1px #043236;
+
+  -webkit-box-shadow: 0px 6px 0px #043236;
+  -moz-box-shadow: 0px 6px 0px #043236;
+  box-shadow: 0px 6px 0px #043236;
 }
 
-.home-grid-item:hover  {
-   transform: scale(1.1, 1.1);
+.home-grid-item:hover {
+  transform: scale(1.1, 1.1);
 }
 
-.home-grid-item-1:hover  {
-   transform: scale(1, 1);
+.home-grid-item-1:hover {
+  transform: scale(1, 1);
 }
 
 .home-grid-item-1 {
@@ -43,7 +43,7 @@
 
 i {
   font-size: 70px;
-  opacity: .5;
+  opacity: 0.5;
   color: white;
 }
 
@@ -69,8 +69,6 @@ a {
   color: white;
 }
 
-
-
 .page-info {
   grid-column: 1 / span 3;
   background-color: transparent;
@@ -85,13 +83,12 @@ a {
 .page-info p {
   font-size: 0.9rem;
   font-weight: 300;
-
 }
 
 .page-info-email {
   color: white;
   font-weight: 600;
-  font-size: .9rem;
+  font-size: 0.9rem;
   text-decoration: none;
 }
 
@@ -101,4 +98,16 @@ a {
 
 .page-info-heading {
   font-weight: 600;
+}
+
+.download-button {
+  margin-top: 20px;
+  background-color: #b12c36;
+  color: white;
+  outline: none;
+  transition: all ease 0.3s;
+}
+
+.download-button:hover {
+  background-color: #a31e29;
 }
