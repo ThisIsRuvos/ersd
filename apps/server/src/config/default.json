@@ -1,5 +1,9 @@
 {
   "server": {
+    "payload": {
+      "Bucket":"",
+      "Key":""
+    },
     "port": 3333,
     "authCertificate": "",
     "fhirServerBase": "",
