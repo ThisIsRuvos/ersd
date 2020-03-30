@@ -37,6 +37,7 @@ export class UploadController {
       this.logger.log('Upload is already JSON');
 
       resource = JSON.parse(body.fileContent);
+      const fhir = new Fhir();
       xmlData = fhir.objToXml(resource);
     }
 
