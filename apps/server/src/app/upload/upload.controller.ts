@@ -53,7 +53,8 @@ export class UploadController {
       this.logger.log(`Uploaded payload to s3://${Bucket}/${Key}`);
     }
     catch(e) {
-      this.logger.error(`Failed to upload to s3 ${JSON.stringify(e)}`)
+      this.logger.error(`Failed to upload to s3 ${JSON.stringify(e)}`);
+      throw e;
     }
 
 
