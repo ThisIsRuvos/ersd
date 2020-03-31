@@ -4,6 +4,10 @@ services:
     image: loopingz/aws-smtp-relay
     ports:
       - 10025:10025
+    environment:
+      AWS_REGION: ${AWS_REGION}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
   hapi-fhir:
     image: registry.ruvos.com/ersd/ersd-hapi-fhir
     ports:
@@ -39,6 +43,10 @@ services:
     depends_on:
       - hapi-fhir
       - keycloak
+    environment:
+      AWS_REGION: ${AWS_REGION}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
 volumes:
   hapi-fhir-data:
   keycloak-data:

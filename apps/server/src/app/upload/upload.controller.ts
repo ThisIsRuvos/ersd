@@ -7,6 +7,7 @@ import {Fhir} from 'fhir/fhir';
 import {IBundle} from '../../../../../libs/ersdlib/src/lib/bundle';
 import {AppService} from '../app.service';
 import { IOperationOutcome } from '../../../../../libs/ersdlib/src/lib/operation-outcome';
+import S3 from 'aws-sdk/clients/s3';
 
 @Controller('upload')
 export class UploadController {
@@ -23,18 +24,39 @@ export class UploadController {
     this.logger.log('Admin is uploading a document');
 
     let resource;
+    let xmlData;
 
     // Parse the JSON or XML
     if (body.fileName.endsWith('.xml')) {
       this.logger.log('Upload is an XML file. Converting to JSON');
 
       const fhir = new Fhir();
+      xmlData = body.fileContent;
       resource = fhir.xmlToObj(body.fileContent);
     } else if (body.fileName.endsWith('.json')) {
       this.logger.log('Upload is already JSON');
 
       resource = JSON.parse(body.fileContent);
+      const fhir = new Fhir();
+      xmlData = fhir.objToXml(resource);
     }
+
+    try {
+      const s3client = new S3();
+      const Bucket = this.appService.serverConfig.payload.Bucket;
+      const Key = this.appService.serverConfig.payload.Key;
+      const s3return = await s3client.putObject({
+        Bucket,
+        Key,
+        Body: xmlData,
+      }).promise()
+      this.logger.log(`Uploaded payload to s3://${Bucket}/${Key}`);
+    }
+    catch(e) {
+      this.logger.error(`Failed to upload to s3 ${JSON.stringify(e)}`);
+      throw e;
+    }
+
 
     // Attach the message to the bundle being uploaded
     if (body.message && resource.resourceType === 'Bundle') {
