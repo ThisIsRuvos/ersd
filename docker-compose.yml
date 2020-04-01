@@ -1,13 +1,5 @@
 version: '3'
 services:
-  aws-smtp-relay:
-    image: loopingz/aws-smtp-relay
-    ports:
-      - 10025:10025
-    environment:
-      AWS_REGION: ${AWS_REGION}
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
   hapi-fhir:
     image: registry.ruvos.com/ersd/ersd-hapi-fhir
     ports:
@@ -18,10 +10,13 @@ services:
       DATASOURCE_DRIVER: org.h2.Driver
       DATASOURCE_URL: jdbc:h2:file:/var/lib/jetty/target/database/h2
       HIBERNATE_DIALECT: org.hibernate.dialect.H2Dialect
+      EMAIL_FROM: ${ERSD_EMAIL_FROM}
+      EMAIL_HOST: ${ERSD_EMAIL_HOST}
+      EMAIL_PORT: ${ERSD_EMAIL_PORT}
+      EMAIL_USERNAME: ${ERSD_EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${ERSD_EMAIL_PASSWORD}
     volumes:
       - hapi-fhir-data:/var/lib/jetty/target
-    depends_on:
-      - aws-smtp-relay
   keycloak:
     image: jboss/keycloak:7.0.0
     ports:
@@ -31,8 +26,6 @@ services:
       KEYCLOAK_PASSWORD: admin
     volumes:
       - keycloak-data:/opt/jboss/keycloak/
-    depends_on:
-      - aws-smtp-relay
   web:
     build: .
     ports:
