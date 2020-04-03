@@ -32,7 +32,7 @@ export class DownloadController {
       Key,
       ResponseContentDisposition,
     }
-    const data = s3client.getSignedUrl('getObject',params);
-    return {url:data}
+    const url = await s3client.getSignedUrlPromise('getObject', params);
+    return { url }
   }
 }
