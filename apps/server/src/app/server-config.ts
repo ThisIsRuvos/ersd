@@ -35,6 +35,7 @@ export interface IServerConfig {
   enableSubscriptions: boolean;
   restrictedResourceTypes: string[];
   contactInfo: IServerConfigContactInfo;
+  exampleQuery?: string;
   payload: {
     Bucket: string;
     Key: string;
