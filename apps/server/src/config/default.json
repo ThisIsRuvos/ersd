@@ -10,6 +10,7 @@
     "subscriptionCriteria": "Bundle?",
     "enableSubscriptions": true,
     "restrictedResourceTypes": ["Person", "Subscription"],
+    "exampleQuery": "/api/fhir/Bundle?_sort=-_lastUpdated&_count=1",
     "contactInfo": {
       "checkDurationSeconds": 0,
       "checkCountPerPage": 5,

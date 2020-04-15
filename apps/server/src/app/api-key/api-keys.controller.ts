@@ -7,6 +7,10 @@ import {Person} from '../../../../../libs/ersdlib/src/lib/person';
 import {IUserApiKeys} from '../../../../../libs/ersdlib/src/lib/user-api-keys';
 import {ICoding} from '../../../../../libs/ersdlib/src/lib/coding';
 import {AppService} from '../app.service';
+import * as config from 'config';
+import { IServerConfig } from '../server-config';
+
+const serverConfig = <IServerConfig> config.server;
 
 @Controller('api-keys')
 export class ApiKeysController {
@@ -25,6 +29,10 @@ export class ApiKeysController {
 
     if (foundInboundTag) {
       response.inbound = foundInboundTag.code;
+    }
+
+    if (serverConfig && serverConfig.exampleQuery) {
+      response.exampleQuery = serverConfig.exampleQuery;
     }
 
     return response;
