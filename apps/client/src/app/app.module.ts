@@ -17,6 +17,7 @@ import { CreatePersonComponent } from './create-person/create-person.component';
 import { EditPersonComponent } from './edit-person/edit-person.component';
 import { AdminEditPersonComponent } from './admin/edit-person/edit-person.component';
 import { IClientConfig } from '../../../../libs/ersdlib/src/lib/client-config';
+import { ConfigService } from './config.service';
 
 const appRoutes: Routes = [
   { path: 'admin',            component: AdminComponent },
@@ -30,7 +31,7 @@ const appRoutes: Routes = [
   }
 ];
 
-export function initializer(keycloak: KeycloakService, httpClient: HttpClient): () => Promise<any> {
+export function initializer(keycloak: KeycloakService, httpClient: HttpClient, configService: ConfigService): () => Promise<any> {
   const token = localStorage.getItem('kc.token');
   const idToken = localStorage.getItem('kc.idToken');
   const refreshToken = localStorage.getItem('kc.refreshToken');
@@ -38,6 +39,8 @@ export function initializer(keycloak: KeycloakService, httpClient: HttpClient): 
   return (): Promise<any> => {
     return httpClient.get('/api/config').toPromise()
       .then((config: IClientConfig) => {
+        Object.assign(configService, config);
+
         return keycloak.init({
           config: config.keycloak,
           initOptions: {
@@ -80,11 +83,12 @@ export function initializer(keycloak: KeycloakService, httpClient: HttpClient): 
   ],
   providers: [
     AuthService,
+    ConfigService,
     {
       provide: APP_INITIALIZER,
       multi: true,
       useFactory: initializer,
-      deps: [KeycloakService, HttpClient]
+      deps: [KeycloakService, HttpClient, ConfigService]
     }
   ],
   bootstrap: [AppComponent]

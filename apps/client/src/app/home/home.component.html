@@ -5,11 +5,9 @@
 
   <div class="page-info">
     <p>
-      This site provides access to the current eRSD specification (including the
-      current Reportable Condition Trigger Code (RCTC) value sets) for
-      Electronic Case Reporting (eCR). The eRSD is used to guide triggering and
-      reporting of initial case reports within participating Electronic Health
-      Records. For more information, please visit
+      This site provides access to the current eRSD specification (including the current Reportable Condition Trigger
+      Code (RCTC) value sets) for Electronic Case Reporting (eCR). The eRSD is used to guide triggering and reporting
+      of initial case reports within participating Electronic Health Records. For more information, please visit
       <a
         class="page-info-email"
         href="https://ecr.aimsplatform.org/ehr-implementers/triggering/"
@@ -17,22 +15,27 @@
       >.
     </p>
     <p>
-      <span class="page-info-heading">Registration</span> – If this is your
-      first time visiting the site, please register for an account. Registration
-      is needed so we have contact information to alert you for subsequent
-      routine and emergent updates.
+      <span class="page-info-heading">Registration</span> – If this is your first time visiting the site, please
+      register for an account. Registration is needed so we have contact information to alert you for subsequent routine
+      and emergent updates.
     </p>
 
     <p>
-      <span class="page-info-heading">Access to Content</span> - Once
-      registered, you can choose to receive content through subscription (email,
-      SMS, or REST) or polling of the eRSD server. You will also be able to
-      choose whether you receive the content in XML or JSON format.
+      <span class="page-info-heading">Access to Content</span> - Once registered, you can choose to receive content
+      through subscription (email, SMS, or REST) or polling of the eRSD server. You will also be able to choose whether
+      you receive the content in XML or JSON format.
     </p>
     <div *ngIf="authService.loggedIn">
-      <button type="button" class="btn download-button" (click)="download()">
-        Download Latest eRSD Payload
-      </button>
+      <div *ngIf="!configService.hasExcelDownload">
+        <button type="button" class="btn download-button" (click)="downloadBundle()">Download Latest eRSD Payload</button>
+      </div>
+      <div *ngIf="configService.hasExcelDownload" ngbDropdown #myDrop="ngbDropdown">
+        <button class="btn download-button" id="downloadMenuButton" ngbDropdownAnchor (focus)="myDrop.open()">Download</button>
+        <div ngbDropdownMenu aria-labelledby="downloadMenuButton">
+          <button ngbDropdownItem (click)="downloadBundle()">Latest eRSD Payload</button>
+          <button ngbDropdownItem (click)="downloadExcel()">Latest RCTC Spreadsheet</button>
+        </div>
+      </div>
     </div>
   </div>
 

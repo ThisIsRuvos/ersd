@@ -4,4 +4,5 @@ export interface IClientConfig {
     realm: string;
     clientId: string;
   };
+  hasExcelDownload: boolean;
 }

@@ -43,6 +43,7 @@
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "rxjs": "6.3.3",
+    "save-as": "^0.1.8",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {

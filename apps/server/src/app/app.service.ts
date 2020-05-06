@@ -5,11 +5,13 @@ import {IServerConfig} from './server-config';
 import {AuthRequest} from './auth-module/auth-request';
 import {IEmailConfig} from './email-config';
 import {buildFhirUrl} from './helper';
+import { IClientConfig } from '../../../../libs/ersdlib/src/lib/client-config';
 
 @Injectable()
 export class AppService {
   serverConfig: IServerConfig;
   emailConfig: IEmailConfig;
+  clientConfig: IClientConfig;
 
   constructor() {
     if (config.server) {
@@ -18,6 +20,10 @@ export class AppService {
 
     if (config.email) {
       this.emailConfig = <IEmailConfig> config.email;
+    }
+
+    if (config.client) {
+      this.clientConfig = <IClientConfig> config.client;
     }
   }
 

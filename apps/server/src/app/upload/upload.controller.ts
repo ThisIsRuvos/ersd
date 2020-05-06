@@ -8,20 +8,37 @@ import {IBundle} from '../../../../../libs/ersdlib/src/lib/bundle';
 import {AppService} from '../app.service';
 import { IOperationOutcome } from '../../../../../libs/ersdlib/src/lib/operation-outcome';
 import S3 from 'aws-sdk/clients/s3';
+import path from "path";
+import * as fs from 'fs';
 
 @Controller('upload')
 export class UploadController {
-  private readonly logger = new Logger();
+  private readonly logger = new Logger('UploadController');
 
   constructor(private httpService: HttpService, private appService: AppService) {
   }
 
-  @Post()
+  @Post('excel')
   @UseGuards(AuthGuard())
-  async upload(@Req() request: AuthRequest, @Body() body: IUploadRequest) {
+  async uploadExcel(@Req() request: AuthRequest, @Body() body: IUploadRequest) {
     this.appService.assertAdmin(request);
 
-    this.logger.log('Admin is uploading a document');
+    this.logger.log('Admin is uploading an RCTC excel');
+
+    const rctcExcelPath = path.resolve(this.appService.serverConfig.rctcExcelPath);
+
+    const buf = Buffer.from(body.fileContent, 'base64');
+    fs.writeFileSync(rctcExcelPath, buf);
+
+    this.logger.log(`Updated RCTC excel file at path ${rctcExcelPath}.`);
+  }
+
+  @Post('bundle')
+  @UseGuards(AuthGuard())
+  async uploadBundle(@Req() request: AuthRequest, @Body() body: IUploadRequest) {
+    this.appService.assertAdmin(request);
+
+    this.logger.log('Admin is uploading a bundle');
 
     let resource;
     let xmlData;
@@ -56,7 +73,6 @@ export class UploadController {
       this.logger.error(`Failed to upload to s3 ${JSON.stringify(e)}`);
       throw e;
     }
-
 
     // Attach the message to the bundle being uploaded
     if (body.message && resource.resourceType === 'Bundle') {

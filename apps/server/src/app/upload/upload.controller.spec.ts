@@ -64,7 +64,7 @@ describe('Subscription Controller', () => {
     };
 
     try {
-      await controller.upload(request, requestBody);
+      await controller.uploadBundle(request, requestBody);
       done('expected upload to throw an exception');
     } catch (ex) {
       expect(ex.status).toEqual(401);
@@ -206,7 +206,7 @@ describe('Subscription Controller', () => {
         }]
       });
 
-    await controller.upload(request, requestBody);
+    await controller.uploadBundle(request, requestBody);
 
     req.done();
   });

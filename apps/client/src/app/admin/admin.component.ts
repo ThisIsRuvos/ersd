@@ -16,15 +16,18 @@ export class AdminComponent implements OnInit {
   public users: Person[] = [];
   public message: string;
   public messageIsError: boolean;
-  public uploadFile: File;
-  public uploadFileContent: string;
-  public uploadMessage: string;
+  public bundleFile: File;
+  public bundleFileContent: string;
+  public bundleUploadMessage: string;
   public emailRequest: IEmailRequest = {
     subject: '',
     message: ''
   };
+  public excelFile: File = null;
+  public excelFileContent: string;
 
-  @ViewChild('fileUploadField') fileUploadField: ElementRef;
+  @ViewChild('bundleUploadFile') bundleUploadField: ElementRef;
+  @ViewChild('excelUploadFile') excelUploadField: ElementRef;
 
   constructor(private httpClient: HttpClient,
               private modalService: NgbModal,
@@ -59,23 +62,60 @@ export class AdminComponent implements OnInit {
     modalRef.componentInstance.id = user.id;
   }
 
-  handleFileInput(files: FileList) {
+  handleBundleFileInput(files: FileList) {
     if (files.length !== 1) {
-      this.uploadFile = null;
+      this.bundleFile = null;
       return;
     }
 
-    this.uploadFile = files.item(0);
+    this.bundleFile = files.item(0);
 
     const fileReader = new FileReader();
     fileReader.onload = () => {
-      this.uploadFileContent = <string> fileReader.result;
+      this.bundleFileContent = <string> fileReader.result;
     };
-    fileReader.readAsText(this.uploadFile);
+    fileReader.readAsText(this.bundleFile);
   }
 
-  upload() {
-    if (!this.uploadFile || !this.uploadMessage) {
+  handleExcelFileInput(files: FileList) {
+    if (files.length !== 1) {
+      this.bundleFile = null;
+      return;
+    }
+
+    this.excelFile = files.item(0);
+
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      this.excelFileContent = <string> fileReader.result;
+      this.excelFileContent = this.excelFileContent.substring(this.excelFileContent.indexOf('base64,') + 7);
+    };
+    fileReader.readAsDataURL(this.excelFile);
+  }
+
+  uploadExcel() {
+    const request: IUploadRequest = {
+      fileContent: this.excelFileContent,
+      fileName: this.excelFile.name
+    };
+
+    this.httpClient.post('/api/upload/excel', request).toPromise()
+      .then(() => {
+        this.message = 'Successfully uploaded!';
+        this.messageIsError = false;
+
+        this.excelUploadField.nativeElement.value = '';
+        this.excelFile = null;
+        this.excelFileContent = null;
+      })
+      .catch((err) => {
+        this.message = getErrorString(err);
+        this.messageIsError = true;
+      });
+  }
+
+  uploadBundle() {
+    if (!this.bundleFile || !this.bundleUploadMessage) {
       return;
     }
 
@@ -86,28 +126,28 @@ export class AdminComponent implements OnInit {
     this.message = null;
     this.messageIsError = false;
 
-    if (!this.uploadFile.name.endsWith('.json') && !this.uploadFile.name.endsWith('.xml')) {
-      this.message = 'Unknown file type for uploaded file ' + this.uploadFile.name;
+    if (!this.bundleFile.name.endsWith('.json') && !this.bundleFile.name.endsWith('.xml')) {
+      this.message = 'Unknown file type for uploaded file ' + this.bundleFile.name;
       this.messageIsError = true;
       window.scrollTo(0, 0);
       return;
     }
 
     const request: IUploadRequest = {
-      fileContent: this.uploadFileContent,
-      fileName: this.uploadFile.name,
-      message: this.uploadMessage
+      fileContent: this.bundleFileContent,
+      fileName: this.bundleFile.name,
+      message: this.bundleUploadMessage
     };
 
-    this.httpClient.post('/api/upload', request).toPromise()
+    this.httpClient.post('/api/upload/bundle', request).toPromise()
       .then(() => {
         this.message = 'Successfully uploaded!';
         this.messageIsError = false;
 
-        this.fileUploadField.nativeElement.value = '';
-        this.uploadMessage = null;
-        this.uploadFile = null;
-        this.uploadFileContent = null;
+        this.bundleUploadField.nativeElement.value = '';
+        this.bundleUploadMessage = null;
+        this.bundleFile = null;
+        this.bundleFileContent = null;
       })
       .catch((err) => {
         this.message = getErrorString(err);
