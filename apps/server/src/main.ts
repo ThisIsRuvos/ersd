@@ -6,6 +6,7 @@ import {AppService} from './app/app.service';
 
 import * as bodyParser from 'body-parser';
 import * as path from 'path';
+import * as fs from 'fs';
 
 const appService = new AppService();
 const logger = new Logger('bootstrap');
@@ -33,6 +34,17 @@ if (!appService.serverConfig.fhirServerBase) {
 try {
   CheckContactInfo.execute(appService.serverConfig.fhirServerBase, appService.serverConfig.contactInfo, appService.emailConfig);
 } catch { }
+
+if (!appService.serverConfig.rctcExcelPath) {
+  throw new Error('"rctcExcelPath" is not configured. Cannot continue.');
+}
+
+const rctcExcelPath = path.resolve(appService.serverConfig.rctcExcelPath);
+const rctcExcelDir = path.dirname(rctcExcelPath);
+
+if (!fs.existsSync(rctcExcelDir)) {
+  throw new Error(`The directory for "rctcExcelPath" (${rctcExcelDir}) does not exist. It must exist to continue.`);
+}
 
 bootstrap();
 

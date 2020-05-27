@@ -2,7 +2,7 @@ FROM ubuntu AS build-ersd
 
 RUN apt-get update && \
 	apt-get install curl -y
-	
+
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt-get install nodejs -y
 
 WORKDIR /ersd
@@ -23,6 +23,7 @@ COPY --from=build-ersd /ersd/dist/apps/client/. /ersd/client/
 COPY --from=build-ersd /ersd/dist/apps/server/. /ersd/server/
 
 WORKDIR /ersd/server
+RUN mkdir /ersd/server/assets
 
 EXPOSE 3333
 

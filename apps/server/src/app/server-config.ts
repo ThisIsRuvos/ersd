@@ -31,6 +31,7 @@ export interface IServerConfig {
   port: number;
   authCertificate: string;
   fhirServerBase: string;
+  rctcExcelPath: string;
   subscriptionCriteria: string;
   enableSubscriptions: boolean;
   restrictedResourceTypes: string[];

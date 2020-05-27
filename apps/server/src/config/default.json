@@ -7,6 +7,7 @@
     "port": 3333,
     "authCertificate": "",
     "fhirServerBase": "",
+    "rctcExcelPath": "assets/rctc.xlsx",
     "subscriptionCriteria": "Bundle?",
     "enableSubscriptions": true,
     "restrictedResourceTypes": ["Person", "Subscription"],
