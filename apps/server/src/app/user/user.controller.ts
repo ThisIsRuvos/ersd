@@ -57,6 +57,11 @@ export class UserController {
         pass: this.appService.emailConfig.password
       };
     }
+    else {
+      transportOptions.secure = false;
+    }
+    const tos = JSON.stringify(transportOptions);
+    this.logger.log(`transportOptions ${tos}`);
 
     this.logger.log('Getting all people registered in the FHIR server');
     const people = await this.getAllPeople(request);
