@@ -7,7 +7,7 @@
     "start:client": "ng serve client --proxy-config proxy.conf.json",
     "build:server": "ng build server",
     "build:client": "ng build client",
-    "build": "ng build client && ng build server",
+    "build": "ng build client && ng build server && cp -R apps/server/src/assets dist/apps/server",
     "test:server": "ng test server",
     "test:client": "ng test client",
     "e2e": "ng e2e client",

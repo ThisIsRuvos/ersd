@@ -24,18 +24,39 @@ export class UploadController {
     this.appService.assertAdmin(request);
 
     this.logger.log('Admin is uploading an RCTC excel');
-
-    const rctcExcelPath = path.resolve(this.appService.serverConfig.rctcExcelPath);
-
     const buf = Buffer.from(body.fileContent, 'base64');
-    fs.writeFileSync(rctcExcelPath, buf);
+    const Bucket = this.appService.serverConfig.payload.Bucket;
+    if (typeof Bucket === 'undefined' || Bucket === "") {
+      this.logger.log(`Uploading RCTC excel to local storage`);
+      const rctcExcelPath = path.resolve(this.appService.serverConfig.rctcExcelPath);
+      fs.writeFileSync(rctcExcelPath, buf);
+      this.logger.log(`Updated RCTC excel file at path ${rctcExcelPath}.`);
+    }
+    else {
+      this.logger.log(`Uploading RCTC excel to s3`);
+      try {
+        const s3client = new S3();
+        const Key = this.appService.serverConfig.payload.RCTCKey;
+        const s3return = await s3client.putObject({
+          Bucket,
+          Key,
+          Body: buf,
+        }).promise()
+        this.logger.log(`Uploaded RCTC excel to s3://${Bucket}/${Key}`);
+      }
+      catch(e) {
+        this.logger.error(`Failed to upload RCTC excel to s3 ${JSON.stringify(e)}`);
+        throw e;
+      }
+    }
 
-    this.logger.log(`Updated RCTC excel file at path ${rctcExcelPath}.`);
+    
   }
 
   @Post('bundle')
   @UseGuards(AuthGuard())
   async uploadBundle(@Req() request: AuthRequest, @Body() body: IUploadRequest) {
+    
     this.appService.assertAdmin(request);
 
     this.logger.log('Admin is uploading a bundle');
@@ -59,18 +80,26 @@ export class UploadController {
     }
 
     try {
-      const s3client = new S3();
       const Bucket = this.appService.serverConfig.payload.Bucket;
-      const Key = this.appService.serverConfig.payload.Key;
-      const s3return = await s3client.putObject({
-        Bucket,
-        Key,
-        Body: xmlData,
-      }).promise()
-      this.logger.log(`Uploaded payload to s3://${Bucket}/${Key}`);
+      if (typeof Bucket === 'undefined' || Bucket === "") {
+        this.logger.log(`Uploading bundle to local storage`);
+        const bundlePath = path.resolve(this.appService.serverConfig.bundlePath);
+        fs.writeFileSync(bundlePath, xmlData);
+        this.logger.log(`Updated bundle file at path ${bundlePath}.`);
+      }
+      else {
+        const s3client = new S3();
+        const Key = this.appService.serverConfig.payload.Key;
+        const s3return = await s3client.putObject({
+          Bucket,
+          Key,
+          Body: xmlData,
+        }).promise()
+        this.logger.log(`Uploaded bundle to s3://${Bucket}/${Key}`);
+      }
     }
     catch(e) {
-      this.logger.error(`Failed to upload to s3 ${JSON.stringify(e)}`);
+      this.logger.error(`Failed to upload bundle ${JSON.stringify(e)}`);
       throw e;
     }
 

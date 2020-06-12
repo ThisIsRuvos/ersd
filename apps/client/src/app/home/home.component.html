@@ -26,16 +26,11 @@
       you receive the content in XML or JSON format.
     </p>
     <div *ngIf="authService.loggedIn">
-      <div *ngIf="!configService.hasExcelDownload">
-        <button type="button" class="btn download-button" (click)="downloadBundle()">Download Latest eRSD Payload</button>
-      </div>
-      <div *ngIf="configService.hasExcelDownload" ngbDropdown #myDrop="ngbDropdown">
-        <button class="btn download-button" id="downloadMenuButton" ngbDropdownAnchor (focus)="myDrop.open()">Download</button>
-        <div ngbDropdownMenu aria-labelledby="downloadMenuButton">
-          <button ngbDropdownItem (click)="downloadBundle()">Latest eRSD Payload</button>
-          <button ngbDropdownItem (click)="downloadExcel()">Latest RCTC Spreadsheet</button>
-        </div>
-      </div>
+      
+      <span><button type="button" class="btn download-button" (click)="downloadBundle()">Download Latest eRSD Payload</button></span>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <span><button type="button" class="btn download-button" (click)="downloadExcel()">Latest RCTC Spreadsheet</button></span>
+      
     </div>
   </div>
 

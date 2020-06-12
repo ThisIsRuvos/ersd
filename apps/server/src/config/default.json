@@ -2,12 +2,14 @@
   "server": {
     "payload": {
       "Bucket":"",
-      "Key":""
+      "Key":"",
+      "RCTCKey":""
     },
     "port": 3333,
     "authCertificate": "",
     "fhirServerBase": "",
     "rctcExcelPath": "assets/rctc.xlsx",
+    "bundlePath": "assets/bundle.xml",
     "subscriptionCriteria": "Bundle?",
     "enableSubscriptions": true,
     "restrictedResourceTypes": ["Person", "Subscription"],

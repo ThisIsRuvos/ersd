@@ -23,28 +23,52 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {}
 
-  async downloadExcel() {
+  async downloadFile(data, filename) {
+    const url = data.url
+    console.log('Downloading');
+    if (url.includes('local')) {
+      return await this.downloadLocal(url, filename)
+    }
+    else {
+      return await this.downloadS3(url)
+    }
+  }
+  async downloadLocal(url, filename) {
     try {
-      const results = await this.httpClient.get('/api/download/excel', { responseType: 'blob' }).toPromise();
-      saveAs(results, 'rctc.xlsx');
+      const results = await this.httpClient.get(url, { responseType: 'blob' }).toPromise();
+      saveAs(results, filename);
     } catch (ex) {
       alert(`Error while downloading excel file: ${ex.message}`);
       console.error(ex);
     }
   }
+  async downloadS3(url) {
+    var a = document.createElement('a');
+    a.href = url;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    a.parentNode.removeChild(a);
+  }
 
-  downloadBundle() {
+  async downloadExcel() {
+    this.httpClient
+      .post('/api/download/excel', this.request)
+      .toPromise()
+      .then(async (data: PayloadDownload) => {
+        await this.downloadFile(data, 'rctc.xlsx')
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  async downloadBundle() {
     this.httpClient
       .post('/api/download', this.request)
       .toPromise()
-      .then((data: PayloadDownload) => {
-        console.log('Downloading');
-        var a = document.createElement('a');
-        a.href = data.url;
-        a.style.display = 'none';
-        document.body.appendChild(a);
-        a.click();
-        a.parentNode.removeChild(a);
+      .then(async (data: PayloadDownload) => {
+        await this.downloadFile(data, 'bundle.xml')
       })
       .catch(err => {
         console.log(err);

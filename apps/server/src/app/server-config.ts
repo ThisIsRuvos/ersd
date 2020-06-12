@@ -32,6 +32,7 @@ export interface IServerConfig {
   authCertificate: string;
   fhirServerBase: string;
   rctcExcelPath: string;
+  bundlePath: string;
   subscriptionCriteria: string;
   enableSubscriptions: boolean;
   restrictedResourceTypes: string[];
@@ -40,5 +41,6 @@ export interface IServerConfig {
   payload: {
     Bucket: string;
     Key: string;
+    RCTCKey: string;
   };
 }
