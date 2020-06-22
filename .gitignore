@@ -37,6 +37,9 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Configuration
 apps/server/src/config/local.json
+.env
 
 localStartup.sh

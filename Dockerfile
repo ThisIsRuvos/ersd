@@ -23,7 +23,7 @@ COPY --from=build-ersd /ersd/dist/apps/client/. /ersd/client/
 COPY --from=build-ersd /ersd/dist/apps/server/. /ersd/server/
 
 WORKDIR /ersd/server
-RUN mkdir /ersd/server/assets
+RUN mkdir -p /ersd/server/assets
 
 EXPOSE 3333
 
