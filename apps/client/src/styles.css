@@ -123,6 +123,10 @@ div.footer {
   padding: 0 50px;
 }
 
+. ersd-footer-version {
+  background-color: #eeeeee;
+}
+
 .footer-heading {
   font-size: .9rem;
   color: white;
@@ -191,7 +195,7 @@ div.footer {
 .page-info p {
   font-size: 0.9rem;
   font-weight: 300;
-  
+
 }
 
 .page-info-email {
