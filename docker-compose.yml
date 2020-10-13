@@ -10,7 +10,7 @@ services:
       DATASOURCE_DRIVER: org.h2.Driver
       DATASOURCE_URL: jdbc:h2:file:/var/lib/jetty/target/database/h2
       HIBERNATE_DIALECT: org.hibernate.dialect.H2Dialect
-      SERVER_ADDRESS: http://localhost:8081/hapi-fhir-jpaserver/fhir
+      SERVER_ADDRESS: http://hapi-fhir:8080/hapi-fhir-jpaserver/fhir
       EMAIL_FROM: ${ERSD_EMAIL_FROM}
       EMAIL_HOST: ${ERSD_EMAIL_HOST}
       EMAIL_PORT: ${ERSD_EMAIL_PORT}

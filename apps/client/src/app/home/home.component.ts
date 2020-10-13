@@ -63,9 +63,21 @@ export class HomeComponent implements OnInit {
       });
   }
 
-  async downloadBundle() {
+  async downloadJsonBundle() {
     this.httpClient
-      .post('/api/download', this.request)
+      .post('/api/download/jsonbundle', this.request)
+      .toPromise()
+      .then(async (data: PayloadDownload) => {
+        await this.downloadFile(data, 'bundle.json')
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  async downloadXmlBundle() {
+    this.httpClient
+      .post('/api/download/xmlbundle', this.request)
       .toPromise()
       .then(async (data: PayloadDownload) => {
         await this.downloadFile(data, 'bundle.xml')
