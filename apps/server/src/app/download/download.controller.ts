@@ -6,18 +6,21 @@ import {
   Post,
   Req,
   UseGuards, Response,
-  HttpException, HttpStatus, Res
+  HttpException, HttpStatus
 } from '@nestjs/common';
+
 import { AuthGuard } from '@nestjs/passport';
 import { AuthRequest } from '../auth-module/auth-request';
 import { AppService } from '../app.service';
 import S3 from 'aws-sdk/clients/s3';
 import path from "path";
 import * as fs from 'fs';
+import {Readable} from "stream";
 
 @Controller('download')
 export class DownloadController {
   private readonly logger = new Logger('DownloadController');
+
 
   constructor(
     private httpService: HttpService,
@@ -26,32 +29,17 @@ export class DownloadController {
 
   @Post("xmlbundle")
   @UseGuards(AuthGuard())
-  async downloadXmlBundle(@Req() request: AuthRequest, @Body() body: any, @Res() response) {
-
-    // response.redirect.Accept = 'application/xml'
-    response.setHeader('Accept', 'application/xml');
-    response.redirect('http://localhost:8081/hapi-fhir-jpaserver/fhir/Bundle?_sort=-_lastUpdated&_count=1');
-    this.logger.log("Got here");
-    // response.redirect.header['Accept'] = 'application/xml';
-    return response;
-    // return {
-    //   headers: {
-    //     'Content-Type' : 'application/xml'
-    //   },
-    //   url:'http://localhost:8081/hapi-fhir-jpaserver/fhir/Bundle?_sort=-_lastUpdated&_count=1'
-    // }
+  async downloadXmlBundle(@Req() request: AuthRequest, @Body() body: any) {
+    return {
+      url:'/api/download/localxmlbundle'
+    }
   }
 
   @Post("jsonbundle")
   @UseGuards(AuthGuard())
   async downloadJsonBundle(@Req() request: AuthRequest, @Body() body: any) {
-    const Bucket = this.appService.serverConfig.payload.Bucket;
-    // if (typeof Bucket === 'undefined' || Bucket === "") {
     return {
-      headers: {
-        Accept : 'application/json'
-      },
-      url:'http://localhost:8081/hapi-fhir-jpaserver/fhir/Bundle?_sort=-_lastUpdated&_count=1'
+      url:'/api/download/localjsonbundle'
     }
   }
 
@@ -61,15 +49,87 @@ export class DownloadController {
   @Header('Content-Type', 'application/xml')
   @Header('Content-Disposition', 'attachment; filename=bundle.xml')
   async localxmlBundle(@Response() response) {
+
+
+    const http = require('http');
+
     try {
-      response.headers['Accept'] = 'application/xml'
-      const bundlePath = path.resolve('http://localhost:8081/hapi-fhir-jpaserver/fhir/Bundle?_sort=-_lastUpdated&_count=1');
-      if (fs.existsSync(bundlePath)) {
-        fs.createReadStream(bundlePath)
-          .pipe(response)
-      } else {
-        throw 'File not found'
-      }
+      const options = {
+        hostname: 'hapi-fhir',
+        port: 8080,
+        path: '/hapi-fhir-jpaserver/fhir/Bundle?_sort=-_lastUpdated&_count=1',
+        method: 'GET',
+        headers: {
+          Accept: 'application/xml'
+        }
+      };
+
+      const req = http.request(options, function(res) {
+        res.setEncoding('utf8');
+        // let data = "";
+        res.on('readable', readableOutput => {
+          let stream = require("stream")
+          let readable = new stream.PassThrough()
+          let data = res.read()
+          console.log('first', data);
+          readable.write(data);
+          readable.end();
+          readable.pipe(response)
+        })
+      });
+
+      req.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+      });
+
+      req.end();
+
+    }
+    catch(e) {
+      this.logger.log(`Error accessing ${this.appService.serverConfig.rctcExcelPath}`)
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+    }
+  }
+
+  @Get('localjsonbundle')
+  @UseGuards(AuthGuard())
+  @Header('Content-Type', 'application/json')
+  @Header('Content-Disposition', 'attachment; filename=bundle.json')
+  async localjsonBundle(@Response() response) {
+    const http = require('http');
+
+    try {
+      const options = {
+        hostname: 'hapi-fhir',
+        port: 8080,
+        path: '/hapi-fhir-jpaserver/fhir/Bundle?_sort=-_lastUpdated&_count=1',
+        method: 'GET',
+        headers: {
+          Accept: 'application/json'
+        }
+      };
+
+      const req = http.request(options, function(res) {
+        res.setEncoding('utf8');
+        // let data = "";
+        res.on('readable', readableOutput => {
+          let stream = require("stream")
+          let readable = new stream.PassThrough()
+          let data = res.read()
+          console.log('first', data);
+          readable.write(data);
+          readable.push(null);
+          readable.end();
+          readable.pipe(response);
+        })
+      });
+
+      req.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+      });
+
+      req.end();
+
     }
     catch(e) {
       this.logger.log(`Error accessing ${this.appService.serverConfig.rctcExcelPath}`)
@@ -95,6 +155,12 @@ export class DownloadController {
       this.logger.log(`Error accessing ${this.appService.serverConfig.rctcExcelPath}`)
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
     }
+  }
+
+  getReadableStream(buffer: Buffer): Readable {
+    const stream = new Readable();
+    stream.push(buffer);
+    return stream;
   }
 
   @Post('excel')
