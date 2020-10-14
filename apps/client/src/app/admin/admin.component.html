@@ -75,10 +75,10 @@
         </ng-template>
       </ngb-tab>
 
-      <ngb-tab title="RCTC Excel">
+      <ngb-tab title="RCTC Files">
         <ng-template ngbTabContent>
           <div class="form-group">
-            <label>RCTC Excel File</label>
+            <label>RCTC Files</label>
             <input type="file" class="form-control" (change)="handleExcelFileInput($event.target.files)" #excelUploadFile [class.is-invalid]="!excelFile" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
           </div>
 
