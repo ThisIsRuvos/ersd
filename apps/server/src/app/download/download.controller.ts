@@ -48,45 +48,18 @@ export class DownloadController {
   @UseGuards(AuthGuard())
   @Header('Content-Type', 'application/xml')
   @Header('Content-Disposition', 'attachment; filename=bundle.xml')
-  async localxmlBundle(@Response() response) {
-
-
-    const http = require('http');
+  async localxmlBundle() {
+    const xmlBundleUrl = `${this.appService.serverConfig.fhirServerBase}/Bundle?_sort=-_lastUpdated&_count=1`
 
     try {
-      const options = {
-        hostname: 'hapi-fhir',
-        port: 8080,
-        path: '/hapi-fhir-jpaserver/fhir/Bundle?_sort=-_lastUpdated&_count=1',
-        method: 'GET',
+      const bundleResponse = await this.httpService.get(xmlBundleUrl, {
         headers: {
           Accept: 'application/xml'
         }
-      };
-
-      const req = http.request(options, function(res) {
-        res.setEncoding('utf8');
-        // let data = "";
-        res.on('readable', readableOutput => {
-          let stream = require("stream")
-          let readable = new stream.PassThrough()
-          let data = res.read()
-          console.log('first', data);
-          readable.write(data);
-          readable.end();
-          readable.pipe(response)
-        })
-      });
-
-      req.on('error', function(e) {
-        console.log('problem with request: ' + e.message);
-      });
-
-      req.end();
-
-    }
-    catch(e) {
-      this.logger.log(`Error accessing ${this.appService.serverConfig.rctcExcelPath}`)
+      }).toPromise();
+      return bundleResponse.data;
+    } catch(e) {
+      this.logger.log(`Error accessing ${xmlBundleUrl}`)
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
     }
   }
