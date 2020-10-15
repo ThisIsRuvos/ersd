@@ -39,6 +39,7 @@ export class UploadController {
       try {
         const s3client = new S3();
         const Key = this.appService.serverConfig.payload.RCTCKey;
+        this.logger.log(`Uploaded RCTC excel to s3://${Bucket}/${Key}`);
         const s3return = await s3client.putObject({
           Bucket,
           Key,
@@ -66,6 +67,23 @@ export class UploadController {
 
     let resource;
     let xmlData;
+
+    // Attach the message to the bundle being uploaded
+    if (body.message && resource.resourceType === 'Bundle') {
+      const bundle = <IBundle> resource;
+
+      this.logger.log('Creating an extension on the first entry in the bundle being upload that includes the message from the admin');
+
+      if (bundle.entry && bundle.entry.length > 0 && bundle.entry[0].resource) {
+        const firstResource = bundle.entry[0].resource;
+
+        firstResource.extension = firstResource.extension || [];
+        firstResource.extension.push({
+          url: Constants.extensions.notificationMessage,
+          valueString: body.message
+        });
+      }
+    }
 
     // Parse the JSON or XML
     if (body.fileName.endsWith('.xml')) {
@@ -107,23 +125,6 @@ export class UploadController {
     catch(e) {
       this.logger.error(`Failed to upload bundle ${JSON.stringify(e)}`);
       throw e;
-    }
-
-    // Attach the message to the bundle being uploaded
-    if (body.message && resource.resourceType === 'Bundle') {
-      const bundle = <IBundle> resource;
-
-      this.logger.log('Creating an extension on the first entry in the bundle being upload that includes the message from the admin');
-
-      if (bundle.entry && bundle.entry.length > 0 && bundle.entry[0].resource) {
-        const firstResource = bundle.entry[0].resource;
-
-        firstResource.extension = firstResource.extension || [];
-        firstResource.extension.push({
-          url: Constants.extensions.notificationMessage,
-          valueString: body.message
-        });
-      }
     }
 
     this.logger.log('Posting the transaction to the FHIR server');
