@@ -34,12 +34,16 @@ export class UploadController {
     }
     else {
       this.logger.log(`Uploading RCTC excel to s3`);
+      const Metadata = {filename: body.fileName};
+
       try {
         const s3client = new S3();
         const Key = this.appService.serverConfig.payload.RCTCKey;
+        this.logger.log(`Uploaded RCTC excel to s3://${Bucket}/${Key}`);
         const s3return = await s3client.putObject({
           Bucket,
           Key,
+          Metadata,
           Body: buf,
         }).promise()
         this.logger.log(`Uploaded RCTC excel to s3://${Bucket}/${Key}`);
@@ -107,9 +111,12 @@ export class UploadController {
       else {
         const s3client = new S3();
         const Key = this.appService.serverConfig.payload.Key;
+        const Metadata = {filename: body.fileName};
+
         const s3return = await s3client.putObject({
           Bucket,
           Key,
+          Metadata,
           Body: xmlData,
         }).promise()
         this.logger.log(`Uploaded bundle to s3://${Bucket}/${Key}`);

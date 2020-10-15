@@ -1,31 +1,33 @@
 import {
   Body,
-  Controller, Get, Header,
+  Controller,
+  Get,
+  Header,
+  HttpException,
   HttpService,
+  HttpStatus,
   Logger,
   Post,
   Req,
-  UseGuards, Response,
-  HttpException, HttpStatus
+  Response,
+  UseGuards
 } from '@nestjs/common';
-
 import { AuthGuard } from '@nestjs/passport';
 import { AuthRequest } from '../auth-module/auth-request';
 import { AppService } from '../app.service';
 import S3 from 'aws-sdk/clients/s3';
 import path from "path";
 import * as fs from 'fs';
-import {Readable} from "stream";
 
 @Controller('download')
 export class DownloadController {
   private readonly logger = new Logger('DownloadController');
 
-
   constructor(
     private httpService: HttpService,
     private appService: AppService
-  ) {}
+  ) {
+  }
 
   @Post("xmlbundle")
   @UseGuards(AuthGuard())
@@ -95,10 +97,9 @@ export class DownloadController {
         fs.createReadStream(bundlePath)
           .pipe(response)
       } else {
-        throw 'File not found'
+        throw new Error('File not found');
       }
-    }
-    catch(e) {
+    } catch (e) {
       this.logger.log(`Error accessing ${this.appService.serverConfig.rctcExcelPath}`)
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
     }
@@ -110,19 +111,30 @@ export class DownloadController {
     const Bucket = this.appService.serverConfig.payload.Bucket;
     this.logger.log('HELLO' + Bucket)
     if (typeof Bucket === 'undefined' || Bucket === "") {
-      return {url:'api/download/localexcel'}
-    }
-    else {
+      return {url: 'api/download/localexcel'}
+    } else {
       const s3client = new S3();
       const Key = this.appService.serverConfig.payload.RCTCKey;
-      const ResponseContentDisposition = `attachment; filename="rctc.xlsx"`;
+
+
+      const headParams = {
+        Bucket,
+        Key,
+      }
+
+      const data = await s3client.headObject(headParams).promise();
+      const metaData = data.Metadata;
+
+      const fileName = metaData['filename'] || Key;
+      const ResponseContentDisposition = `attachment; filename="${fileName}"`;
+
       const params = {
         Bucket,
         Key,
         ResponseContentDisposition,
       }
       const url = await s3client.getSignedUrlPromise('getObject', params);
-      return { url }
+      return {url}
     }
   }
 
@@ -136,12 +148,10 @@ export class DownloadController {
       if (fs.existsSync(rctcExcelPath)) {
         fs.createReadStream(rctcExcelPath)
           .pipe(response)
+      } else {
+        throw new Error('File not found')
       }
-      else {
-        throw 'File not found'
-      }
-    }
-    catch(e) {
+    } catch (e) {
       this.logger.log(`Error accessing ${this.appService.serverConfig.rctcExcelPath}`)
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
     }
