@@ -68,6 +68,21 @@ export class UploadController {
     let resource;
     let xmlData;
 
+    // Parse the JSON or XML
+    if (body.fileName.endsWith('.xml')) {
+      this.logger.log('Upload is an XML file. Converting to JSON');
+
+      const fhir = new Fhir();
+      xmlData = body.fileContent;
+      resource = fhir.xmlToObj(body.fileContent);
+    } else if (body.fileName.endsWith('.json')) {
+      this.logger.log('Upload is already JSON');
+
+      resource = JSON.parse(body.fileContent);
+      const fhir = new Fhir();
+      xmlData = fhir.objToXml(resource);
+    }
+
     // Attach the message to the bundle being uploaded
     if (body.message && resource.resourceType === 'Bundle') {
       const bundle = <IBundle> resource;
@@ -83,21 +98,6 @@ export class UploadController {
           valueString: body.message
         });
       }
-    }
-
-    // Parse the JSON or XML
-    if (body.fileName.endsWith('.xml')) {
-      this.logger.log('Upload is an XML file. Converting to JSON');
-
-      const fhir = new Fhir();
-      xmlData = body.fileContent;
-      resource = fhir.xmlToObj(body.fileContent);
-    } else if (body.fileName.endsWith('.json')) {
-      this.logger.log('Upload is already JSON');
-
-      resource = JSON.parse(body.fileContent);
-      const fhir = new Fhir();
-      xmlData = fhir.objToXml(resource);
     }
 
     try {
