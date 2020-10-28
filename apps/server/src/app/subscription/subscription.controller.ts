@@ -61,16 +61,16 @@ export class SubscriptionController {
 
     // email
     if (emailSubscription && emailSubscription.channel && emailSubscription.channel.endpoint) {
-      const paylodvalues = emailSubscription.channel.payload.split(";")
+      const payloadValues = emailSubscription.channel.payload.split(";")
 
       userSubscriptions.emailSubscription = {
         emailAddress: emailSubscription.channel.endpoint.startsWith('mailto:') ?
           emailSubscription.channel.endpoint.substring('mailto:'.length) :
           emailSubscription.channel.endpoint,
-        includeArtifacts: paylodvalues[0].length !== 0
+        includeArtifacts: payloadValues[0].length !== 0
       };
 
-      if (paylodvalues[0].length !== 0) {
+      if (payloadValues[0].length !== 0) {
         if (emailSubscription.channel.payload.startsWith('application/json')) {
           userSubscriptions.emailSubscription.format = 'json';
         } else if (emailSubscription.channel.payload.startsWith('application/xml')) {
