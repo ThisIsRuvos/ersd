@@ -61,14 +61,16 @@ export class SubscriptionController {
 
     // email
     if (emailSubscription && emailSubscription.channel && emailSubscription.channel.endpoint) {
+      const payloadValues = emailSubscription.channel.payload.split(";")
+
       userSubscriptions.emailSubscription = {
         emailAddress: emailSubscription.channel.endpoint.startsWith('mailto:') ?
           emailSubscription.channel.endpoint.substring('mailto:'.length) :
           emailSubscription.channel.endpoint,
-        includeArtifacts: !!emailSubscription.channel.payload
+        includeArtifacts: payloadValues[0].length !== 0
       };
 
-      if (emailSubscription.channel.payload) {
+      if (payloadValues[0].length !== 0) {
         if (emailSubscription.channel.payload.startsWith('application/json')) {
           userSubscriptions.emailSubscription.format = 'json';
         } else if (emailSubscription.channel.payload.startsWith('application/xml')) {
@@ -132,16 +134,16 @@ export class SubscriptionController {
       if (updated.includeArtifacts) {
         switch (updated.format) {
           case 'json':
-            current.channel.payload = 'application/json;bodytext=' + Buffer.from(Constants.defaultEmailBody).toString('base64');
+            current.channel.payload = 'application/json;bodytext=' + Buffer.from(" ").toString('base64');
             break;
           case 'xml':
-            current.channel.payload = 'application/xml;bodytext=' + Buffer.from(Constants.defaultEmailBody).toString('base64');
+            current.channel.payload = 'application/xml;bodytext=' + Buffer.from(" ").toString('base64');
             break;
           default:
             throw new Error('Unexpected format specified for email subscription');
         }
       } else {
-        delete current.channel.payload;
+        current.channel.payload = ';bodytext=' + Buffer.from(" ").toString('base64');
       }
 
       return this.httpService.request({

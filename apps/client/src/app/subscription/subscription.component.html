@@ -2,13 +2,13 @@
     <div class='heading-container'>
       <h2 class='section-heading'>Subscription Management</h2>
     </div>
-    
+
     <div class='page-info subscription-info'>
-      <p>Please choose your eRSD subscription(s) below.  Email subscription is required, and you may add an additional SMS or REST subscription as well.  You will be contacted based on your preferences with any important information related to eRSD, or with routine or emergent updates.</p>            
+      <p>Please choose your eRSD subscription(s) below.  Email subscription is required, and you may add an additional SMS or REST subscription as well.  You will be contacted based on your preferences with any important information related to eRSD, or with routine or emergent updates.</p>
     </div>
 
   <div class="alert" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError" *ngIf="message">{{message}}</div>
-  
+
   <div>
     <div>
       <div class="card" *ngIf="userSubscriptions.emailSubscription">
@@ -25,12 +25,12 @@
                    required="required"
                    #emailAddress="ngModel" />
           </div>
-  
+
           <div class="form-group">
-            <!--suppress HtmlFormInputWithoutLabel -->
+            <label for="emailSubscriptionFormat">Checking this box will include the eRSD bundle as an attachment to your email notification. Note - Most email providers block attachments the size of the current bundle.</label>
             <input type="checkbox" [(ngModel)]="userSubscriptions.emailSubscription.includeArtifacts" /> Include changed artifacts
           </div>
-  
+
           <div class="form-group" *ngIf="userSubscriptions.emailSubscription.includeArtifacts || userSubscriptions.emailSubscription.format">
             <label for="emailSubscriptionFormat">Format</label>
             <select id="emailSubscriptionFormat" class="form-control" [(ngModel)]="userSubscriptions.emailSubscription.format">
@@ -41,7 +41,7 @@
         </div>
       </div>
     </div>
-  
+
     <div>
       <div class="card">
         <div class="card-header">
@@ -58,7 +58,7 @@
                    pattern="^http(s)?:\/\/(.{2,})+(:[\d]+)?(.+)?"
                    #restEndpoint="ngModel" />
           </div>
-  
+
           <div class="form-group">
             <label for="restSubscriptionAuthorization">
               Authorization/API Key
@@ -74,7 +74,7 @@
         </div>
       </div>
     </div>
-  
+
     <div>
       <div class="card">
         <div class="card-header">
@@ -109,10 +109,9 @@
         </div>
       </div>
     </div>
-  
+
     <div>
       <button type="button" class="btn btn-primary save-button" [disabled]="!isValid" (click)="save()">Save</button>
     </div>
   </div>
   </div>
-  
