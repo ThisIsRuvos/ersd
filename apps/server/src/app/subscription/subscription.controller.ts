@@ -134,10 +134,10 @@ export class SubscriptionController {
       if (updated.includeArtifacts) {
         switch (updated.format) {
           case 'json':
-            current.channel.payload = 'application/json;bodytext=' + Buffer.from(Constants.defaultEmailBody).toString('base64');
+            current.channel.payload = 'application/json;bodytext=' + Buffer.from(" ").toString('base64');
             break;
           case 'xml':
-            current.channel.payload = 'application/xml;bodytext=' + Buffer.from(Constants.defaultEmailBody).toString('base64');
+            current.channel.payload = 'application/xml;bodytext=' + Buffer.from(" ").toString('base64');
             break;
           default:
             throw new Error('Unexpected format specified for email subscription');
