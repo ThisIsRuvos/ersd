@@ -61,14 +61,16 @@ export class SubscriptionController {
 
     // email
     if (emailSubscription && emailSubscription.channel && emailSubscription.channel.endpoint) {
+      const paylodvalues = emailSubscription.channel.payload.split(";")
+
       userSubscriptions.emailSubscription = {
         emailAddress: emailSubscription.channel.endpoint.startsWith('mailto:') ?
           emailSubscription.channel.endpoint.substring('mailto:'.length) :
           emailSubscription.channel.endpoint,
-        includeArtifacts: !!emailSubscription.channel.payload
+        includeArtifacts: paylodvalues[0].length !== 0
       };
 
-      if (emailSubscription.channel.payload) {
+      if (paylodvalues[0].length !== 0) {
         if (emailSubscription.channel.payload.startsWith('application/json')) {
           userSubscriptions.emailSubscription.format = 'json';
         } else if (emailSubscription.channel.payload.startsWith('application/xml')) {
@@ -141,7 +143,7 @@ export class SubscriptionController {
             throw new Error('Unexpected format specified for email subscription');
         }
       } else {
-        delete current.channel.payload;
+        current.channel.payload = ';bodytext=' + Buffer.from(" ").toString('base64');
       }
 
       return this.httpService.request({
