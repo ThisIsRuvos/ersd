@@ -143,7 +143,7 @@ export class SubscriptionController {
             throw new Error('Unexpected format specified for email subscription');
         }
       } else {
-        current.channel.payload = ';bodytext=' + Buffer.from(" ").toString('base64');
+        current.channel.payload = ';bodytext=' + Buffer.from(Constants.defaultEmailBody).toString('base64');
       }
 
       return this.httpService.request({
