@@ -10,6 +10,7 @@ import { IOperationOutcome } from '../../../../../libs/ersdlib/src/lib/operation
 import S3 from 'aws-sdk/clients/s3';
 import path from "path";
 import * as fs from 'fs';
+import {AxiosRequestConfig} from "axios";
 
 @Controller('upload')
 export class UploadController {
@@ -133,10 +134,15 @@ export class UploadController {
       const requestUrl = this.appService.buildFhirUrl(resource.resourceType, resource.id);
       let response;
 
+      const config = {
+        maxContentLength: 2147483648,
+        maxBodyLength: 2147483648,
+
+      }
       if (resource.id) {
-        response = await this.httpService.put(requestUrl, resource).toPromise();
+        response = await this.httpService.put(requestUrl, resource, config).toPromise();
       } else {
-        response = await this.httpService.post(requestUrl, resource).toPromise();
+        response = await this.httpService.post(requestUrl, resource, config).toPromise();
       }
 
       this.logger.log('Done uploading to FHIR server');
