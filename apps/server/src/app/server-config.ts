@@ -42,5 +42,6 @@ export interface IServerConfig {
     Bucket: string;
     Key: string;
     RCTCKey: string;
+    JSONKey: string;
   };
 }

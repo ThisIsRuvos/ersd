@@ -39,10 +39,48 @@ export class DownloadController {
 
   @Post("jsonbundle")
   @UseGuards(AuthGuard())
+  @Header('Content-Type', 'application/json')
+  @Header('Content-Disposition', 'attachment; filename=bundle.json')
   async downloadJsonBundle(@Req() request: AuthRequest, @Body() body: any) {
-    return {
-      url:'/api/download/localjsonbundle'
+    const Bucket = this.appService.serverConfig.payload.Bucket;
+    this.logger.log('HELLO' + Bucket)
+    if (typeof Bucket === 'undefined' || Bucket === "") {
+      return { url:'/api/download/localjsonbundle' }
+    } 
+    const s3client = new S3({ 
+      s3ForcePathStyle: true,
+      accessKeyId: "S3RVER",
+      secretAccessKey: "S3RVER",
+      endpoint: 'http://localhost:4568'
+    });
+    const Key = this.appService.serverConfig.payload.JSONKey;
+
+    // const headParams = {
+    //   Bucket,
+    //   Key,
+    // }
+    // const data = await s3client.getObject(headParams).promise();
+    // const parsedJSON = JSON.parse(data.Body.toString('utf-8'))
+    // console.log(parsedJSON)
+    // return parsedJSON
+    const headParams = {
+      Bucket,
+      Key,
     }
+
+    const data = await s3client.headObject(headParams).promise();
+    const metaData = data.Metadata;
+    this.logger.log(`metadata: ${JSON.stringify(metaData, null, 2)}\n\n data: ${JSON.stringify(data, null, 2)}`)
+    const fileName = metaData['filename'] || Key;
+    const ResponseContentDisposition = `attachment; filename="${fileName}"`;
+
+    const params = {
+      Bucket,
+      Key,
+      ResponseContentDisposition,
+    }
+    const url = await s3client.getSignedUrlPromise('getObject', params);
+    return {url}
   }
 
 

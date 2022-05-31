@@ -6,11 +6,9 @@ import {IUploadRequest} from '../../../../../libs/ersdlib/src/lib/upload-request
 import {Fhir} from 'fhir/fhir';
 import {IBundle} from '../../../../../libs/ersdlib/src/lib/bundle';
 import {AppService} from '../app.service';
-import { IOperationOutcome } from '../../../../../libs/ersdlib/src/lib/operation-outcome';
 import S3 from 'aws-sdk/clients/s3';
 import path from "path";
 import * as fs from 'fs';
-import {AxiosRequestConfig} from "axios";
 
 @Controller('upload')
 export class UploadController {
