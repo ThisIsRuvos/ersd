@@ -46,39 +46,6 @@
       <div class="card">
         <div class="card-header">
           <!--suppress HtmlFormInputWithoutLabel -->
-          <input type="checkbox" [ngModel]="!!userSubscriptions.restSubscription" (ngModelChange)="toggleRest($event)" /> REST hook subscription
-        </div>
-        <div class="card-body" *ngIf="userSubscriptions.restSubscription">
-          <div class="form-group">
-            <label for="restSubscriptionEndpoint">REST Endpoint</label>
-            <input id="restSubscriptionEndpoint" type="text" class="form-control"
-                   [(ngModel)]="userSubscriptions.restSubscription.endpoint"
-                   [class.is-invalid]="restEndpoint.errors?.pattern || restEndpoint.errors?.required"
-                   required="required"
-                   pattern="^http(s)?:\/\/(.{2,})+(:[\d]+)?(.+)?"
-                   #restEndpoint="ngModel" />
-          </div>
-
-          <div class="form-group">
-            <label for="restSubscriptionAuthorization">
-              Authorization/API Key
-              <i class="fas fa-question-circle" ngbTooltip="This is an optional field that represents an authorization bearer key that gets sent with the rest-hook notification."></i>
-            </label>
-            <div class="input-group">
-              <input id="restSubscriptionAuthorization" type="text" class="form-control" [(ngModel)]="userSubscriptions.restSubscription.authorization" />
-              <div class="input-group-btn">
-                <button type="button" class="btn btn-secondary" (click)="userSubscriptions.restSubscription.authorization = generateKey()">Generate</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div>
-      <div class="card">
-        <div class="card-header">
-          <!--suppress HtmlFormInputWithoutLabel -->
           <input type="checkbox" [ngModel]="!!userSubscriptions.smsSubscription" (ngModelChange)="toggleSms($event)" /> SMS Subscription
         </div>
         <div class="card-body" *ngIf="userSubscriptions.smsSubscription">

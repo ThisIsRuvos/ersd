@@ -4,11 +4,6 @@ export interface EmailSubscriptionInfo {
   format?: 'xml'|'json';
 }
 
-export interface RestSubscriptionInfo {
-  endpoint?: string;
-  authorization?: string;
-}
-
 export interface SmsSubscriptionInfo {
   carrier?: 'verizon'|'at&t'|'sprint'|'tmobile';
   mobilePhone?: string;
@@ -16,6 +11,5 @@ export interface SmsSubscriptionInfo {
 
 export class UserSubscriptions {
   emailSubscription?: EmailSubscriptionInfo;
-  restSubscription?: RestSubscriptionInfo;
   smsSubscription?: SmsSubscriptionInfo;
 }

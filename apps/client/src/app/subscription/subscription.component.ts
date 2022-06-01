@@ -24,14 +24,6 @@ export class SubscriptionComponent implements OnInit {
 
   constructor(private httpClient: HttpClient, private authService: AuthService) {}
 
-  public toggleRest(value: boolean) {
-    if (this.userSubscriptions.restSubscription && !value) {
-      delete this.userSubscriptions.restSubscription;
-    } else if (!this.userSubscriptions.restSubscription && value) {
-      this.userSubscriptions.restSubscription = {};
-    }
-  }
-
   public toggleSms(value: boolean) {
     if (this.userSubscriptions.smsSubscription && !value) {
       delete this.userSubscriptions.smsSubscription;
@@ -49,7 +41,7 @@ export class SubscriptionComponent implements OnInit {
   }
 
   get isValid() {
-    if (!this.userSubscriptions.emailSubscription && !this.userSubscriptions.restSubscription && !this.userSubscriptions.smsSubscription) {
+    if (!this.userSubscriptions.emailSubscription && !this.userSubscriptions.smsSubscription) {
       return false;
     }
 
