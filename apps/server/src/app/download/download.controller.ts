@@ -55,14 +55,32 @@ export class DownloadController {
     });
     const Key = this.appService.serverConfig.payload.JSONKey;
 
+    // const headParams = {
+    //   Bucket,
+    //   Key,
+    // }
+    // const data = await s3client.getObject(headParams).promise();
+    // const parsedJSON = JSON.parse(data.Body.toString('utf-8'))
+    // console.log(parsedJSON)
+    // return parsedJSON
     const headParams = {
       Bucket,
       Key,
     }
-    const data = await s3client.getObject(headParams).promise();
-    const parsedJSON = JSON.parse(data.Body.toString('utf-8'))
-    console.log(parsedJSON)
-    return parsedJSON
+
+    const data = await s3client.headObject(headParams).promise();
+    const metaData = data.Metadata;
+    this.logger.log(`metadata: ${JSON.stringify(metaData, null, 2)}\n\n data: ${JSON.stringify(data, null, 2)}`)
+    const fileName = metaData['filename'] || Key;
+    const ResponseContentDisposition = `attachment; filename="${fileName}"`;
+
+    const params = {
+      Bucket,
+      Key,
+      ResponseContentDisposition,
+    }
+    const url = await s3client.getSignedUrlPromise('getObject', params);
+    return {url}
   }
 
 

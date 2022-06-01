@@ -26,19 +26,19 @@ export class HomeComponent implements OnInit {
   async downloadFile(data, filename) {
     const url = data.url
     console.log('Downloading');
-    if (url.includes('local')) {
-      return await this.downloadLocal(url, filename)
-    }
-    else {
+    // if (url.includes('local')) {
+    //   return await this.downloadLocal(url, filename)
+    // }
+    // else {
       return await this.downloadS3(url)
-    }
+    // }
   }
   async downloadLocal(url, filename) {
     try {
       const results = await this.httpClient.get(url, { responseType: 'blob' }).toPromise();
       saveAs(results, filename);
     } catch (ex) {
-      alert(`Error while downloading excel file: ${ex.message}`);
+      alert(`Error while downloading file: ${ex.message}`);
       console.error(ex);
     }
   }
