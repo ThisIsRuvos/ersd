@@ -40,6 +40,7 @@
   margin-top: 20px;
   margin-bottom: 20px;
 }
+
 .home-notice {
   grid-column: 1 / span 3;
   background-color: #fff2cc;
