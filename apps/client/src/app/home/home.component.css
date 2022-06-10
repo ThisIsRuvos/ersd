@@ -41,25 +41,6 @@
   margin-bottom: 20px;
 }
 
-.home-notice {
-  grid-column: 1 / span 3;
-  background-color: #fff2cc;
-  border-radius: 10px;
-  font-size: .9rem;
-  text-align: center;
-}
-
-.home-notice-header {
-  color: #a31e29;
-}
-
-.home-notice-body {
-  font-size: .9rem;
-  text-align: left;
-  margin: auto;
-  width: 95%;
-}
-
 i {
   font-size: 70px;
   opacity: 0.5;
