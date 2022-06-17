@@ -1,0 +1,19 @@
+::ng-deep .card {
+  margin:0;
+  border: 0;
+}
+
+::ng-deep .card-header {
+  background-color: #b12c36;
+  border-color: #b12c36;
+  text-align: left;
+}
+
+::ng-deep .btn.btn-link {
+  color: white;
+}
+
+::ng-deep .card-header:first-child {
+  border-radius: 0;
+}
+
