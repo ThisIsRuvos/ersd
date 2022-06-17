@@ -13,7 +13,7 @@ interface PayloadDownload {
 })
 export class SpecDownloadComponent implements OnInit {
   request: any = {};
-  
+
   constructor(
     private httpClient: HttpClient
   ) { }
