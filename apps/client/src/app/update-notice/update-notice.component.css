@@ -1,0 +1,19 @@
+:host {
+  grid-column: 1 / span 3;
+  background-color: #fff2cc;
+  border-radius: 10px;
+  font-size: .9rem;
+  text-align: center;
+}
+
+.update-notice-header {
+  color: #a31e29;
+}
+
+.update-notice-body {
+  font-size: .9rem;
+  text-align: left;
+  margin: auto;
+  margin-bottom: 10px;
+  width: 95%;
+}

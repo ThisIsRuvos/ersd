@@ -34,26 +34,6 @@ nav > li > a {
   font-family: 'Work Sans', sans-serif;
 }
 
-.app-notice {
-  grid-column: 1 / span 3;
-  background-color: #fff2cc;
-  border-radius: 10px;
-  font-size: .9rem;
-  text-align: center;
-}
-
-.app-notice-header {
-  color: #a31e29;
-}
-
-.app-notice-body {
-  font-size: .9rem;
-  text-align: left;
-  margin: auto;
-  margin-bottom: 10px;
-  width: 95%;
-}
-
 .nav-link {
   color: black;
   font-family: 'Work Sans', sans-serif;
