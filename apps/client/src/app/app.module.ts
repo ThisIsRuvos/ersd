@@ -19,6 +19,7 @@ import { AdminEditPersonComponent } from './admin/edit-person/edit-person.compon
 import { IClientConfig } from '../../../../libs/ersdlib/src/lib/client-config';
 import { ConfigService } from './config.service';
 import { UpdateNoticeComponent } from './update-notice/update-notice.component';
+import { SpecDownloadComponent } from './spec-download/spec-download.component';
 
 const appRoutes: Routes = [
   { path: 'admin',            component: AdminComponent },
@@ -72,7 +73,8 @@ export function initializer(keycloak: KeycloakService, httpClient: HttpClient, c
     CreatePersonComponent,
     EditPersonComponent,
     AdminEditPersonComponent,
-    UpdateNoticeComponent
+    UpdateNoticeComponent,
+    SpecDownloadComponent
   ],
   imports: [
     BrowserModule,
