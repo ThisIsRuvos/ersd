@@ -17,3 +17,109 @@
   border-radius: 0;
 }
 
+::ng-deep .card-body {
+  padding-top: 0;
+  padding-left: 0;
+}
+
+.fieldset-container {
+  color: black;
+  font-size: 1.0rem;
+  margin: 48px;
+}
+
+fieldset {
+  border-width: 1px !important;
+  padding: 24px;
+  border-style: groove;
+  border-color: black;
+  font-family: Helvetica;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+.bolded-legend {
+  font-weight: bold;
+  font-size: 1.0rem;
+  padding-left: 5px;
+}
+
+.version-legend {
+  font-size: 1.0rem;
+  padding-left: 5px;
+}
+
+.radio-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-subtitle {
+  color: rgba(0, 0, 0, 0.6);
+  padding-left: .75rem;
+}
+
+.input-title {
+  text-align: start;
+  margin-bottom: 0;
+  padding-left: .75rem;
+}
+
+.check {
+  margin-left: 12px;
+}
+
+/* * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  font-family: Helvetica;
+  margin: 48px;
+}
+
+fieldset {
+  padding: 24px;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.marginTop {
+  margin-top: 12px;
+}
+
+a {
+  font-size: 80%;
+}
+.link-container {
+  float: right;
+  margin-top: 8px;
+}
+
+
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+}
+
+.v-2 {
+  margin-bottom: 12px;
+}
+
+ */
