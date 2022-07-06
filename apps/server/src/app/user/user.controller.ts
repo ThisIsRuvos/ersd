@@ -255,7 +255,8 @@ export class UserController {
       newSubscription.criteria = this.appService.serverConfig.subscriptionCriteria;
       newSubscription.channel.type = 'email';
       newSubscription.channel.endpoint = 'mailto:' + updatePerson.email;
-      newSubscription.channel.payload = 'application/xml;bodytext=' + Buffer.from(Constants.defaultEmailBody).toString('base64');    // Default payload to JSON (for now)
+      // include artifacts to new user subscriptions by pre-pending "application/[json or xml]" before ";bodytext" 
+      newSubscription.channel.payload = ';bodytext=' + Buffer.from(Constants.defaultEmailBody).toString('base64'); 
       newSubscription.status = this.appService.serverConfig.enableSubscriptions ? 'requested' : 'off';
 
       this.logger.log(`Person does not already exist. Creating default subscriptions for new person via url: ${newSubscriptionUrl}`);
