@@ -1,78 +1,73 @@
 <ngb-accordion #acc="ngbAccordion">
   <ngb-panel title="Select an eRSD version to download">
     <ng-template ngbPanelContent>
-      <!-- <span><button type="button" class="btn download-button" (click)="downloadJsonBundle()">Download Latest eRSD JSON Payload</button></span>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <span><button type="button" class="btn download-button" (click)="downloadXmlBundle()">Download Latest eRSD XML Payload</button></span>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <span><button type="button" class="btn download-button" (click)="downloadExcel()">Latest RCTC Spreadsheet & Change Log</button></span> -->
-      <fieldset>
-        <legend class='bold'>Select an eRSD Version for use with:</legend>
+      <div class="fieldset-container">
         <fieldset>
-          <legend>eCR Now App version 1.X and 2.X and existing "native" eCR implementations</legend>
-          <div class='input-container'>
-            <input type="radio" id="b-1-v-1" name="drone" value="b-1-v-1" checked>
-            <label for="b-1-v-1">
+          <legend class='bolded-legend'>Select an eRSD Version for use with:</legend>
+          <form>
+            <!-- Legacy versions of eCR spec -->
+            <fieldset class="internal-fieldsets">
+              <legend class="version-legend">For eCR Now App versions 1.X and 2.X and many existing vendor-developed eCR implementations</legend>
+              <input type="radio" id="legacy-versions" name="drone" value="ecr-v1">
+              <label for="legacy-versions">
+                <div class="radio-text">
+                  <p class='input-title'>Version 1 - Specification Bundle</p>
+                  <p class='input-subtitle'>Provides triggering codes and a computable representation of the reporting workflow</p>
+                </div>
+              </label>
+            </fieldset>
+            <!-- New versions of eCR spec -->
+            <fieldset>
+              <legend class="version-legend">For eCR Now App version 3.X and greater as well as some recently initiated vendor-developed eCR implementations</legend>
+              <div class='input-container v-2'>
+                <input type="radio" id="v-2" name="drone" value="ecr-v2">
+                <label for="v-2">
+                  <div class="radio-text">
+                    <p class='input-title'>Version 2</p>
+                  </div>
+                </label>
+              </div>
+              <div class='input-container check'>
+                <input type="checkbox" id="b-2-v-1" name="drone" value="ecr-v2-spec">
+                <label for="b-2-v-1">
+                  <div class="radio-text">
+                    <p>Specification Bundle</p>
+                    <p class='input-subtitle'>Provides trigger codes and a computable representation of the reporting workflow</p>
+                  </div>
+                </label>
+              </div>
+              <div class='marginTop input-container check'>
+                <input type="checkbox" id="b-2-v-2" name="drone" value="ecr-v2-supp">
+                <label for="b-2-v-2">
+                  <div class="radio-text">
+                    <p>Supplemental Bundle</p>
+                    <p class='input-subtitle'>Provides computable representations of select reportability rules to optimize eICR transmission</p>
+                  </div>
+                </label>
+              </div>
+            </fieldset>
+          </form>
+          <!-- Select XML or JSON download-->
+          <fieldset>
+            <legend class="version-legend">Select a download format: </legend>
+            <input class='check' type="radio" id="file-type" name="drone" value="b-1-v-1">
+            <label for="file-type">
               <div class="radio-text">
-                <p class='input-title'>Version 1 - Specification Bundle</p>
-                <p class='input-subtitle'>Provides triggering codes and a computable representation of the reporting workflow</p>
+                <p class='input-title'>JSON</p>
               </div>
             </label>
-          </div>
-          <div class='link-container'>
-            <a href="#">eCR Release Notes</a>
-            <a href="#">Historical eRD Bundles</a>
-          </div>
+            <input class='check' type="radio" id="file-type" name="drone" value="b-1-v-1">
+            <label for="file-type">
+              <div class="radio-text">
+                <p class='input-title'>XML</p>
+              </div>
+            </label>
+          </fieldset>
         </fieldset>
-        <fieldset class='marginTop'>
-          <legend>eCR Now App version 3.0 and greater as well as newly developing "native" eCR implementations</legend>
-          <div class='input-container v-2'>
-            <input type="radio" id="v-2" name="drone" value="v-2" checked>
-            <label for="v-2">
-              <div class="radio-text">
-                <p class='input-title'>Version 2</p>
-              </div>
-            </label>
-          </div>
-          <div class='input-container check'>
-            <input type="checkbox" id="b-2-v-1" name="drone" value="b-2-v-1">
-            <label for="b-2-v-1">
-              <div class="radio-text">
-                <p>Specification Bundle</p>
-                <p class='input-subtitle'>Provides triggering codes and a computable representation of the reporting workflow</p>
-              </div>
-            </label>
-          </div>
-          <div class='marginTop input-container check'>
-            <input type="checkbox" id="b-2-v-2" name="drone" value="b-2-v-2">
-            <label for="b-2-v-2">
-              <div class="radio-text">
-                <p>Supplemental Bundle</p>
-                <p class='input-subtitle'>Provides computable representations of reportability rules to support site participation in the reportability determination</p>
-              </div>
-            </label>
-          </div>
-          <div class='link-container'>
-            <a href="#">eCR Release Notes</a>
-            <a href="#">Historical eRD Bundles</a>
-          </div>
-        </fieldset>
-      </fieldset>
-      <form action="">
-        <fieldset class='marginTop'>
-          <legend class='bold'>Select download format:</legend>
-          <div>
-            <input type="radio" id="json" name="format" value="json" checked>
-            <label for="dewey">JSON</label>
-          </div>
-          <div class='marginTop'>
-            <input type="radio" id="xml" name="format" value="louie">
-            <label for="xml">XML</label>
-          </div>
-        </fieldset>
-      </form>
-      <div class="button-container">
-        <button>DOWNLOAD</button>
+
+        <div class="button-container">
+          <button>Download</button>
+        </div>
       </div>
     </ng-template>
   </ngb-panel>
