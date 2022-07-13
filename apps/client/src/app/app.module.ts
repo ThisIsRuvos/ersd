@@ -78,7 +78,6 @@ export function initializer(keycloak: KeycloakService, httpClient: HttpClient, c
   ],
   imports: [
     BrowserModule,
-    FormsModule,
     NgbModule,
     HttpClientModule,
     RouterModule.forRoot(appRoutes, { enableTracing: true, useHash: true }),

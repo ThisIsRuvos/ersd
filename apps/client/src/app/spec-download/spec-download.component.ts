@@ -13,12 +13,53 @@ interface PayloadDownload {
 })
 export class SpecDownloadComponent implements OnInit {
   request: any = {};
+  // THOUGHTS: we might just be able to dynamically generate the URL based on input
+  // rather than searching through an object for URLs
+  // eRSDVersions: Record<string, any> = {
+  //   version_one: {
+  //     xml: "",
+  //     json: ""
+  //   },
+  //   version_two: {
+  //     specification_bundle: {
+  //       xml: "",
+  //       json: ""
+  //     } ,
+  //     supplemental_bundle: {
+  //       xml: "",
+  //       json: ""
+  //     }
+  //   }
+  // };
+
+  version = "ecr-v1"
+  bundleType = ""
+  contentType = "json"
 
   constructor(
     private httpClient: HttpClient
   ) { }
 
   ngOnInit() {
+  }
+
+  setBundle(e) { this.bundleType = e.target.value }
+
+  setVersion(e) { this.version = e.target.value }
+
+  setContentType(e) { this.contentType = e.target.value }
+
+  async handleSubmit() {
+    try {
+      if (this.version == "ecr-v2" && this.bundleType == "") { 
+        throw Error('Please select a content type')
+      }
+
+      this.downloadS3('http://localhost:4568/test-bucket/bundle.json')
+    } catch (err) {
+      alert(`Error while downloading file: ${err.message}`);
+      console.error(err);
+    }
   }
 
   async downloadFile(data, filename) {
