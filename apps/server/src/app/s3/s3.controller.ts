@@ -62,12 +62,7 @@ export class S3Controller {
       throw Error(errorMessage);
     } 
 
-    const s3client = new S3({ 
-      s3ForcePathStyle: true,
-      accessKeyId: 'S3RVER',
-      secretAccessKey: 'S3RVER',
-      endpoint: 'http://localhost:4568'
-    });
+    const s3client = new S3();
 
     const headParams = {
       Bucket,
@@ -92,12 +87,7 @@ export class S3Controller {
       throw Error(errorMessage);
     } 
 
-    const s3client = new S3({ 
-      s3ForcePathStyle: true,
-      accessKeyId: 'S3RVER',
-      secretAccessKey: 'S3RVER',
-      endpoint: 'http://localhost:4568'
-    });
+    const s3client = new S3();
 
     const headParams = {
       Bucket,
