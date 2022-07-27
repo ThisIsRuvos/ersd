@@ -43,5 +43,11 @@ export interface IServerConfig {
     Key: string;
     RCTCKey: string;
     JSONKey: string;
+    ERSDV1_JSON_KEY: string;
+    ERSDV1_XML_KEY: string;
+    ERSDV2_SUPPLEMENTAL_JSON_KEY: string;
+    ERSDV2_SUPPLEMENTAL_XML_KEY: string;
+    ERSDV2_SPECIFICATION_JSON_KEY: string;
+    ERSDV2_SPECIFICATION_XML_KEY: string;
   };
 }
