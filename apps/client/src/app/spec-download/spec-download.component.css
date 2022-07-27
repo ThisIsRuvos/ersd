@@ -1,25 +1,26 @@
-::ng-deep .card {
+:host ::ng-deep .card {
   margin:0;
   border: 0;
 }
 
-::ng-deep .card-header {
+:host ::ng-deep .card-header {
   background-color: #b12c36;
   border-color: #b12c36;
   text-align: left;
 }
 
-::ng-deep .btn.btn-link {
+:host ::ng-deep .btn.btn-link {
   color: white;
 }
 
-::ng-deep .card-header:first-child {
+:host ::ng-deep .card-header:first-child {
   border-radius: 0;
 }
 
-::ng-deep .card-body {
+:host ::ng-deep .card-body {
   padding-top: 0;
   padding-left: 0;
+  padding-bottom: 0;
 }
 
 .fieldset-container {
@@ -31,6 +32,7 @@
 fieldset {
   border-width: 1px !important;
   padding: 24px;
+  padding-top: 0px;
   border-style: groove;
   border-color: black;
   font-family: Helvetica;
@@ -70,58 +72,3 @@ fieldset {
 .check {
   margin-left: 12px;
 }
-
-/* * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.container {
-  font-family: Helvetica;
-  margin: 48px;
-}
-
-fieldset {
-  padding: 24px;
-}
-
-.bold {
-  font-weight: bold;
-}
-
-.marginTop {
-  margin-top: 12px;
-}
-
-a {
-  font-size: 80%;
-}
-.link-container {
-  float: right;
-  margin-top: 8px;
-}
-
-
-
-.button-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 24px;
-}
-
-input[type="radio"],
-input[type="checkbox"] {
-  margin-right: 8px;
-}
-
-.input-container {
-  display: flex;
-  align-items: center;
-}
-
-.v-2 {
-  margin-bottom: 12px;
-}
-
- */
