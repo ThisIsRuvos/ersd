@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import saveAs from 'save-as';
+import process from 'process';
 
 @Component({
   selector: 'ersd-spec-download',
@@ -8,8 +9,9 @@ import saveAs from 'save-as';
   styleUrls: ['./spec-download.component.css']
 })
 export class SpecDownloadComponent implements OnInit {
-  request: any = {};
+  request: any = {}
 
+  showV2 = false
   version = "ecrv1"
   bundleType = ""
   contentType = "json"
