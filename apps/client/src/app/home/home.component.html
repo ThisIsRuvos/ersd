@@ -26,12 +26,7 @@
       you receive the content in XML or JSON format.
     </p>
     <div *ngIf="authService.loggedIn">
-      <span><button type="button" class="btn download-button" (click)="downloadJsonBundle()">Download Latest eRSD JSON Payload</button></span>
-      &nbsp;&nbsp;&nbsp;&nbsp;
-      <span><button type="button" class="btn download-button" (click)="downloadXmlBundle()">Download Latest eRSD XML Payload</button></span>
-      &nbsp;&nbsp;&nbsp;&nbsp;
-      <span><button type="button" class="btn download-button" (click)="downloadExcel()">Latest RCTC Spreadsheet & Change Log</button></span>
-
+      <ersd-spec-download></ersd-spec-download>
     </div>
   </div>
 
@@ -62,4 +57,5 @@
       </div>
     </a>
   </div>
+  <ersd-update-notice></ersd-update-notice>
 </div>
