@@ -1,0 +1,85 @@
+<ngb-accordion #acc="ngbAccordion">
+  <ngb-panel title="Select an eRSD version to download">
+    <ng-template ngbPanelContent>
+      <div class="fieldset-container">
+        <fieldset>
+          <legend class='bolded-legend'>Select the eRSD version to use:</legend>
+          <p class='legend-subtext'>
+            If you do not know which eRSD version to use please contact your EHR vendor or for eCR 
+            Now App implementations read the “eRSD Configuration Instructions” file in your eCR Now
+            App download folder.
+          </p>
+          <form>
+            <!-- Legacy versions of eCR spec -->
+            <fieldset class="internal-fieldsets">
+              <legend class="version-legend">For eCR Now App Release 2.X and Release 3.X and for many existing vendor developed implementations:</legend>
+              <input type="radio" id="legacy-versions" name="drone" value="ecrv1" (change)="setVersion($event)" checked>
+              <label for="legacy-versions">
+                <div class="radio-text">
+                  <p class='input-title'>eRSD Version 1 - Specification Bundle</p>
+                  <p class='input-subtitle'>Provides trigger codes and a computable representation of the reporting workflow</p>
+                </div>
+              </label>
+              <span>
+                <button type="button" class="btn btn-primary excelDownload" (click)="downloadExcel()">Latest RCTC Spreadsheet & Change Log</button>
+                <a class="release-notes-link" href="https://ecr.aimsplatform.org/">eRSD Release Notes</a>
+              </span>
+            </fieldset>
+            <!-- New versions of eCR spec -->
+            <div *ngIf="showV2">
+              <fieldset>
+                <legend class="version-legend">For eCR Now App Release 3.X and greater and some recently vendor developed implementations:</legend>
+                <div class='input-container v-2'>
+                  <input type="radio" id="v-2" name="drone" value="ecrv2" (change)="setVersion($event)">
+                  <label for="v-2">
+                    <div class="radio-text">
+                      <p class='input-title'>Version 2</p>
+                    </div>
+                  </label>
+                </div>
+                <div class='input-container check'>
+                  <input type="checkbox" id="v2-spec" name="drone" value="ecrv2spec" (change)="setBundle($event)" [disabled]="this.bundleType != 'ecr-v2-supp' && this.version != 'ecr-v2'">
+                  <label for="v2-spec">
+                    <div class="radio-text">
+                      <p>eRSD Version 2 Specification Bundle</p>
+                      <p class='input-subtitle'>Provides trigger codes and a computable representation of the reporting workflow</p>
+                    </div>
+                  </label>
+                </div>
+                <div class='marginTop input-container check'>
+                  <input type="checkbox" id="v2-supp" name="drone" value="ecrv2supp" (change)="setBundle($event)" [disabled]="this.bundleType != 'ecr-v2-spec' && this.version != 'ecr-v2'">
+                  <label for="v2-supp">
+                    <div class="radio-text">
+                      <p>eRSD Version 2 Supplemental Bundle</p>
+                      <p class='input-subtitle'>Provides computable representations of select reportability rules to optimize eICR transmission</p>
+                    </div>
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+          </form>
+          <!-- Select XML or JSON download-->
+          <fieldset>
+            <legend class="version-legend">Select a download format: </legend>
+            <input class='check' type="radio" id="file-type" name="drone" value="json" (change)="setContentType($event)" checked>
+            <label for="file-type">
+              <div class="radio-text">
+                <p class='input-title'>JSON</p>
+              </div>
+            </label>
+            <input class='check' type="radio" id="file-type" name="drone" value="xml" (change)="setContentType($event)">
+            <label for="file-type">
+              <div class="radio-text">
+                <p class='input-title'>XML</p>
+              </div>
+            </label>
+          </fieldset>
+        </fieldset>
+
+        <div class="button-container">
+          <button  type="button" class="btn btn-primary" (click)="handleSubmit()">Download</button>
+        </div>
+      </div>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
