@@ -38,6 +38,7 @@ export interface IServerConfig {
   restrictedResourceTypes: string[];
   contactInfo: IServerConfigContactInfo;
   exampleQuery?: string;
+  serveV2: boolean,
   payload: {
     Bucket: string;
     Key: string;

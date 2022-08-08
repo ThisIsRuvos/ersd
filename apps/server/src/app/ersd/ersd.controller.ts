@@ -95,7 +95,9 @@ export class eRSDController {
 
   @Get('v2specification')
   async getV2Spec(@Req() request: Request, @Query() queryParams, @Response() response: Res) {
+    if (!this.appService.serverConfig.serveV2) { throw new BadRequestException('eRSD V2 Specification Bundle not currently available') }
     await this.assertApiKey(request);
+
     const format = queryParams['format'].toLowerCase()
     if (!format || !this.validFormat(format)) { throw new BadRequestException('Please specify a valid download format: XML or JSON') }
 
@@ -127,7 +129,9 @@ export class eRSDController {
 
   @Get('v2supplemental')
   async getV2Supplemental(@Req() request: Request, @Query() queryParams, @Response() response: Res) {
+    if (!this.appService.serverConfig.serveV2) { throw new BadRequestException('eRSD V2 Supplemental Bundle not currently available') }
     await this.assertApiKey(request);
+    
     const format = queryParams['format'].toLowerCase()
     if (!format || !this.validFormat(format)) { throw new BadRequestException('Please specify a valid download format: XML or JSON') }
 
