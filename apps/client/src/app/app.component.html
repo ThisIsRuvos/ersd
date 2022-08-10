@@ -108,7 +108,6 @@
       </ul>
     </div>
   </nav>
-
   <main role="main" class="container">
     <div *ngIf="authService.person"><router-outlet></router-outlet></div>
     <div class="home-grid-container" *ngIf="!authService.loggedIn">
@@ -118,6 +117,7 @@
       >
         <img src="../../assets/ersd-logo-full.png" />
       </div>
+      <ersd-update-notice></ersd-update-notice>
       <div class="page-info" *ngIf="!authService.loggedIn">
         <p>
           This site provides access to the current eRSD specification (including
@@ -161,7 +161,6 @@
           to continue.
         </h3>
       </div>
-      <ersd-update-notice></ersd-update-notice>
     </div>
   </main>
   <div class="ersd-footer">
