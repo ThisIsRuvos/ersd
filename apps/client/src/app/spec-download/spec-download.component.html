@@ -26,18 +26,25 @@
               </span>
             </fieldset>
             <!-- New versions of eCR spec -->
-            <div *ngIf="showV2">
+            <div>
               <fieldset>
                 <legend class="version-legend">For eCR Now App Release 3.X and greater and some recently vendor developed implementations:</legend>
                 <div class='input-container v-2'>
-                  <input type="radio" id="v-2" name="drone" value="ecrv2" (change)="setVersion($event)">
+                  <input type="radio" id="legacy-versions" name="drone" value="ecrv2" (change)="setVersion($event)">
+                  <label for="legacy-versions">
+                    <div class="radio-text">
+                      <p class='input-title'>eRSD Version 2 - Specification Bundle</p>
+                      <p class='input-subtitle'>Provides trigger codes and a computable representation of the reporting workflow</p>
+                    </div>
+                  </label>
+                  <!-- <input type="radio" id="v-2" name="drone" value="ecrv2" (change)="setVersion($event)">
                   <label for="v-2">
                     <div class="radio-text">
                       <p class='input-title'>Version 2</p>
                     </div>
-                  </label>
+                  </label> -->
                 </div>
-                <div class='input-container check'>
+                <!-- <div class='input-container check'>
                   <input type="checkbox" id="v2-spec" name="drone" value="ecrv2spec" (change)="setBundle($event)" [disabled]="this.bundleType != 'ecr-v2-supp' && this.version != 'ecr-v2'">
                   <label for="v2-spec">
                     <div class="radio-text">
@@ -54,7 +61,7 @@
                       <p class='input-subtitle'>Provides computable representations of select reportability rules to optimize eICR transmission</p>
                     </div>
                   </label>
-                </div>
+                </div> -->
               </fieldset>
             </div>
           </form>

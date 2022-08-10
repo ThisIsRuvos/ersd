@@ -16,9 +16,9 @@ export class SpecDownloadComponent implements OnInit {
   request: any = {}
 
   showV2 = false
-  version = "ecrv1"
-  bundleType = ""
-  contentType = "json"
+  version = 'ecrv1'
+  bundleType = ''
+  contentType = 'json'
 
   constructor(
     private httpClient: HttpClient
@@ -34,18 +34,19 @@ export class SpecDownloadComponent implements OnInit {
   setContentType(e) { this.contentType = e.target.value }
 
   buildFileName() {
-    if (this.bundleType !== "") {
+    if (this.bundleType !== '') {
       return `${this.version}-${this.bundleType}.${this.contentType}`
     }
     return `${this.version}.${this.contentType}`
   }
 
   async handleSubmit() {
-    let url = ""
+    let url = ''
     try {
-      if (this.version == "ecrv2") {
-        if(this.bundleType == "") { throw Error('Please select a bundle type') } 
-        url = `/api/s3/${this.contentType}?version=${this.version}&bundle=${this.bundleType}`
+      if (this.version == 'ecrv2') {
+        // when V2 Supplemental goes live: if(this.bundleType == '') { throw Error('Please select a bundle type') } 
+        url = `/api/s3/${this.contentType}?version=${this.version}`
+        // when V2 Supplemental goes live: url = `/api/s3/${this.contentType}?version=${this.version}&bundle=${this.bundleType}`
       } else {
         url = `/api/s3/${this.contentType}?version=${this.version}`
       }
