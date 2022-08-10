@@ -99,25 +99,14 @@ export class SpecDownloadComponent implements OnInit {
   // RCTC Spreadsheet specific functions
   async downloadExcel() {
     this.httpClient
-    .post('/api/download/excel', this.request)
-    .toPromise()
-    .then(async (data: PayloadDownload) => {
-        await this.handleExcelDownload(data.url, 'rctc.xlsx')
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }
-  
-  async handleExcelDownload(data, filename) {
-    const url = data.url
-    console.log('Downloading');
-    if (url.includes('local')) {
-      return await this.downloadLocal(url, filename)
-    }
-    else {
-      return await this.downloadS3(url)
-    }
+      .post('/api/download/excel', this.request)
+      .toPromise()
+      .then(async (data: PayloadDownload) => {
+          await this.downloadS3(data.url)
+        })
+        .catch(err => {
+          console.log(err);
+        });
   }
 
   async downloadS3(url) {
@@ -127,15 +116,5 @@ export class SpecDownloadComponent implements OnInit {
     document.body.appendChild(a);
     a.click();
     a.parentNode.removeChild(a);
-  }
-  
-  async downloadLocal(url, filename) {
-    try {
-      const results = await this.httpClient.get(url, { responseType: 'blob' }).toPromise();
-      saveAs(results, filename);
-    } catch (ex) {
-      alert(`Error while downloading excel file: ${ex.message}`);
-      console.error(ex);
-    }
   }
 }
