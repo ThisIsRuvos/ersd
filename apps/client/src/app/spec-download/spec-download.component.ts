@@ -16,9 +16,9 @@ export class SpecDownloadComponent implements OnInit {
   request: any = {}
 
   showV2 = false
-  version = "ecrv1"
-  bundleType = ""
-  contentType = "json"
+  version = 'ecrv1'
+  bundleType = ''
+  contentType = 'json'
 
   constructor(
     private httpClient: HttpClient
@@ -34,18 +34,19 @@ export class SpecDownloadComponent implements OnInit {
   setContentType(e) { this.contentType = e.target.value }
 
   buildFileName() {
-    if (this.bundleType !== "") {
+    if (this.bundleType !== '') {
       return `${this.version}-${this.bundleType}.${this.contentType}`
     }
     return `${this.version}.${this.contentType}`
   }
 
   async handleSubmit() {
-    let url = ""
+    let url = ''
     try {
-      if (this.version == "ecrv2") {
-        if(this.bundleType == "") { throw Error('Please select a bundle type') } 
-        url = `/api/s3/${this.contentType}?version=${this.version}&bundle=${this.bundleType}`
+      if (this.version == 'ecrv2') {
+        // when V2 Supplemental goes live: if(this.bundleType == '') { throw Error('Please select a bundle type') } 
+        url = `/api/s3/${this.contentType}?version=${this.version}`
+        // when V2 Supplemental goes live: url = `/api/s3/${this.contentType}?version=${this.version}&bundle=${this.bundleType}`
       } else {
         url = `/api/s3/${this.contentType}?version=${this.version}`
       }
@@ -98,25 +99,14 @@ export class SpecDownloadComponent implements OnInit {
   // RCTC Spreadsheet specific functions
   async downloadExcel() {
     this.httpClient
-    .post('/api/download/excel', this.request)
-    .toPromise()
-    .then(async (data: PayloadDownload) => {
-        await this.handleExcelDownload(data.url, 'rctc.xlsx')
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }
-  
-  async handleExcelDownload(data, filename) {
-    const url = data.url
-    console.log('Downloading');
-    if (url.includes('local')) {
-      return await this.downloadLocal(url, filename)
-    }
-    else {
-      return await this.downloadS3(url)
-    }
+      .post('/api/download/excel', this.request)
+      .toPromise()
+      .then(async (data: PayloadDownload) => {
+          await this.downloadS3(data.url)
+        })
+        .catch(err => {
+          console.log(err);
+        });
   }
 
   async downloadS3(url) {
@@ -126,15 +116,5 @@ export class SpecDownloadComponent implements OnInit {
     document.body.appendChild(a);
     a.click();
     a.parentNode.removeChild(a);
-  }
-  
-  async downloadLocal(url, filename) {
-    try {
-      const results = await this.httpClient.get(url, { responseType: 'blob' }).toPromise();
-      saveAs(results, filename);
-    } catch (ex) {
-      alert(`Error while downloading excel file: ${ex.message}`);
-      console.error(ex);
-    }
   }
 }

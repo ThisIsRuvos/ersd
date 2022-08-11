@@ -95,7 +95,6 @@ export class eRSDController {
 
   @Get('v2specification')
   async getV2Spec(@Req() request: Request, @Query() queryParams, @Response() response: Res) {
-    if (!this.appService.serverConfig.serveV2) { throw new BadRequestException('eRSD V2 Specification Bundle not currently available') }
     await this.assertApiKey(request);
 
     const format = queryParams['format'].toLowerCase()

@@ -15,10 +15,10 @@ import S3 from 'aws-sdk/clients/s3';
 @Controller('s3')
 export class S3Controller {
   private readonly logger = new Logger('S3Controller');
-  constructor(private httpService: HttpService, private appService: AppService) {
+  constructor(private appService: AppService) {
   }
 
-  private setJSONKey(version, bundle?) {
+  private setJSONKey(version, bundle = 'specification') { // currently defaults to specification for eRSD V2 for initial release
     let key = ''
     if(version == 'ecrv1') {
       key = this.appService.serverConfig.payload.ERSDV1_JSON_KEY
@@ -33,7 +33,7 @@ export class S3Controller {
     return key
   }
 
-  private setXMLKey(version, bundle?) {
+  private setXMLKey(version, bundle = 'specification') { // currently defaults to specification for eRSD V2 for initial release
     let key = ''
     if(version == 'ecrv1') {
       key = this.appService.serverConfig.payload.ERSDV1_XML_KEY

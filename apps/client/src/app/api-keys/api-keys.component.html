@@ -10,13 +10,31 @@
   <div class="alert" *ngIf="message" [class.alert-success]="!messageIsError" [class.alert-danger]="messageIsError">{{message}}</div>
 
   <div class="alert alert-info">
-    <p>The base address for the FHIR server is: <strong><a href="{{baseUrl}}">{{baseUrl}}</a></strong>.</p>
-    <p>The FHIR server cannot be accessed without authentication. To authenticate, specify an API key in the field below and "Save" the API key so that it is associated with your user/profile. When making a request to the FHIR server specified above, include an "Authorization" header with a value of "Bearer XXX".</p>
-    <p class="example-authorization" *ngIf="apiKeys.inbound"><strong>Authorization: Bearer {{apiKeys.inbound}}</strong></p>
     <p>
-      Alternatively, you may specify the API key in a query parameter as part of the URL for the request: <br/>
-      <a href="{{exampleQuery}}" target="_blank">{{exampleQuery}}</a>
+      New endpoint urls for the eRSD v2 are now available. 
+      <span class="red-text">Support for bundle retrieval via the FHIR server will end on November 1, 2022</span>
+      and so implementers are encouraged to transition to the new endpoints as soon as possible.
     </p>
+    <p class="red-text current-link">Current link - unavailable starting November 1, 2022</p>
+    <p>The base address for the FHIR server is: <strong><a href="{{baseUrl}}">{{baseUrl}}</a></strong>.</p>
+    <p class="example-authorization" *ngIf="apiKeys.inbound"><strong>Authorization: Bearer {{apiKeys.inbound}}</strong></p>
+    <p>Neither the FHIR server or the new endpoints can be accessed without authentication. To authenticate, specify an API key in the field below and “Save” the API key so that it is associated with your user/profile. When making a request to the FHIR server specified above, include an “Authorization” header with a value of “Bearer XXX”.</p>
+    <p>Alternatively, you may specify the API key in a query parameter as part of the URL for the request, as shown in the endpoint URLs below:</p>
+    <ul>
+        <li class="specification-item">
+          Version 1 - Specification Bundle <span class="red-text">(Deprecated)</span>
+          <ul><li>https://ersd.aimsplatform.org/api/fhir/Bundle?_sort=-_lastUpdated&_count=1&api-key=YOUR-API-KEY</li></ul>
+        </li>
+        <li class="specification-item">
+          Version 1 - Specification Bundle
+          <ul><li>https://ersd.aimsplatform.org/api/ersd/v1specification?format=[json | xml]&api-key=YOUR-API-KEY</li></ul>
+        </li>
+        <li class="specification-item"> 
+          Version 2 - Specification Bundle
+          <ul><li>https://ersd.aimsplatform.org/api/ersd/v2specification?format=[json | xml]&api-key=YOUR-API-KEY</li></ul>
+        </li>
+    </ul>
+
   </div>
 
   <div class="form-group">

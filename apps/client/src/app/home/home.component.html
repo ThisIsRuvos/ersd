@@ -2,28 +2,17 @@
   <div class="home-grid-item home-grid-item-1">
     <img src="../../assets/ersd-logo-full.png" />
   </div>
-
+  <ersd-update-notice></ersd-update-notice>
   <div class="page-info">
     <p>
-      This site provides access to the current eRSD specification (including the current Reportable Condition Trigger
-      Code (RCTC) value sets) for Electronic Case Reporting (eCR). The eRSD is used to guide triggering and reporting
-      of initial case reports within participating Electronic Health Records. For more information, please visit
+      This site provides access to the eRSD specifications for electronic Case Reporting (eCR).
+      The eRSD is used to guide triggering and reporting of initial case reports within participating Electronic Health Records.
+      For more information, please visit
       <a
         class="page-info-email"
         href="https://ecr.aimsplatform.org/ehr-implementers/triggering/"
         >https://ecr.aimsplatform.org/ehr-implementers/triggering/</a
-      >.
-    </p>
-    <p>
-      <span class="page-info-heading">Registration</span> – If this is your first time visiting the site, please
-      register for an account. Registration is needed so we have contact information to alert you for subsequent routine
-      and emergent updates.
-    </p>
-
-    <p>
-      <span class="page-info-heading">Access to Content</span> - Once registered, you can choose to receive content
-      through subscription (email, SMS, or REST) or polling of the eRSD server. You will also be able to choose whether
-      you receive the content in XML or JSON format.
+      >. The site may also contain specifications for other public health reporting programs and pilots.
     </p>
     <div *ngIf="authService.loggedIn">
       <ersd-spec-download></ersd-spec-download>
@@ -35,7 +24,7 @@
       <div class="home-grid-item-container">
         <i class="fas fa-inbox"></i>
         <p>
-          Subscription<br />
+          Notification<br />
           Management
         </p>
       </div>
@@ -57,5 +46,4 @@
       </div>
     </a>
   </div>
-  <ersd-update-notice></ersd-update-notice>
 </div>

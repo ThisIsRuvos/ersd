@@ -133,24 +133,10 @@ export class DownloadController {
   @UseGuards(AuthGuard())
   async downloadExcel(@Req() request: AuthRequest, @Body() body: any) {
     const Bucket = this.appService.serverConfig.payload.Bucket;
-    this.logger.log('HELLO' + Bucket)
-    if (typeof Bucket === 'undefined' || Bucket === "") {
-      return {url: 'api/download/localexcel'}
-    } else {
+
       const s3client = new S3();
       const Key = this.appService.serverConfig.payload.RCTCKey;
-
-
-      const headParams = {
-        Bucket,
-        Key,
-      }
-
-      const data = await s3client.headObject(headParams).promise();
-      const metaData = data.Metadata;
-
-      const fileName = metaData['filename'] || Key;
-      const ResponseContentDisposition = `attachment; filename="${fileName}"`;
+      const ResponseContentDisposition = `attachment; filename="rctc.xlsx"`;
 
       const params = {
         Bucket,
@@ -159,7 +145,6 @@ export class DownloadController {
       }
       const url = await s3client.getSignedUrlPromise('getObject', params);
       return {url}
-    }
   }
 
   @Get('localexcel')
