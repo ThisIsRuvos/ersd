@@ -131,12 +131,13 @@ export class DownloadController {
 
   @Post('excel')
   @UseGuards(AuthGuard())
-  async downloadExcel(@Req() request: AuthRequest, @Body() body: any) {
+  async downloadExcel() {
     const Bucket = this.appService.serverConfig.payload.Bucket;
 
       const s3client = new S3();
+
       const Key = this.appService.serverConfig.payload.RCTCKey;
-      const ResponseContentDisposition = `attachment; filename="rctc.xlsx"`;
+      const ResponseContentDisposition = `attachment; filename="rctc.zip"`;
 
       const params = {
         Bucket,
