@@ -66,50 +66,24 @@ export class SpecDownloadComponent implements OnInit {
       } else {
         url = `/api/s3/${this.contentType}?version=${this.version}`
       }
-      if (this.contentType === 'json') {
-        return this.queryServer(url)
-      } else {
-        return this.queryServerXML(url)
-      }
+      return this.queryServer(url)
+
     } catch (err) {
       alert(`Error while downloading file: ${err.message}`);
       console.error(err);
     }
   }
 
-  async downloadFile(data, filename?) {
-    let blob: Blob;
-    if (this.contentType === 'json') {
-      blob = new Blob([JSON.stringify(data, null, 2)],{ type: 'application/json;charset=utf-8' })
-    } else if (this.contentType === 'xml') {
-      blob = new Blob([data],{ type: 'text/xml' })
-    }
-    saveAs(blob, filename);
-  }
-
   async queryServer(url) {
     this.httpClient
       .post(url, this.request)
       .toPromise()
-      .then(async (data) => {
-        await this.downloadFile(data, this.buildFileName())
+      .then(async (data: PayloadDownload) => {
+        await this.downloadS3(data)
       })
       .catch(err => {
         console.error(err);
       });
-  }
-
-  async queryServerXML(url) {
-    try {
-      this.httpClient
-        .get(url, { responseType: 'text' })
-        .subscribe(async result => {
-          await this.downloadFile(result, this.buildFileName())
-        })
-    } catch (err) {
-      alert(`Error downloading file: ${err.message}`)
-      console.error(err)
-    }
   }
 
   // RCTC Spreadsheet specific functions
@@ -118,16 +92,16 @@ export class SpecDownloadComponent implements OnInit {
       .post('/api/download/excel', this.request)
       .toPromise()
       .then(async (data: PayloadDownload) => {
-          await this.downloadS3(data.url)
+          await this.downloadS3(data)
         })
         .catch(err => {
           console.log(err);
         });
   }
 
-  async downloadS3(url) {
+  async downloadS3(data: PayloadDownload) {
     var a = document.createElement('a');
-    a.href = url;
+    a.href = data.url;
     a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
