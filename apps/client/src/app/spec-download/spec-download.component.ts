@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import saveAs from 'save-as';
+import { delay } from 'rxjs/operators';
+import { LoadingService } from '../loading-spinner/loading.service';
 
 interface PayloadDownload {
   url: string;
@@ -11,9 +13,9 @@ interface PayloadDownload {
   templateUrl: './spec-download.component.html',
   styleUrls: ['./spec-download.component.css']
 })
-
 export class SpecDownloadComponent implements OnInit {
   request: any = {}
+  loading: boolean = false;
 
   showV2 = false
   version = 'ecrv1'
@@ -21,10 +23,12 @@ export class SpecDownloadComponent implements OnInit {
   contentType = 'json'
 
   constructor(
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private _loading: LoadingService
   ) { }
 
   ngOnInit() {
+    this.listenToLoading();
   }
 
   setBundle(e) { this.bundleType = e.target.value }
@@ -32,6 +36,18 @@ export class SpecDownloadComponent implements OnInit {
   setVersion(e) { this.version = e.target.value }
 
   setContentType(e) { this.contentType = e.target.value }
+
+   /**
+   * Listen to the loadingSub property in the LoadingService class. This drives the
+   * display of the loading spinner.
+   */
+    listenToLoading(): void {
+      this._loading.loadingSub
+        .pipe(delay(0)) // This prevents a ExpressionChangedAfterItHasBeenCheckedError for subsequent requests
+        .subscribe((loading: boolean) => {
+          this.loading = loading;
+        });
+    }
 
   buildFileName() {
     if (this.bundleType !== '') {
