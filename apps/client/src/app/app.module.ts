@@ -11,7 +11,7 @@ import { HomeComponent } from './home/home.component';
 import { ContactInfoComponent } from './contact-info/contact-info.component';
 import { FormsModule } from '@angular/forms';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { CreatePersonComponent } from './create-person/create-person.component';
 import { EditPersonComponent } from './edit-person/edit-person.component';
@@ -20,6 +20,7 @@ import { IClientConfig } from '../../../../libs/ersdlib/src/lib/client-config';
 import { ConfigService } from './config.service';
 import { UpdateNoticeComponent } from './update-notice/update-notice.component';
 import { SpecDownloadComponent } from './spec-download/spec-download.component';
+import { HttpRequestInterceptor } from './loading-spinner/http-interceptor';
 
 const appRoutes: Routes = [
   { path: 'admin',            component: AdminComponent },
@@ -87,6 +88,7 @@ export function initializer(keycloak: KeycloakService, httpClient: HttpClient, c
   providers: [
     AuthService,
     ConfigService,
+    { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },
     {
       provide: APP_INITIALIZER,
       multi: true,
