@@ -16,6 +16,7 @@ import { IBundle } from '../../../../../libs/ersdlib/src/lib/bundle';
 import { Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { AppService } from '../app.service';
 import S3 from 'aws-sdk/clients/s3';
+import { Fhir } from 'fhir/fhir';
 
 @Controller('ersd')
 export class eRSDController {
@@ -61,6 +62,20 @@ export class eRSDController {
       });
   }
 
+  private stripOuterBundleJSON (bundle: IBundle) {
+    return bundle.entry.find((entry) => entry.resource.resourceType === 'Bundle').resource
+  }
+
+  private stripOuterBundleXML (bundle: string) {
+    const fhir = new Fhir()
+    const jsonBundle: IBundle = fhir.xmlToObj(bundle) as IBundle
+    const bundleEntry = jsonBundle.entry.find((entry) => entry.resource.resourceType === 'Bundle').resource
+    const fhirXML = fhir.objToXml(bundleEntry)
+    const validationCheck = fhir.validate(fhirXML)
+    if (validationCheck.valid === false) { throw Error('Invalid XML input, please check resource in S3') }
+    return fhirXML
+  }
+
   @Get('v1specification')
   async getV1Spec(@Req() request: Request, @Query() queryParams, @Response() response: Res) {
     await this.assertApiKey(request);
@@ -86,10 +101,11 @@ export class eRSDController {
 
     const data = await s3client.getObject(headParams).promise();
     const body = data.Body.toString('utf-8')
+
     if (format === 'xml') {
-      return response.set({'Content-Type': 'text/xml'}).send(body)
+      return response.set({'Content-Type': 'text/xml'}).send(this.stripOuterBundleXML(body))
     } else {
-      return response.set({'Content-Type': 'application/json'}).json(JSON.parse(body))
+      return response.set({'Content-Type': 'application/json'}).json(this.stripOuterBundleJSON(JSON.parse(body)))
     }
   }
 
