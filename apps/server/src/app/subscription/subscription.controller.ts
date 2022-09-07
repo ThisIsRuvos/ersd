@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpService, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpService, Logger, Post, Req, UseGuards } from '@nestjs/common';
 import {
   EmailSubscriptionInfo,
   SmsSubscriptionInfo,
@@ -13,9 +13,11 @@ import { IPerson } from '../../../../../libs/ersdlib/src/lib/person';
 import { AxiosResponse } from 'axios';
 import { IOperationOutcome } from '../../../../../libs/ersdlib/src/lib/operation-outcome';
 import { AppService } from '../app.service';
+import { IBundle } from 'libs/ersdlib/src/lib/bundle';
 
 @Controller('subscription')
 export class SubscriptionController {
+  private readonly logger = new Logger('SubscriptionController');
   constructor(private httpService: HttpService, private appService: AppService) {
   }
 
@@ -48,7 +50,6 @@ export class SubscriptionController {
 
       const subscriptions = await Promise.all(promises);
       const emailSubscription = subscriptions.find((subscription) => subscription.channel.type === 'email' && !subscription.isSms);
-      const restSubscription = subscriptions.find((subscription) => subscription.channel.type === 'rest-hook');
       const smsSubscription = subscriptions.find((subscription) => subscription.isSms);
 
       return this.buildUserSubscriptions(emailSubscription, smsSubscription);
@@ -116,20 +117,7 @@ export class SubscriptionController {
         updated.emailAddress :
         'mailto:' + updated.emailAddress;
 
-      if (updated.includeArtifacts) {
-        switch (updated.format) {
-          case 'json':
-            current.channel.payload = 'application/json;bodytext=' + Buffer.from(" ").toString('base64');
-            break;
-          case 'xml':
-            current.channel.payload = 'application/xml;bodytext=' + Buffer.from(" ").toString('base64');
-            break;
-          default:
-            throw new Error('Unexpected format specified for email subscription');
-        }
-      } else {
-        current.channel.payload = ';bodytext=' + Buffer.from(Constants.defaultEmailBody).toString('base64');
-      }
+      current.channel.payload = ';bodytext=' + Buffer.from(Constants.defaultEmailBody).toString('base64');
 
       return this.httpService.request({
         method: method,
@@ -266,5 +254,73 @@ export class SubscriptionController {
           .catch((err) => reject(err));
       });
     }
+  }
+
+
+  private removeAttachmentsFromBody(subscription): string {
+    // Since the subscriptions for SMS and Email are both tagged as emails, SMS Subscriptions must be a no-op
+    const mobileCarriers = [
+      Subscription.SMS_TMOBILE,
+      Subscription.SMS_VERIZON,
+      Subscription.SMS_ATT,
+      Subscription.SMS_SPRINT
+    ]; 
+
+    const updatedSubscription: Subscription = subscription;
+    const subscriptionEndpoint = updatedSubscription.channel.endpoint;
+    const payloadString = updatedSubscription.channel.payload;
+
+    // check if an SMS carrier is present in the subscription endpoint
+    if (mobileCarriers.some(carrier => subscriptionEndpoint.includes(carrier))) {
+      return 'SMS';
+    } else {
+      const payloadBody = payloadString.split(';bodytext=').pop();
+      return `;bodytext=${payloadBody}`;
+    }
+  }
+
+  private createPatchBundle(bundle) {
+    const patchBundle = {
+      resourceType: 'Bundle',
+      type: 'transaction',
+      entry: []
+    }
+
+    patchBundle.entry = bundle.entry.flatMap(({ resource }) => {
+      const newBody = this.removeAttachmentsFromBody(resource);
+
+      if (newBody === 'SMS') { return [] } // no-op if its a text subscription
+      return {
+        request: {
+          method: 'PUT',
+          url: `Subscription/${resource.id}`
+        },
+        resource: {
+          ...resource,
+          channel: {
+            ...resource.channel,
+            payload: newBody
+          }
+        }
+      }
+    })
+
+    this.logger.log(patchBundle)
+    return patchBundle;
+  }
+
+  @Get('remove_artifacts')
+  // @UseGuards(AuthGuard())
+  async removeAttachmentsFromSubscriptions() {
+    const fhirServerBase = this.appService.serverConfig.fhirServerBase;
+
+    const subscriptionsBundle = await this.httpService.get(`${fhirServerBase}/Subscription?type=email`).toPromise();
+    const { data: bundle } = subscriptionsBundle;
+
+    await this.httpService.request({
+      method: 'POST',
+      url: fhirServerBase,
+      data: this.createPatchBundle(bundle)
+    }).toPromise();    
   }
 }
