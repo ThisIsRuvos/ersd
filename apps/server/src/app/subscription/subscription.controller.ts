@@ -309,18 +309,26 @@ export class SubscriptionController {
     return patchBundle;
   }
 
+  private async sendUpdateBundle(bundle: IBundle) {
+    await this.httpService.request({
+      method: 'POST',
+      url: this.appService.serverConfig.fhirServerBase,
+      data: this.createPatchBundle(bundle)
+    }).toPromise();
+
+    const nextLink = bundle.link.find(link => link.relation === 'next')
+    if (nextLink && nextLink.url) {
+      const subscriptionsBundle = await this.httpService.get(`${this.appService.serverConfig.fhirServerBase}/Subscription?type=email`).toPromise();
+      const { data: bundle } = subscriptionsBundle;
+      this.sendUpdateBundle(bundle)
+    }
+  }
+
   @Get('remove_artifacts')
   // @UseGuards(AuthGuard())
   async removeAttachmentsFromSubscriptions() {
-    const fhirServerBase = this.appService.serverConfig.fhirServerBase;
-
-    const subscriptionsBundle = await this.httpService.get(`${fhirServerBase}/Subscription?type=email`).toPromise();
+    const subscriptionsBundle = await this.httpService.get(`${this.appService.serverConfig.fhirServerBase}/Subscription?type=email`).toPromise();
     const { data: bundle } = subscriptionsBundle;
-
-    await this.httpService.request({
-      method: 'POST',
-      url: fhirServerBase,
-      data: this.createPatchBundle(bundle)
-    }).toPromise();    
+    await this.sendUpdateBundle(bundle);
   }
 }
