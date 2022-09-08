@@ -289,7 +289,7 @@ export class SubscriptionController {
     patchBundle.entry = bundle.entry.flatMap(({ resource }) => {
       const newBody = this.removeAttachmentsFromBody(resource);
 
-      if (newBody === 'SMS') { return [] } // no-op if its a text subscription
+      if (newBody === 'SMS') { return [] } // no-op if its a sms subscription
       return {
         request: {
           method: 'PUT',
@@ -304,8 +304,9 @@ export class SubscriptionController {
         }
       }
     })
-
+    this.logger.log('===========PATCH BUNDLE============')
     this.logger.log(patchBundle)
+    this.logger.log('=======================')
     return patchBundle;
   }
 
@@ -318,8 +319,15 @@ export class SubscriptionController {
 
     const nextLink = bundle.link.find(link => link.relation === 'next')
     if (nextLink && nextLink.url) {
-      const subscriptionsBundle = await this.httpService.get(`${this.appService.serverConfig.fhirServerBase}/Subscription?type=email`).toPromise();
+      this.logger.log('===========NEXT BUNDLE============')
+      this.logger.log('Requesting next bundle')
+      this.logger.log(nextLink.url)
+      const testURL = nextLink.url.replace('ersd-hapi-fhir-1','localhost')
+      const subscriptionsBundle = await this.httpService.get(nextLink.url).toPromise();
       const { data: bundle } = subscriptionsBundle;
+      this.logger.log('The bundle return')
+      this.logger.log(bundle)
+      this.logger.log('=======================')
       this.sendUpdateBundle(bundle)
     }
   }
@@ -327,7 +335,7 @@ export class SubscriptionController {
   @Get('remove_artifacts')
   // @UseGuards(AuthGuard())
   async removeAttachmentsFromSubscriptions() {
-    const subscriptionsBundle = await this.httpService.get(`${this.appService.serverConfig.fhirServerBase}/Subscription?type=email`).toPromise();
+    const subscriptionsBundle = await this.httpService.get(`${this.appService.serverConfig.fhirServerBase}/Subscription?type=email&_count=5`).toPromise();
     const { data: bundle } = subscriptionsBundle;
     await this.sendUpdateBundle(bundle);
     return 'Attachments Successfully Removed from Emails'
