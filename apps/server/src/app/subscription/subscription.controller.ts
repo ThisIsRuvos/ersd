@@ -330,5 +330,6 @@ export class SubscriptionController {
     const subscriptionsBundle = await this.httpService.get(`${this.appService.serverConfig.fhirServerBase}/Subscription?type=email`).toPromise();
     const { data: bundle } = subscriptionsBundle;
     await this.sendUpdateBundle(bundle);
+    return 'Attachments Successfully Removed from Emails'
   }
 }
