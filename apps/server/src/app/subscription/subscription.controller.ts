@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpService, Logger, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpService, Logger, Post, Req, UseGuards } from '@nestjs/common';
 import {
   EmailSubscriptionInfo,
   SmsSubscriptionInfo,
@@ -316,6 +316,7 @@ export class SubscriptionController {
 
     const nextLink = bundle.link.find(link => link.relation === 'next')
     if (nextLink && nextLink.url) {
+      this.logger.log('Removing attachments from Subscription resources in the next bundle')
       const subscriptionsBundle = await this.httpService.get(nextLink.url).toPromise();
       const { data: bundle } = subscriptionsBundle;
       this.sendUpdateBundle(bundle)
@@ -327,7 +328,8 @@ export class SubscriptionController {
   async removeAttachmentsFromSubscriptions() {
     const subscriptionsBundle = await this.httpService.get(`${this.appService.serverConfig.fhirServerBase}/Subscription?type=email`).toPromise();
     const { data: bundle } = subscriptionsBundle;
+    this.logger.log('Removing attachments from Subscription resources')
     await this.sendUpdateBundle(bundle);
-    return 'Attachments Successfully Removed from Emails'
+    return { message: 'Attachments Successfully Removed from Emails' }
   }
 }
