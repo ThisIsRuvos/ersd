@@ -74,6 +74,18 @@ export class SpecDownloadComponent implements OnInit {
     }
   }
 
+  async downloadReleaseNotes() {
+    this.httpClient
+      .post('api/download/release_notes', this.request)
+      .toPromise()
+      .then(async (data: PayloadDownload) => {
+        await this.downloadS3(data)
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+
   async queryServer(url) {
     this.httpClient
       .post(url, this.request)

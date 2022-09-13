@@ -21,8 +21,8 @@
                 </div>
               </label>
               <span>
-                <button type="button" class="btn btn-primary excelDownload" (click)="downloadExcel()">Latest RCTC Spreadsheet & Change Log</button>
-                <a class="release-notes-link" href="https://ecr.aimsplatform.org/">eRSD Release Notes</a>
+                <button type="button" class="btn btn-primary excelDownload" (click)="downloadExcel($event)">Latest RCTC Spreadsheet & Change Log</button>
+                <button class="release-notes-link" (click)="downloadReleaseNotes()">eRSD Release Description</button>
               </span>
             </fieldset>
             <!-- New versions of eCR spec -->
@@ -35,8 +35,10 @@
                     <div class="radio-text">
                       <p class='input-title'>eRSD Version 2 - Specification Bundle</p>
                       <p class='input-subtitle'>Provides trigger codes and a computable representation of the reporting workflow</p>
+                      <p class='supplemental-notice'>eRSD Version 2 - Supplemental bundle will be available ...</p>
                     </div>
                   </label>
+                  <button class="release-notes-link" (click)="downloadReleaseNotes()">eRSD Release Description</button>
                   <!-- FUTURE RELEASE OF V2 SUPPLEMENTAL BUNDLE 
                     <input type="radio" id="v-2" name="drone" value="ecrv2" (change)="setVersion($event)">
                   <label for="v-2">
