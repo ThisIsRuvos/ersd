@@ -50,5 +50,6 @@ export interface IServerConfig {
     ERSDV2_SUPPLEMENTAL_XML_KEY: string;
     ERSDV2_SPECIFICATION_JSON_KEY: string;
     ERSDV2_SPECIFICATION_XML_KEY: string;
+    ERSD_RELEASE_DESCRIPTION_KEY: string;
   };
 }

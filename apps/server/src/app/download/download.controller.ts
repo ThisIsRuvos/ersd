@@ -148,6 +148,25 @@ export class DownloadController {
       return {url}
   }
 
+  @Post('release_notes')
+  @UseGuards(AuthGuard())
+  async downloadNotes() {
+    const Bucket = this.appService.serverConfig.payload.Bucket;
+
+      const s3client = new S3();
+
+      const Key = this.appService.serverConfig.payload.ERSD_RELEASE_DESCRIPTION_KEY;
+      const ResponseContentDisposition = `attachment; filename="latestersdreleasedescription.txt"`;
+
+      const params = {
+        Bucket,
+        Key,
+        ResponseContentDisposition,
+      }
+      const url = await s3client.getSignedUrlPromise('getObject', params);
+      return {url}
+  }
+
   @Get('localexcel')
   @UseGuards(AuthGuard())
   @Header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')

@@ -33,6 +33,7 @@ fieldset {
   border-width: 1px !important;
   padding: 24px;
   padding-top: 0px;
+  padding-bottom: 0px;
   border-style: groove;
   border-color: black;
   font-family: Helvetica;
@@ -63,6 +64,10 @@ fieldset {
   padding-left: .75rem;
 }
 
+.supplemental-notice {
+  padding-left: .75rem;
+}
+
 .input-title {
   text-align: start;
   margin-bottom: 0;
@@ -75,9 +80,14 @@ fieldset {
 
 .excelDownload {
   font-size: .80rem;
+  margin-bottom: 10px;
 }
 
 .release-notes-link {
   float: right;
-  padding-top: 12px;
+  font-size: .90rem;
+  color: blue;
+  border: none;
+  background: none;
+  margin-bottom: 10px;
 }
