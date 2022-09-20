@@ -10,11 +10,7 @@
   <div class="alert" *ngIf="message" [class.alert-success]="!messageIsError" [class.alert-danger]="messageIsError">{{message}}</div>
 
   <div class="alert alert-info">
-    <p>New bundle-specific endpoints are now available (described below).</p>
-    <!-- <p>
-      eRSD bundle retrieval thru Polling has historically been accomplished by directly querying the FHIR Server (<strong><a href="{{baseUrl}}">{{baseUrl}}</a></strong>). 
-      <strong>Support for downloading the eRSD bundles this way is deprecated and will end &lt;FHIR Server Query Support End Date&gt;</strong>.
-    </p> -->
+    <p>New eRSD bundle-specific endpoints for accessing the eRSD are available (described below).</p>
     <p>
       Going forward, eRSD bundles will be accessible at the bundle-specific endpoints documented below. 
       Implementers are encouraged to transition to these new endpoints as soon as possible.
