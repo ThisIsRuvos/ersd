@@ -21,7 +21,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
   constructor(
     private _loading: LoadingService
   ) { }
-
+  // intercepts all HTTP calls, allows use of loading spinner component anywhere in app
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this._loading.setLoading(true, request.url);
     return next.handle(request)

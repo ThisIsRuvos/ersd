@@ -17,7 +17,6 @@ export class SpecDownloadComponent implements OnInit {
   request: any = {}
   loading: boolean = false;
 
-  showV2 = false
   version = 'ecrv1'
   bundleType = ''
   contentType = 'json'
@@ -31,11 +30,11 @@ export class SpecDownloadComponent implements OnInit {
     this.listenToLoading();
   }
 
-  setBundle(e) { this.bundleType = e.target.value }
+  setVersion(e) { this.version = e.target.value } // eRSD (eCR) V1 or V2
 
-  setVersion(e) { this.version = e.target.value }
+  setBundle(e) { this.bundleType = e.target.value } // Supplemental or Specification
 
-  setContentType(e) { this.contentType = e.target.value }
+  setContentType(e) { this.contentType = e.target.value } // XML or JSON
 
    /**
    * Listen to the loadingSub property in the LoadingService class. This drives the
@@ -97,8 +96,18 @@ export class SpecDownloadComponent implements OnInit {
         console.error(err);
       });
   }
+  
+  async downloadS3(data: PayloadDownload) {
+    var a = document.createElement('a');
+    a.href = data.url;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    a.parentNode.removeChild(a);
+  }
 
-  // RCTC Spreadsheet specific functions
+  // RCTC Spreadsheet specific function.
+  // This will be removed when the spreadsheet is removed
   async downloadExcel() {
     this.httpClient
       .post('/api/download/excel', this.request)
@@ -111,12 +120,4 @@ export class SpecDownloadComponent implements OnInit {
         });
   }
 
-  async downloadS3(data: PayloadDownload) {
-    var a = document.createElement('a');
-    a.href = data.url;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    a.parentNode.removeChild(a);
-  }
 }

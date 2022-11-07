@@ -316,8 +316,9 @@ export class SubscriptionController {
 
     const nextLink = bundle.link.find(link => link.relation === 'next')
     if (nextLink && nextLink.url) {
-      this.logger.log('Removing attachments from Subscription resources in the next bundle')
-      const subscriptionsBundle = await this.httpService.get(nextLink.url).toPromise();
+      const nextLinkQueryString = nextLink.url.split('fhir').pop()
+      const nextURL = this.appService.serverConfig.fhirServerBase + nextLinkQueryString
+      const subscriptionsBundle = await this.httpService.get(nextURL).toPromise()
       const { data: bundle } = subscriptionsBundle;
       this.sendUpdateBundle(bundle)
     }
