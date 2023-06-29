@@ -9,6 +9,33 @@ This project was generated using [Nx](https://nx.dev).
 
 [Interactive tutorial](https://nx.dev/tutorial/01-create-application)
 
+## Pre-Requisities
+- Docker
+- Python 2
+- NodeJs 14.x
+- @angular/cli (`npm install -g @angular/cli`)
+
+
+## Quick Setup with Docker
+
+To get started quickly, you can use the docker-compose.yml file in the root of the project. This will start a FHIR server, a KeyCloak server, and the ERSD server. The FHIR server and KeyCloak server will be pre-configured with the necessary data to run the ERSD server, however an additional step is needed to configure the KeyCloak with the ERSD client.
+
+To start the servers, run the following command from the root of the project:
+
+`npm install && npm run build`
+`docker compose up`
+
+Once the servers are running, you must configure the ERSD client in KeyCloak. To do this, you can run the script at in the root of the project:
+
+`./apps/keycloak/configure`
+
+While developing the application, you can run `npm run dev` to hot reload latest changes.
+
+After the servers are running, you can access the ERSD application at http://localhost:3333 and login with:
+```
+username: johndoe
+passowrd: password
+```
 ## Building
 
 ```
