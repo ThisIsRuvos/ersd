@@ -12,6 +12,7 @@ import { IEmailRequest } from '../../../../../libs/ersdlib/src/lib/email-request
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
+
 export class AdminComponent implements OnInit {
   public users: Person[] = [];
   public message: string;
@@ -25,6 +26,7 @@ export class AdminComponent implements OnInit {
   };
   public excelFile: File = null;
   public excelFileContent: string;
+  public active = 1
 
   @ViewChild('bundleUploadFile') bundleUploadField: ElementRef;
   @ViewChild('excelUploadFile') excelUploadField: ElementRef;

@@ -1,4 +1,6 @@
-
+export function loadEsmModule<T>(modulePath: string | URL): Promise<T> {
+  return new Function('modulePath', 'return import(modulePath);')(modulePath);
+}
 
 export function joinUrl(part1: string, part2: string) {
   return part1 +

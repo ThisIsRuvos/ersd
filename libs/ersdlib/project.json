@@ -1,0 +1,27 @@
+{
+  "name": "ersdlib",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/ersdlib/src",
+  "projectType": "library",
+  "prefix": "ersd",
+  "targets": {
+    "lint": {
+      "executor": "@angular-devkit/build-angular:tslint",
+      "options": {
+        "tsConfig": [
+          "libs/ersdlib/tsconfig.lib.json",
+          "libs/ersdlib/tsconfig.spec.json"
+        ],
+        "exclude": ["**/node_modules/**"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "libs/ersdlib/jest.config.js",
+        "tsConfig": "libs/ersdlib/tsconfig.spec.json"
+      }
+    }
+  },
+  "generators": {}
+}

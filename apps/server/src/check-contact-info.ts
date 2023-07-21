@@ -1,4 +1,5 @@
-import {HttpService, Logger} from '@nestjs/common';
+import { Logger} from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import {IServerConfigContactInfo} from './app/server-config';
 import {buildFhirUrl} from './app/helper';
 import {IBundle} from '../../../libs/ersdlib/src/lib/bundle';

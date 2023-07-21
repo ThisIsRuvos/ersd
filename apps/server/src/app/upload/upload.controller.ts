@@ -1,6 +1,8 @@
-import {Body, Controller, HttpService, Logger, Post, Req, UseGuards} from '@nestjs/common';
+import {Body, Controller, Logger, Post, Req, UseGuards} from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+
 import {AuthGuard} from '@nestjs/passport';
-import {AuthRequest} from '../auth-module/auth-request';
+import type { AuthRequest } from '../auth-module/auth-request';
 import {Constants} from '../../../../../libs/ersdlib/src/lib/constants';
 import {IUploadRequest} from '../../../../../libs/ersdlib/src/lib/upload-request';
 import {Fhir} from 'fhir/fhir';

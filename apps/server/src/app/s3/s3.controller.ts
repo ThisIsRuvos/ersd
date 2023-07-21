@@ -1,13 +1,13 @@
 import { 
   Controller,
   Header,
-  HttpService,
   Post,
   Logger,
   UseGuards,
   Query,
   Get,
 } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { AppService } from '../app.service';
 import { AuthGuard } from '@nestjs/passport';
 import S3 from 'aws-sdk/clients/s3';

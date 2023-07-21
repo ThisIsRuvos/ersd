@@ -4,7 +4,6 @@ import {
   Get,
   Header,
   HttpException,
-  HttpService,
   HttpStatus,
   Logger,
   Post,
@@ -12,8 +11,9 @@ import {
   Response,
   UseGuards
 } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { AuthGuard } from '@nestjs/passport';
-import { AuthRequest } from '../auth-module/auth-request';
+import type { AuthRequest } from '../auth-module/auth-request';
 import { AppService } from '../app.service';
 import S3 from 'aws-sdk/clients/s3';
 import path from "path";
@@ -133,7 +133,6 @@ export class DownloadController {
   @UseGuards(AuthGuard())
   async downloadExcel(@Req() request: AuthRequest, @Body() body: any) {
     const Bucket = this.appService.serverConfig.payload.Bucket;
-    this.logger.log('HELLO' + Bucket)
     if (typeof Bucket === 'undefined' || Bucket === "") {
       return {url: 'api/download/localexcel'}
     } else {

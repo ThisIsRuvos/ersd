@@ -3,7 +3,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { AdminComponent } from './admin/admin.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule, Routes } from '@angular/router';
 import { SubscriptionComponent } from './subscription/subscription.component';
 import { ApiKeysComponent } from './api-keys/api-keys.component';
@@ -59,6 +59,7 @@ export function initializer(keycloak: KeycloakService, httpClient: HttpClient, c
 }
 
 @NgModule({
+  // @ts-ignore
   entryComponents: [
     CreatePersonComponent,
     AdminEditPersonComponent
@@ -79,6 +80,7 @@ export function initializer(keycloak: KeycloakService, httpClient: HttpClient, c
   imports: [
     BrowserModule,
     NgbModule,
+    NgbNavModule,
     HttpClientModule,
     RouterModule.forRoot(appRoutes, { enableTracing: true, useHash: true }),
     FormsModule,

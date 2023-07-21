@@ -2,7 +2,7 @@ import * as config from 'config';
 
 import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {IServerConfig} from './server-config';
-import {AuthRequest} from './auth-module/auth-request';
+import type { AuthRequest } from './auth-module/auth-request';
 import {IEmailConfig} from './email-config';
 import {buildFhirUrl} from './helper';
 import { IClientConfig } from '../../../../libs/ersdlib/src/lib/client-config';

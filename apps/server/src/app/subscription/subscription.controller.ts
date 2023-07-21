@@ -1,4 +1,5 @@
-import { Body, Controller, Get, HttpService, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import {
   EmailSubscriptionInfo,
   SmsSubscriptionInfo,
@@ -6,7 +7,7 @@ import {
 } from '../../../../../libs/ersdlib/src/lib/user-subscriptions';
 import { UserController } from '../user/user.controller';
 import { AuthGuard } from '@nestjs/passport';
-import { AuthRequest } from '../auth-module/auth-request';
+import type { AuthRequest } from '../auth-module/auth-request';
 import { ISubscription, Subscription } from '../../../../../libs/ersdlib/src/lib/subscription';
 import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
 import { IPerson } from '../../../../../libs/ersdlib/src/lib/person';
