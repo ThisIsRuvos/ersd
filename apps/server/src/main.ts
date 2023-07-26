@@ -5,7 +5,6 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import {CheckContactInfo} from './check-contact-info';
 import {AppService} from './app/app.service';
 
-// import * as bodyParser from 'body-parser';
 import * as path from 'path';
 import * as fs from 'fs';
 
