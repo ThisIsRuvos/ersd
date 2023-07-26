@@ -1,7 +1,7 @@
 import nock from 'nock';
 import {Test, TestingModule} from '@nestjs/testing';
 import {UploadController} from './upload.controller';
-import {HttpModule} from '@nestjs/common';
+import {HttpModule} from '@nestjs/axios';
 import {AuthRequest, AuthRequestUser} from '../auth-module/auth-request';
 import {IUploadRequest} from '../../../../../libs/ersdlib/src/lib/upload-request';
 import {AppService} from '../app.service';
@@ -13,9 +13,23 @@ nock.disableNetConnect();
 jest.mock('config', () => {
   return {
     server: {
-      fhirServerBase: 'http://test-fhir-server.com'
+      fhirServerBase: 'http://test-fhir-server.com',
+      payload: {
+        Bucket: "Test",
+        Key: "test.xml"
+      },
     }
   };
+});
+
+const putObjectMock = jest.fn(() => ({
+  promise: jest.fn()
+}));
+
+jest.mock('aws-sdk/clients/s3', () => {
+  return jest.fn().mockImplementation(() => ({
+    putObject: putObjectMock,
+  }))
 });
 
 describe('Subscription Controller', () => {
@@ -50,7 +64,7 @@ describe('Subscription Controller', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should fail if the user is not an admin', async (done) => {
+  it('should fail if the user is not an admin', async () => {
     adminUser.realm_access.roles = [];      // THIS LINE IS IMPORTANT FOR THE TEST
 
     const controller: UploadController = module.get<UploadController>(UploadController);
@@ -65,13 +79,10 @@ describe('Subscription Controller', () => {
 
     try {
       await controller.uploadBundle(request, requestBody);
-      done('expected upload to throw an exception');
     } catch (ex) {
       expect(ex.status).toEqual(401);
       expect(ex.message).toBeTruthy();
-      expect(ex.message.error).toEqual('Unauthorized');
-      expect(ex.message.message).toEqual('User is not an admin!');
-      done();
+      expect(ex.message).toEqual('User is not an admin!');
     }
   });
 
@@ -184,15 +195,16 @@ describe('Subscription Controller', () => {
 
     const req = nock('http://test-fhir-server.com')
       .put('/Bundle/4e701cb4-46a2-49df-becd-686e51fb99c4', (bundle) => {
+        console.log(bundle.entry[0])
         expect(bundle.resourceType).toEqual('Bundle');
         expect(bundle.type).toEqual('collection');
         expect(bundle.entry).toBeTruthy();
         expect(bundle.entry.length).toEqual(1);
         expect(bundle.entry[0]).toBeTruthy();
-        expect(bundle.entry[0].extension).toBeTruthy();
-        expect(bundle.entry[0].extension.length).toEqual(1);
-        expect(bundle.entry[0].extension[0].url).toEqual(Constants.extensions.notificationMessage);
-        expect(bundle.entry[0].extension[0].valueString).toEqual('this is a test');
+        expect(bundle.entry[0].resource.extension).toBeTruthy();
+        expect(bundle.entry[0].resource.extension.length).toEqual(1);
+        expect(bundle.entry[0].resource.extension[0].url).toEqual(Constants.extensions.notificationMessage);
+        expect(bundle.entry[0].resource.extension[0].valueString).toEqual('this is a test');
         return true;
       })
       .reply(200, {

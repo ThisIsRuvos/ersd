@@ -7,7 +7,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpService,
   InternalServerErrorException,
   Logger,
   NotFoundException,
@@ -17,15 +16,15 @@ import {
   Req,
   UseGuards
 } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import {AuthGuard} from '@nestjs/passport';
 import {IPerson, Person} from '../../../../../libs/ersdlib/src/lib/person';
-import {AuthRequest} from '../auth-module/auth-request';
+import type {AuthRequest} from '../auth-module/auth-request';
 import {Constants} from '../../../../../libs/ersdlib/src/lib/constants';
 import {IBundle} from '../../../../../libs/ersdlib/src/lib/bundle';
 import {Subscription} from '../../../../../libs/ersdlib/src/lib/subscription';
 import {IEmailRequest} from '../../../../../libs/ersdlib/src/lib/email-request';
 import {SentMessageInfo} from 'nodemailer/lib/smtp-transport';
-import {InvalidModuleConfigException} from '@nestjs/common/decorators/modules/exceptions/invalid-module-config.exception';
 import {buildFhirUrl} from '../helper';
 import {AppService} from '../app.service';
 
@@ -42,7 +41,7 @@ export class UserController {
     this.appService.assertAdmin(request);
 
     if (!this.appService.emailConfig.host || !this.appService.emailConfig.port) {
-      throw new InvalidModuleConfigException('Email has not been configured on this server');
+      throw new Error('Email has not been configured on this server');
     }
 
     const transportOptions: SMTPConnection.Options = {

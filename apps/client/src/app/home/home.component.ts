@@ -10,7 +10,7 @@ export class HomeComponent implements OnInit {
   request: any = {};
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     public configService: ConfigService
   ) {}
 
