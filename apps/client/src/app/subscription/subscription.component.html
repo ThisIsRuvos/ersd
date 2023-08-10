@@ -1,10 +1,10 @@
 <div class='subscription-container'>
     <div class='heading-container'>
-      <h2 class='section-heading'>Subscription Management</h2>
+      <h2 class='section-heading'>Notification Management</h2>
     </div>
 
     <div class='page-info subscription-info'>
-      <p>Please choose your eRSD subscription(s) below.  Email subscription is required, and you may add an additional SMS subscription as well.  You will be contacted based on your preferences with any important information related to eRSD, or with routine or emergent updates.</p>
+      <p>Please choose your eRSD notification subscription(s) below.  Email subscription is required, and you may add an additional SMS subscription as well.  You will be contacted based on your preferences with any important information related to eRSD, or with routine or emergent updates.</p>
     </div>
 
   <div class="alert" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError" *ngIf="message">{{message}}</div>
@@ -19,24 +19,12 @@
           <div class="form-group">
             <label for="emailSubscriptionEmail">Email Address</label>
             <input id="emailSubscriptionEmail" type="text" class="form-control" placeholder="joe@somewhere.com"
-                   [(ngModel)]="userSubscriptions.emailSubscription.emailAddress"
-                   [class.is-invalid]="emailAddress.errors?.email || emailAddress.errors?.required"
-                   email="true"
-                   required="required"
-                   #emailAddress="ngModel" />
-          </div>
-
-          <div class="form-group">
-            <label for="emailSubscriptionFormat">Checking this box will include the eRSD bundle as an attachment to your email notification. Note - Most email providers block attachments the size of the current bundle.</label>
-            <input type="checkbox" [(ngModel)]="userSubscriptions.emailSubscription.includeArtifacts" /> Include changed artifacts
-          </div>
-
-          <div class="form-group" *ngIf="userSubscriptions.emailSubscription.includeArtifacts || userSubscriptions.emailSubscription.format">
-            <label for="emailSubscriptionFormat">Format</label>
-            <select id="emailSubscriptionFormat" class="form-control" [(ngModel)]="userSubscriptions.emailSubscription.format">
-              <option value="json">JSON</option>
-              <option value="xml">XML</option>
-            </select>
+              [(ngModel)]="userSubscriptions.emailSubscription.emailAddress"
+              [class.is-invalid]="emailAddress.errors?.email || emailAddress.errors?.required"
+              email="true"
+              required="required"
+              #emailAddress="ngModel"
+            />
           </div>
         </div>
       </div>

@@ -11,8 +11,8 @@ import { ApiKeysController } from './api-key/api-keys.controller';
 import { UploadController } from './upload/upload.controller';
 import { DownloadController } from './download/download.controller';
 import { S3Controller } from './s3/s3.controller';
-// @ts-ignore
-// const { FormsModule } = await loadEsmModule('@angular/forms');
+import { eRSDController } from './ersd/ersd.controller';
+
 @Module({
   imports: [AuthModule, HttpModule],
   controllers: [
@@ -20,6 +20,7 @@ import { S3Controller } from './s3/s3.controller';
     UserController,
     FhirController,
     S3Controller,
+    eRSDController,
     SubscriptionController,
     ApiKeysController,
     UploadController,

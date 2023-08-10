@@ -21,6 +21,10 @@ export class ApiKeysComponent implements OnInit {
     return joinUrl(window.location.origin, '/api/fhir');
   }
 
+  get s3BaseUrl() {
+    return joinUrl(window.location.origin, '/api/ersd');
+  }
+
   get exampleQuery() {
     const defaultOrigin = joinUrl(window.location.origin, '/fhir/Bundle');
     let exampleQuery = this.apiKeys ? this.apiKeys.exampleQuery || defaultOrigin : defaultOrigin;

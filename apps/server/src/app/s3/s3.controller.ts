@@ -15,10 +15,10 @@ import S3 from 'aws-sdk/clients/s3';
 @Controller('s3')
 export class S3Controller {
   private readonly logger = new Logger('S3Controller');
-  constructor(private httpService: HttpService, private appService: AppService) {
+  constructor(private appService: AppService) {
   }
 
-  private setJSONKey(version, bundle?) {
+  private setJSONKey(version, bundle = 'specification') { // currently defaults to specification for eRSD V2 for initial release
     let key = ''
     if(version == 'ecrv1') {
       key = this.appService.serverConfig.payload.ERSDV1_JSON_KEY
@@ -33,7 +33,7 @@ export class S3Controller {
     return key
   }
 
-  private setXMLKey(version, bundle?) {
+  private setXMLKey(version, bundle = 'specification') { // currently defaults to specification for eRSD V2 for initial release
     let key = ''
     if(version == 'ecrv1') {
       key = this.appService.serverConfig.payload.ERSDV1_XML_KEY
@@ -50,11 +50,10 @@ export class S3Controller {
 
   @Post('json')
   @UseGuards(AuthGuard())
-  @Header('Content-Type', 'application/json')
-  @Header('Content-Disposition', 'attachment; filename=bundle.json')
   async getJSON(@Query() queryParams) {
     const Bucket = this.appService.serverConfig.payload.Bucket;
     const Key = this.setJSONKey(queryParams.version, queryParams.bundle)
+    const ResponseContentDisposition = `attachment; filename="${Key}"`;
 
     if (typeof Bucket === 'undefined' || Bucket === '' || Key === '') {
       const errorMessage = 'Failed to download from S3, no Bucket or Key specified'
@@ -64,22 +63,21 @@ export class S3Controller {
 
     const s3client = new S3();
 
-    const headParams = {
+    const params = {
       Bucket,
       Key,
+      ResponseContentDisposition,
     }
-
-    const data = await s3client.getObject(headParams).promise();
-    const parsedJSON = JSON.parse(data.Body.toString('utf-8'))
-    return parsedJSON
+    const url = await s3client.getSignedUrlPromise('getObject', params);
+    return {url}
   }
 
-  @Get('xml')
+  @Post('xml')
   @UseGuards(AuthGuard())
-  @Header('Content-Type', 'text/xml')
   async getXML(@Query() queryParams) {
     const Bucket = this.appService.serverConfig.payload.Bucket;
     const Key = this.setXMLKey(queryParams.version, queryParams.bundle)
+    const ResponseContentDisposition = `attachment; filename="${Key}"`;
 
     if (typeof Bucket === 'undefined' || Bucket === '' || Key === '') {
       const errorMessage = 'Failed to download from S3, no Bucket or Key specified'
@@ -89,14 +87,13 @@ export class S3Controller {
 
     const s3client = new S3();
 
-    const headParams = {
+    const params = {
       Bucket,
       Key,
+      ResponseContentDisposition,
     }
-
-    const data = await s3client.getObject(headParams).promise();
-    const body = data.Body.toString('utf-8')
-    return body
+    const url = await s3client.getSignedUrlPromise('getObject', params);
+    return {url}
   }
 }
 

@@ -1,5 +1,6 @@
 {
   "server": {
+    "serveV2": false,
     "payload": {
       "Key": "",
       "Bucket": "ersd-dev",

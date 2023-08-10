@@ -154,7 +154,7 @@ div.footer {
   grid-template-columns: repeat(1, 1fr);
   grid-template-rows: repeat(3, min-content);
   grid-gap: 3rem;
-  padding: 150px 50px 300px 50px;
+  padding: 75px 50px 300px 50px;
   margin: 0 auto;
 }
 
@@ -176,14 +176,12 @@ div.footer {
   box-shadow: none;
   border: none;
   margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 
 .home-grid-item-1 img {
   height: 100px;
 }
-
-
 
 .page-info {
   grid-column: 1 / span 3;
