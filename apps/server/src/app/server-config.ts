@@ -38,9 +38,18 @@ export interface IServerConfig {
   restrictedResourceTypes: string[];
   contactInfo: IServerConfigContactInfo;
   exampleQuery?: string;
+  serveV2: boolean,
   payload: {
     Bucket: string;
     Key: string;
     RCTCKey: string;
+    JSONKey: string;
+    ERSDV1_JSON_KEY: string;
+    ERSDV1_XML_KEY: string;
+    ERSDV2_SUPPLEMENTAL_JSON_KEY: string;
+    ERSDV2_SUPPLEMENTAL_XML_KEY: string;
+    ERSDV2_SPECIFICATION_JSON_KEY: string;
+    ERSDV2_SPECIFICATION_XML_KEY: string;
+    ERSD_RELEASE_DESCRIPTION_KEY: string;
   };
 }

@@ -10,13 +10,33 @@
   <div class="alert" *ngIf="message" [class.alert-success]="!messageIsError" [class.alert-danger]="messageIsError">{{message}}</div>
 
   <div class="alert alert-info">
-    <p>The base address for the FHIR server is: <strong><a href="{{baseUrl}}">{{baseUrl}}</a></strong>.</p>
-    <p>The FHIR server cannot be accessed without authentication. To authenticate, specify an API key in the field below and "Save" the API key so that it is associated with your user/profile. When making a request to the FHIR server specified above, include an "Authorization" header with a value of "Bearer XXX".</p>
-    <p class="example-authorization" *ngIf="apiKeys.inbound"><strong>Authorization: Bearer {{apiKeys.inbound}}</strong></p>
+    <p>New eRSD bundle-specific endpoints for accessing the eRSD are available (described below).</p>
     <p>
-      Alternatively, you may specify the API key in a query parameter as part of the URL for the request: <br/>
-      <a href="{{exampleQuery}}" target="_blank">{{exampleQuery}}</a>
+      Going forward, eRSD bundles will be accessible at the bundle-specific endpoints documented below. 
+      Implementers are encouraged to transition to these new endpoints as soon as possible.
+    </p>  
+    <p>
+      The old and new endpoints both require authentication. To authenticate, generate an API key in the field below. Your API key will be saved in your account. 
+      When making a request, specify the API key in a query parameter as part of the URL for the request, as shown in the endpoint URLs below.
     </p>
+    <p><strong>Old endpoint:</strong></p>
+    <ul>
+      <li class="specification-item">
+        Version 1 - Specification Bundle <span class="red-text">(deprecated)</span>
+        <ul><li>{{baseUrl}}/Bundle?_sort=-_lastUpdated&_count=1&api-key=YOUR-API-KEY</li></ul>
+      </li>
+    </ul>
+    <p><strong>New endpoints:</strong></p>
+    <ul>
+      <li class="specification-item">
+        Version 1 - Specification Bundle
+        <ul><li>{{s3BaseUrl}}/v1specification?format=[json | xml]&api-key=YOUR-API-KEY</li></ul>
+      </li>
+      <li class="specification-item"> 
+        Version 2 - Specification Bundle
+        <ul><li>{{s3BaseUrl}}/v2specification?format=[json | xml]&api-key=YOUR-API-KEY</li></ul>
+      </li>
+    </ul>
   </div>
 
   <div class="form-group">

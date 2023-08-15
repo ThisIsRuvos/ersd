@@ -38,3 +38,7 @@ table > thead > tr > th:last-child {
   top: 90px;
   left: 0;
 }
+
+.attachment-button {
+  float: right;
+}

@@ -179,6 +179,19 @@ export class AdminComponent implements OnInit {
       });
   }
 
+  removeEmailAttachments() {
+    this.httpClient.get('/api/subscription/remove_artifacts').toPromise()
+      .then((response) => {
+        console.log(response)
+        this.message = 'Attachements Successfully Removed!';
+        this.messageIsError = false;
+      })
+      .catch((err) => {
+        this.message = getErrorString(err);
+        this.messageIsError = true;
+      })
+  }
+
   ngOnInit() {
     this.httpClient.get<IPerson[]>('/api/user').toPromise()
       .then((users) => this.users = users.map((user) => new Person(user)))

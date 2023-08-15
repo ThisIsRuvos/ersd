@@ -1,9 +1,16 @@
 {
   "server": {
+    "serveV2": false,
     "payload": {
       "Bucket":"",
       "Key":"",
-      "RCTCKey":""
+      "RCTCKey":"",
+      "ERSDV1_JSON_KEY": "",
+      "ERSDV1_XML_KEY": "",
+      "ERSDV2_SUPPLEMENTAL_JSON_KEY": "",
+      "ERSDV2_SUPPLEMENTAL_XML_KEY": "",
+      "ERSDV2_SPECIFICATION_JSON_KEY": "",
+      "ERSDV2_SPECIFICATION_XML_KEY": ""
     },
     "port": 3333,
     "authCertificate": "",

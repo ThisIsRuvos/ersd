@@ -1,0 +1,93 @@
+:host ::ng-deep .card {
+  margin:0;
+  border: 0;
+}
+
+:host ::ng-deep .card-header {
+  background-color: #b12c36;
+  border-color: #b12c36;
+  text-align: left;
+}
+
+:host ::ng-deep .btn.btn-link {
+  color: white;
+}
+
+:host ::ng-deep .card-header:first-child {
+  border-radius: 0;
+}
+
+:host ::ng-deep .card-body {
+  padding-top: 0;
+  padding-left: 0;
+  padding-bottom: 0;
+}
+
+.fieldset-container {
+  color: black;
+  font-size: 1.0rem;
+  margin: 48px;
+}
+
+fieldset {
+  border-width: 1px !important;
+  padding: 24px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  border-style: groove;
+  border-color: black;
+  font-family: Helvetica;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+.bolded-legend {
+  font-weight: bold;
+  font-size: 1.0rem;
+  padding-left: 5px;
+  padding-right: 10px;
+  max-width: fit-content;
+}
+
+.version-legend {
+  font-size: 1.0rem;
+  padding-left: 5px;
+}
+
+.radio-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-subtitle {
+  color: rgba(0, 0, 0, 0.6);
+  padding-left: .75rem;
+}
+
+.supplemental-notice {
+  padding-left: .75rem;
+}
+
+.input-title {
+  text-align: start;
+  margin-bottom: 0;
+  padding-left: .75rem;
+}
+
+.check {
+  margin-left: 12px;
+}
+
+.excelDownload {
+  font-size: .80rem;
+  margin-bottom: 10px;
+}
+
+.release-notes-link {
+  float: right;
+  font-size: .90rem;
+  color: blue;
+  border: none;
+  background: none;
+  margin-bottom: 10px;
+}
