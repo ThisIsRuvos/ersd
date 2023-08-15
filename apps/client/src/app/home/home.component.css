@@ -1,14 +1,13 @@
 .home-grid-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: 200px min-content;
+  grid-template-rows: repeat(3, min-content);
   grid-gap: 3rem;
-  padding: 150px 50px 200px 50px;
+  padding: 75px 50px 300px 50px;
 }
 
 .home-grid-item {
   background-color: #094045;
-  padding: 20px;
   border-radius: 7px;
   text-align: center;
   color: white;
@@ -37,8 +36,11 @@
   font-weight: 200;
   box-shadow: none;
   border: none;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
+}
+
+.home-grid-item-1 img {
+  height: 100px;
 }
 
 i {
@@ -58,10 +60,6 @@ p {
   display: grid;
   grid-gap: 2rem;
   justify-content: space-around;
-}
-
-img {
-  height: 100px;
 }
 
 a {

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import saveAs from 'save-as';
+import { delay } from 'rxjs/operators';
+import { LoadingService } from '../loading-spinner/loading.service';
 
 interface PayloadDownload {
   url: string;
@@ -11,130 +13,111 @@ interface PayloadDownload {
   templateUrl: './spec-download.component.html',
   styleUrls: ['./spec-download.component.css']
 })
-
 export class SpecDownloadComponent implements OnInit {
   request: any = {}
+  loading: boolean = false;
 
-  showV2 = false
-  version = "ecrv1"
-  bundleType = ""
-  contentType = "json"
+  version = 'ecrv1'
+  bundleType = ''
+  contentType = 'json'
 
   constructor(
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private _loading: LoadingService
   ) { }
 
   ngOnInit() {
+    this.listenToLoading();
   }
 
-  setBundle(e) { this.bundleType = e.target.value }
+  setVersion(e) { this.version = e.target.value } // eRSD (eCR) V1 or V2
 
-  setVersion(e) { this.version = e.target.value }
+  setBundle(e) { this.bundleType = e.target.value } // Supplemental or Specification
 
-  setContentType(e) { this.contentType = e.target.value }
+  setContentType(e) { this.contentType = e.target.value } // XML or JSON
+
+   /**
+   * Listen to the loadingSub property in the LoadingService class. This drives the
+   * display of the loading spinner.
+   */
+    listenToLoading(): void {
+      this._loading.loadingSub
+        .pipe(delay(0)) // This prevents a ExpressionChangedAfterItHasBeenCheckedError for subsequent requests
+        .subscribe((loading: boolean) => {
+          this.loading = loading;
+        });
+    }
 
   buildFileName() {
-    if (this.bundleType !== "") {
+    if (this.bundleType !== '') {
       return `${this.version}-${this.bundleType}.${this.contentType}`
     }
     return `${this.version}.${this.contentType}`
   }
 
   async handleSubmit() {
-    let url = ""
+    let url = ''
     try {
-      if (this.version == "ecrv2") {
-        if(this.bundleType == "") { throw Error('Please select a bundle type') } 
-        url = `/api/s3/${this.contentType}?version=${this.version}&bundle=${this.bundleType}`
+      if (this.version == 'ecrv2') {
+        // when V2 Supplemental goes live: if(this.bundleType == '') { throw Error('Please select a bundle type') } 
+        url = `/api/s3/${this.contentType}?version=${this.version}`
+        // when V2 Supplemental goes live: url = `/api/s3/${this.contentType}?version=${this.version}&bundle=${this.bundleType}`
       } else {
         url = `/api/s3/${this.contentType}?version=${this.version}`
       }
-      if (this.contentType === 'json') {
-        return this.queryServer(url)
-      } else {
-        return this.queryServerXML(url)
-      }
+      return this.queryServer(url)
+
     } catch (err) {
       alert(`Error while downloading file: ${err.message}`);
       console.error(err);
     }
   }
 
-  async downloadFile(data, filename?) {
-    let blob: Blob;
-    if (this.contentType === 'json') {
-      blob = new Blob([JSON.stringify(data, null, 2)],{ type: 'application/json;charset=utf-8' })
-    } else if (this.contentType === 'xml') {
-      blob = new Blob([data],{ type: 'text/xml' })
-    }
-    saveAs(blob, filename);
-  }
-
-  async queryServer(url) {
+  async downloadReleaseNotes() {
     this.httpClient
-      .post(url, this.request)
+      .post('api/download/release_notes', this.request)
       .toPromise()
-      .then(async (data) => {
-        await this.downloadFile(data, this.buildFileName())
+      .then(async (data: PayloadDownload) => {
+        await this.downloadS3(data)
       })
       .catch(err => {
         console.error(err);
       });
   }
 
-  async queryServerXML(url) {
-    try {
-      this.httpClient
-        .get(url, { responseType: 'text' })
-        .subscribe(async result => {
-          await this.downloadFile(result, this.buildFileName())
-        })
-    } catch (err) {
-      alert(`Error downloading file: ${err.message}`)
-      console.error(err)
-    }
-  }
-
-  // RCTC Spreadsheet specific functions
-  async downloadExcel() {
+  async queryServer(url) {
     this.httpClient
-    .post('/api/download/excel', this.request)
-    .toPromise()
-    .then(async (data: PayloadDownload) => {
-        await this.handleExcelDownload(data.url, 'rctc.xlsx')
+      .post(url, this.request)
+      .toPromise()
+      .then(async (data: PayloadDownload) => {
+        await this.downloadS3(data)
       })
       .catch(err => {
-        console.log(err);
+        console.error(err);
       });
   }
   
-  async handleExcelDownload(data, filename) {
-    const url = data.url
-    console.log('Downloading');
-    if (url.includes('local')) {
-      return await this.downloadLocal(url, filename)
-    }
-    else {
-      return await this.downloadS3(url)
-    }
-  }
-
-  async downloadS3(url) {
+  async downloadS3(data: PayloadDownload) {
     var a = document.createElement('a');
-    a.href = url;
+    a.href = data.url;
     a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
     a.parentNode.removeChild(a);
   }
-  
-  async downloadLocal(url, filename) {
-    try {
-      const results = await this.httpClient.get(url, { responseType: 'blob' }).toPromise();
-      saveAs(results, filename);
-    } catch (ex) {
-      alert(`Error while downloading excel file: ${ex.message}`);
-      console.error(ex);
-    }
+
+  // RCTC Spreadsheet specific function.
+  // This will be removed when the spreadsheet is removed
+  async downloadExcel() {
+    this.httpClient
+      .post('/api/download/excel', this.request)
+      .toPromise()
+      .then(async (data: PayloadDownload) => {
+          await this.downloadS3(data)
+        })
+        .catch(err => {
+          console.log(err);
+        });
   }
+
 }
