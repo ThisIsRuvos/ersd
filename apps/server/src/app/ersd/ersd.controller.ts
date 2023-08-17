@@ -2,13 +2,14 @@ import {
   BadRequestException,
   Controller,
   Get,
-  HttpService,
+
   Logger,
   Query, 
   Req, 
   Response, 
   UnauthorizedException
 } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { Response as Res } from 'express';
 import { Request } from 'express';
 import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
@@ -38,7 +39,7 @@ export class eRSDController {
 
       authorization = authorization.substring('Bearer '.length);
     } else if (request.query['api-key']) {
-      authorization = request.query['api-key'];
+      authorization = request.query['api-key'] as string;
     } else {
       throw new UnauthorizedException('You have not specified an authorization key');
     }
