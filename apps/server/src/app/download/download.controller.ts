@@ -133,7 +133,6 @@ export class DownloadController {
   @UseGuards(AuthGuard())
   async downloadExcel() {
     const Bucket = this.appService.serverConfig.payload.Bucket;
-
       const s3client = new S3();
 
       const Key = this.appService.serverConfig.payload.RCTCKey;
