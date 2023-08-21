@@ -42,7 +42,20 @@
       <li [ngbNavItem]="2">
         <button ngbNavLink>Upload</button>
         <ng-template ngbNavContent>
-          <div class="alert alert-info">Uploading new artifacts will send out notifications to subscribers.</div>
+
+          <div class="alert alert-info">
+            <p>
+              Uploading new artifacts will send out a notification, containing the text 
+              entered below in the “Message” field, to subscribers.
+            </p>
+            <p>
+              The file uploaded here needs to be an XML file. It is meant to 
+              contain an eRSD Version 1 FHIR bundle. This file gets 
+              posted to a FHIR server and can be retrieved by users 
+              at the “Old endpoint” for “Version 1 - Specification Bundle” (documented in the 
+              <a class="alert-link" href="#/api-keys">Polling Management page</a>).
+            </p>
+            </div>
 
           <div class="form-group">
             <label>Bundle XML File</label>
@@ -54,7 +67,15 @@
             <textarea id="uploadMessage" class="form-control" rows="6" [(ngModel)]="bundleUploadMessage" [class.is-invalid]="!bundleUploadMessage"></textarea>
           </div>
 
-          <button type="button" class="btn btn-primary" (click)="uploadBundle()" [disabled]="!bundleFile || !bundleUploadMessage">Upload</button>
+          <button id="uploadBundleBtn" type="button" class="btn btn-primary" (click)="uploadBundle()" [disabled]="!bundleFile">
+            <span *ngIf="!uploading">Upload</span>
+            <span *ngIf="uploading">
+              <span class="spinner-border spinner-border-sm mr-3" role="status" aria-hidden="true"></span>
+              <span>Uploading...</span>
+            </span>
+          </button>
+
+          <!-- <button type="button" class="btn btn-primary" (click)="uploadBundle()" [disabled]="!bundleFile || !bundleUploadMessage">Upload</button> -->
         </ng-template>
       </li>
       <li [ngbNavItem]="3">
@@ -79,12 +100,30 @@
       <li [ngbNavItem]="4">
         <button ngbNavLink>RCTC Files</button>
         <ng-template ngbNavContent>
-          <div class="form-group">
-            <label>RCTC Files</label>
-            <input type="file" class="form-control" (change)="handleExcelFileInput($any($event).target.files)" #excelUploadFile [class.is-invalid]="!excelFile" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+          <div class="alert alert-info">
+            <p>
+              Upload a Zip file containing the 'RCTC_Release.xlsx' and 'RCTC_Change_Log.xlsx' 
+              spreadsheets. This Zip file will then be available to users via the 'Latest RCTC 
+              Spreadsheet and Change Log' button on the <a class="alert-link" href="/"> Home page.</a>
+            </p>
+          
           </div>
 
-          <button type="button" class="btn btn-primary" (click)="uploadExcel()" [disabled]="!excelFile">Upload</button>
+          <div class="form-group">
+            <label>Zip File with 'RCTC_Release.xlsx' and 'RCTC_Change_Log.xlsx' Spreadsheets</label>
+            <input type="file" class="form-control" (change)="handleExcelFileInput($any($event).target.files)" #excelUploadFile [class.is-invalid]="!excelFile" accept=".zip" />
+            <!-- <input type="file" class="form-control" (change)="handleExcelFileInput($any($event).target.files)" #excelUploadFile [class.is-invalid]="!excelFile" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" /> -->
+          </div>
+
+          <button id="uploadExcelBtn" type="button" class="btn btn-primary" (click)="uploadExcel()" [disabled]="!excelFile">
+            <span *ngIf="!uploading">Upload</span>
+            <span *ngIf="uploading">
+              <span class="spinner-border spinner-border-sm mr-3" role="status" aria-hidden="true"></span>
+              <span>Uploading...</span>
+            </span>
+          </button>
+
+          <!-- <button type="button" class="btn btn-primary" (click)="uploadExcel()" [disabled]="!excelFile">Upload</button> -->
         </ng-template>
       </li>
     </ul>

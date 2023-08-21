@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import saveAs from 'save-as';
 import { delay } from 'rxjs/operators';
 import { LoadingService } from '../loading-spinner/loading.service';
+import { firstValueFrom } from 'rxjs';
 
 interface PayloadDownload {
   url: string;
@@ -86,18 +87,17 @@ export class SpecDownloadComponent implements OnInit {
   }
 
   async queryServer(url) {
-    this.httpClient
-      .post(url, this.request)
-      .toPromise()
-      .then(async (data: PayloadDownload) => {
-        await this.downloadS3(data)
-      })
-      .catch(err => {
-        console.error(err);
-      });
+    try {
+      const data = await firstValueFrom(this.httpClient.post(url, this.request)) as PayloadDownload;;
+      await this.downloadS3(data) 
+    } catch (err) {
+      console.error(err);
+    }
   }
   
   async downloadS3(data: PayloadDownload) {
+    // console.log("downloadS3")
+    // console.log(data)
     var a = document.createElement('a');
     a.href = data.url;
     a.style.display = 'none';
@@ -109,15 +109,17 @@ export class SpecDownloadComponent implements OnInit {
   // RCTC Spreadsheet specific function.
   // This will be removed when the spreadsheet is removed
   async downloadExcel() {
-    this.httpClient
-      .post('/api/download/excel', this.request)
-      .toPromise()
-      .then(async (data: PayloadDownload) => {
-          await this.downloadS3(data)
-        })
-        .catch(err => {
-          console.log(err);
-        });
+    try {
+      const data = await firstValueFrom(this.httpClient.post('/api/download/excel', this.request)) as PayloadDownload;
+      
+      // console.log("downloadExcel")
+      // console.log(data)
+
+      await this.downloadS3(data);
+    } catch (err) {
+      console.log(err);
+    }
   }
+
 
 }

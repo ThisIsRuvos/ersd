@@ -7,6 +7,7 @@ import { AdminEditPersonComponent } from './edit-person/edit-person.component';
 import { AuthService } from '../auth.service';
 import { IUploadRequest } from '../../../../../libs/ersdlib/src/lib/upload-request';
 import { IEmailRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   templateUrl: './admin.component.html',
@@ -27,6 +28,7 @@ export class AdminComponent implements OnInit {
   public excelFile: File = null;
   public excelFileContent: string;
   public active = 1
+  public uploading: boolean = false;
 
   @ViewChild('bundleUploadFile') bundleUploadField: ElementRef;
   @ViewChild('excelUploadFile') excelUploadField: ElementRef;
@@ -35,7 +37,7 @@ export class AdminComponent implements OnInit {
               private modalService: NgbModal,
               private authService: AuthService) { }
 
-  sendEmail() {
+  async sendEmail() {
     if (!this.emailRequest.subject || !this.emailRequest.message) {
       return;
     }
@@ -47,16 +49,15 @@ export class AdminComponent implements OnInit {
     this.message = null;
     this.messageIsError = false;
 
-    this.httpClient.post('/api/user/email', this.emailRequest).toPromise()
-      .then(() => {
-        this.message = 'Successfully sent email to all users';
-        window.scrollTo(0, 0);
-      })
-      .catch((err) => {
-        this.message = getErrorString(err);
-        this.messageIsError = true;
-        window.scrollTo(0, 0);
-      });
+    try {
+      await firstValueFrom(this.httpClient.post('/api/user/email', this.emailRequest));
+      this.message = 'Successfully sent email to all users';
+      window.scrollTo(0, 0);
+    } catch (err) {
+      this.message = getErrorString(err);
+      this.messageIsError = true;
+      window.scrollTo(0, 0);
+    }
   }
 
   editUser(user: IPerson) {
@@ -95,28 +96,29 @@ export class AdminComponent implements OnInit {
     fileReader.readAsDataURL(this.excelFile);
   }
 
-  uploadExcel() {
+  async uploadExcel() {
+    this.uploading = true; 
+
     const request: IUploadRequest = {
       fileContent: this.excelFileContent,
       fileName: this.excelFile.name
     };
-
-    this.httpClient.post('/api/upload/excel', request).toPromise()
-      .then(() => {
-        this.message = 'Successfully uploaded!';
-        this.messageIsError = false;
-
-        this.excelUploadField.nativeElement.value = '';
-        this.excelFile = null;
-        this.excelFileContent = null;
-      })
-      .catch((err) => {
-        this.message = getErrorString(err);
-        this.messageIsError = true;
-      });
+    try {
+      await firstValueFrom(this.httpClient.post('/api/upload/excel', request));
+      this.message = 'Successfully uploaded!';
+      this.messageIsError = false;
+      this.excelUploadField.nativeElement.value = '';
+      this.excelFile = null;
+      this.excelFileContent = null;
+    } catch (err) {
+      this.message = getErrorString(err);
+      this.messageIsError = true;
+    } finally {
+      this.uploading = false;
+    }
   }
 
-  uploadBundle() {
+  async uploadBundle() {
     if (!this.bundleFile || !this.bundleUploadMessage) {
       return;
     }
@@ -135,29 +137,31 @@ export class AdminComponent implements OnInit {
       return;
     }
 
+    this.uploading = true; 
+
     const request: IUploadRequest = {
       fileContent: this.bundleFileContent,
       fileName: this.bundleFile.name,
       message: this.bundleUploadMessage
     };
 
-    this.httpClient.post('/api/upload/bundle', request).toPromise()
-      .then(() => {
-        this.message = 'Successfully uploaded!';
-        this.messageIsError = false;
-
-        this.bundleUploadField.nativeElement.value = '';
-        this.bundleUploadMessage = null;
-        this.bundleFile = null;
-        this.bundleFileContent = null;
-      })
-      .catch((err) => {
-        this.message = getErrorString(err);
-        this.messageIsError = true;
-      });
+    try {
+      await firstValueFrom(this.httpClient.post('/api/upload/bundle', request));
+      this.message = 'Successfully uploaded!';
+      this.messageIsError = false;
+      this.bundleUploadField.nativeElement.value = '';
+      this.bundleUploadMessage = null;
+      this.bundleFile = null;
+      this.bundleFileContent = null;
+    } catch (err) {
+      this.message = getErrorString(err);
+      this.messageIsError = true;
+    } finally {
+      this.uploading = false;
+    }
   }
 
-  deleteUser(user: Person) {
+  async deleteUser(user: Person) {
     const currentUserPersonId = this.authService.person ? this.authService.person.id : null;
 
     if (currentUserPersonId === user.id) {
@@ -171,35 +175,39 @@ export class AdminComponent implements OnInit {
       return;
     }
 
-    this.httpClient.delete('/api/user/' + user.id)
-      .subscribe(() => {
-        const index = this.users.indexOf(user);
-        this.users.splice(index, index >= 0 ? 1 : 0);
-      }, (err) => {
-        this.message = getErrorString(err);
-        this.messageIsError = true;
-      });
+    try {
+      await firstValueFrom(this.httpClient.delete('/api/user/' + user.id));
+      const index = this.users.indexOf(user);
+      if (index >= 0) {
+        this.users.splice(index, 1);
+      }
+    } catch (err) {
+      this.message = getErrorString(err);
+      this.messageIsError = true;
+    }
   }
 
-  removeEmailAttachments() {
-    this.httpClient.get('/api/subscription/remove_artifacts').toPromise()
-      .then((response) => {
-        console.log(response)
-        this.message = 'Attachements Successfully Removed!';
-        this.messageIsError = false;
-      })
-      .catch((err) => {
-        this.message = getErrorString(err);
+
+  async removeEmailAttachments(){
+    try {
+      await firstValueFrom(this.httpClient.get('/api/subscription/remove_artifacts'));
+      this.message = 'Attachements Successfully Removed!';
+      this.messageIsError = false;
+    } catch (err) {
+      this.message = getErrorString(err);
         this.messageIsError = true;
-      })
+    }
   }
 
-  ngOnInit() {
-    this.httpClient.get<IPerson[]>('/api/user').toPromise()
-      .then((users) => this.users = users.map((user) => new Person(user)))
-      .catch((err) => {
-        this.message = getErrorString(err);
-        this.messageIsError = true;
-      });
+  async ngOnInit() {
+    try {
+      const users = await firstValueFrom(this.httpClient.get<IPerson[]>('/api/user'));
+      this.users = users.map((user) => new Person(user));
+    } catch (err) {
+      this.message = getErrorString(err);
+      this.messageIsError = true;
+    }
   }
 }
+
+
