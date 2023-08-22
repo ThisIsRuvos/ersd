@@ -1,10 +1,10 @@
 <div ngbAccordion>
-	<div ngbAccordionItem [collapsed]="true">
-    <h4 ngbAccordionHeader>
+  <div ngbAccordionItem [collapsed]="true">
+    <h6 ngbAccordionHeader class="px-4 py-3">
       <button ngbAccordionButton>Select an eRSD version to download</button>
-    </h4>
-    <div ngbAccordionCollapse>
-			<div ngbAccordionBody>
+    </h6>
+    <div ngbAccordionCollapse >
+      <div ngbAccordionBody>
         <ng-template>
           <div class="fieldset-container">
             <fieldset>
@@ -16,7 +16,7 @@
               </p>
               <form>
                 <!-- Legacy versions of eCR spec -->
-                <fieldset class="internal-fieldsets">
+                <fieldset>
                   <legend class="version-legend">For eCR Now App Release 2.X and Release 3.X and for many existing vendor
                     developed implementations:</legend>
                   <input type="radio" id="legacy-versions" name="drone" value="ecrv1" (change)="setVersion($event)" checked>
@@ -27,11 +27,11 @@
                         workflow</p>
                     </div>
                   </label>
-                  <span>
+                  <div>
                     <button type="button" class="btn btn-primary excelDownload" (click)="downloadExcel($event)">Latest RCTC
                       Spreadsheet & Change Log</button>
                     <button class="release-notes-link" (click)="downloadReleaseNotes()">eRSD Release Description</button>
-                  </span>
+                    </div>
                 </fieldset>
                 <!-- New versions of eCR spec -->
                 <div>
@@ -100,7 +100,7 @@
               </fieldset>
             </fieldset>
 
-            <div class="button-container">
+            <div class="button-container pb-5">
               <button *ngIf="loading" class="btn btn-primary" type="button" disabled>
                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 Downloading...
@@ -113,6 +113,7 @@
     </div>
   </div>
 </div>
+
 
 
 
