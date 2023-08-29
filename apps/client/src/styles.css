@@ -30,6 +30,10 @@ div.footer {
   border: none !important;
 }
 
+.modal-backdrop {
+  z-index: 1 !important;
+}
+
 .modal-footer {
   border: none !important;
 }

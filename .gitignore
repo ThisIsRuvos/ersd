@@ -41,5 +41,5 @@ Thumbs.db
 # Configuration
 apps/server/src/config/local.json
 .env
-
+.angular/
 localStartup.sh

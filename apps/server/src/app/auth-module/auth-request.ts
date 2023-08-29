@@ -13,6 +13,8 @@ export interface AuthRequestUser {
   family_name: string;
 }
 
-export interface AuthRequest extends Request {
+interface AuthRequest extends Request {
   user: AuthRequestUser;
 }
+
+export type { AuthRequest }

@@ -2,24 +2,27 @@
   "server": {
     "serveV2": false,
     "payload": {
-      "Bucket":"",
-      "Key":"",
-      "RCTCKey":"",
-      "ERSDV1_JSON_KEY": "",
-      "ERSDV1_XML_KEY": "",
-      "ERSDV2_SUPPLEMENTAL_JSON_KEY": "",
-      "ERSDV2_SUPPLEMENTAL_XML_KEY": "",
-      "ERSDV2_SPECIFICATION_JSON_KEY": "",
-      "ERSDV2_SPECIFICATION_XML_KEY": ""
+      "Key": "",
+      "Bucket": "ersd-dev",
+      "RCTCKey": "rctc",
+      "ERSDV1_JSON_KEY": "eRSDv1bundle.json",
+      "ERSDV1_XML_KEY": "eRSDv1bundle.xml",
+      "ERSDV2_SUPPLEMENTAL_JSON_KEY": "eRSDv2_supplemental_bundle.json",
+      "ERSDV2_SUPPLEMENTAL_XML_KEY": "eRSDv2_supplemental_bundle.xml",
+      "ERSDV2_SPECIFICATION_JSON_KEY": "eRSDv2_specification_bundle.json",
+      "ERSDV2_SPECIFICATION_XML_KEY": "eRSDv2_specification_bundle.xml"
     },
     "port": 3333,
     "authCertificate": "",
-    "fhirServerBase": "",
+    "fhirServerBase": "http://ersd-hapi-fhir-1:8080/hapi-fhir-jpaserver/fhir",
     "rctcExcelPath": "assets/rctc.xlsx",
     "bundlePath": "assets/bundle.xml",
     "subscriptionCriteria": "Bundle?",
     "enableSubscriptions": true,
-    "restrictedResourceTypes": ["Person", "Subscription"],
+    "restrictedResourceTypes": [
+      "Person",
+      "Subscription"
+    ],
     "exampleQuery": "/api/fhir/Bundle?_sort=-_lastUpdated&_count=1",
     "contactInfo": {
       "checkDurationSeconds": 0,
@@ -60,9 +63,9 @@
   },
   "client": {
     "keycloak": {
-      "url": "",
-      "realm": "",
-      "clientId": ""
+      "url": "http://localhost:8085/",
+      "realm": "ersd",
+      "clientId": "ersd-app"
     }
   }
 }

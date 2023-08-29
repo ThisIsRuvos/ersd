@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FhirController } from './fhir.controller';
 import { AppService } from '../app.service';
-import { HttpModule } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 
 describe('Fhir Controller', () => {
   let module: TestingModule;

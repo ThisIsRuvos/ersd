@@ -1,10 +1,10 @@
 import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app/app.module';
 import {Logger} from '@nestjs/common';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 import {CheckContactInfo} from './check-contact-info';
 import {AppService} from './app/app.service';
 
-import * as bodyParser from 'body-parser';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -12,11 +12,11 @@ const appService = new AppService();
 const logger = new Logger('bootstrap');
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.setGlobalPrefix(`api`);
 
-  app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(bodyParser.urlencoded({ limit: '50mb ', extended: true }));
+  app.useBodyParser('json', { limit: '50mb' });
+  app.useBodyParser('urlencoded', { limit: '50mb', extended: true });
   app.useStaticAssets(path.join(__dirname, '/../client'));
 
   const port = process.env.port || appService.serverConfig.port || 3333;

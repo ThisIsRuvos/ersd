@@ -1,0 +1,85 @@
+#!/bin/bash
+
+set -e
+
+read -p 'Keycloak Base URL (http://localhost:8085): ' base_url
+read -p 'Username: (admin) ' username
+read -s -p $'Password: (admin) \n' password
+read -p 'Realm: (ersd) ' realm
+read -p 'Client: (ersd-app) ' client
+read -p 'Redirect URIs: (["*"]) ' redirect_uris
+read -p 'Web Origins: (["*"])' web_origins
+read -p 'Non-Admin Username: (johndoe) ' non_admin_username
+read -s -p $'Non-Admin Password: (password) \n' non_admin_password
+
+base_url=${base_url:-'http://localhost:8085'}
+username=${username:-admin}
+password=${password:-admin}
+realm=${realm:-ersd}
+client=${client:-ersd-app}
+redirect_uris=${redirect_uris:-'["*"]'}
+web_origins=${web_origins:-'["*"]'}
+non_admin_username=${non_admin_username:-johndoe}
+non_admin_pswd=${non_admin_password:-password}
+
+res=$(curl -sS --data-urlencode 'username='$username --data-urlencode 'password='$password -d 'grant_type=password&client_id=admin-cli' -X POST $base_url/realms/master/protocol/openid-connect/token)
+token=$(echo $res | jq -r '.access_token')
+
+if [ $token == 'null' ]; then
+echo 'Unable to fetch token.'
+echo $res
+exit 1
+fi
+
+echo 'Creating realm '$realm'...'
+curl -X POST -H 'content-type: application/json' -H 'Authorization: Bearer '$token -d '{"enabled": true, "id":"'$realm'", "realm":"'$realm'"}' $base_url/admin/realms
+
+echo 'Fetching authentication certificate for realm '$realm'...'
+raw_cert=$(curl -H 'Authorization: Bearer '$token $base_url/admin/realms/$realm/keys | jq -r '.keys[] | select(.algorithm == "RS256").certificate')
+auth_cert='-----BEGIN CERTIFICATE-----\n'$raw_cert'\n-----END CERTIFICATE-----'
+
+DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+echo "$(jq --arg a "$auth_cert" '.server.authCertificate = $a' ${DIR}/../server/src/config/default.json | sed 's/\\[n]/n/g')" > ${DIR}/../server/src/config/default.json
+echo "Updated default.json with new auth certificate"
+
+echo 'Creating admin role on realm '$realm'...'
+admin_role_url=$(curl -X POST -H 'content-type: application/json' -H 'Authorization: Bearer '$token -d '{"name": "admin"}' $base_url/admin/realms/$realm/roles -si | grep 'Location' | awk -F': ' '{print $2}'| tr -d '\r')
+echo "url $admin_role_url"
+admin_role_id=$(curl -H 'content-type: application/json' -H 'Authorization: Bearer '$token "$admin_role_url" | jq '.id'| tr -d '\r')
+echo "Created admin role with id: $admin_role_id"
+
+echo 'Creating client '$client' on realm '$realm'...'
+curl -X POST -H 'content-type: application/json' -H 'Authorization: Bearer '$token -d '{"enabled":true,"webOrigins":'$web_origins',"redirectUris":'$redirect_uris',"clientId":"'$client'","protocol":"openid-connect"}' $base_url/admin/realms/$realm/clients
+
+echo -e 'Creating user for admin role '${non_admin_username}' on realm '$realm'...'
+admin_user_id=$(curl -X POST $base_url/admin/realms/$realm/users -si \
+--header 'Content-Type: application/json' \
+--header "Authorization: Bearer ${token}" \
+--data-raw '{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "johndoe@test.com",
+  "enabled": true,
+  "username": "'${non_admin_username}'",
+  "credentials": [
+    {
+      "type": "password",
+      "value": "'${non_admin_pswd}'",
+      "temporary": false
+    }
+  ]
+}'| grep 'Location' | awk -F': ' '{print $2}'| awk -F / '{print $NF}' | tr -d '\r')
+
+curl -X POST $base_url/admin/realms/$realm/users/${admin_user_id}/role-mappings/realm \
+  --header 'Content-Type: application/json' \
+  --header "Authorization: Bearer ${token}" \
+  --data-raw '[{
+    "id": '$admin_role_id',
+    "name": "admin",
+    "composite": false,
+    "clientRole": false,
+    "containerId": "ersd"
+  }]'
+
+echo "sucessfully created admin user with id: $admin_user_id"
+echo -e '\n________________________________\n'

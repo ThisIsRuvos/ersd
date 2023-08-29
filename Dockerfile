@@ -1,20 +1,21 @@
-FROM ubuntu AS build-ersd
+FROM python:3.11.4-slim AS build-ersd
 
 RUN apt-get update && \
-	apt-get install curl -y
+	apt-get install curl make gcc g++ -y
 
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && apt-get install nodejs -y
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && apt-get install nodejs -y
 
 WORKDIR /ersd
 
 COPY . .
 
-RUN npm install -g @angular/cli@7.2.x
-RUN npm ci
-RUN ng build client
-RUN ng build server
+RUN npm install -g @angular/cli@16.1.4
 
-FROM node
+RUN npm ci
+RUN npm run build:server
+RUN npm run build:client
+
+FROM node:18.16
 RUN mkdir -p /ersd/server && mkdir /ersd/client
 WORKDIR /ersd
 

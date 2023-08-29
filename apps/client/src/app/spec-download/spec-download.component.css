@@ -1,26 +1,24 @@
-:host ::ng-deep .card {
-  margin:0;
-  border: 0;
+.accordion {
+  background-color: white;
 }
 
-:host ::ng-deep .card-header {
+.accordion-header {
   background-color: #b12c36;
   border-color: #b12c36;
   text-align: left;
 }
 
-:host ::ng-deep .btn.btn-link {
+.accordion-button {
   color: white;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 10px;
 }
 
-:host ::ng-deep .card-header:first-child {
-  border-radius: 0;
-}
-
-:host ::ng-deep .card-body {
-  padding-top: 0;
-  padding-left: 0;
-  padding-bottom: 0;
+.internal-fieldsets {
+  margin: 10px;
 }
 
 .fieldset-container {
