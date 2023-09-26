@@ -87,8 +87,8 @@ export class eRSDController {
 
     const Bucket = this.appService.serverConfig.payload.Bucket;
     const Key = format === 'xml' 
-    ? this.appService.serverConfig.payload.ERSDV1_XML_KEY 
-    : this.appService.serverConfig.payload.ERSDV1_JSON_KEY
+    ? this.appService.serverConfig.payload.ERSDV1_SPECIFICATION_XML_KEY
+    : this.appService.serverConfig.payload.ERSDV1_SPECIFICATION_JSON_KEY
 
     if (typeof Bucket === 'undefined' || Bucket === '' || Key === '') {
       const errorMessage = 'Failed to download from S3, no Bucket or Key specified'
