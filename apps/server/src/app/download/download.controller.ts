@@ -147,6 +147,40 @@ export class DownloadController {
       return {url}
   }
 
+  @Post('change-preview-json')
+  @UseGuards(AuthGuard())
+  async downloadReleaseCandidateV1DraftJSON() {
+    const Bucket = this.appService.serverConfig.payload.Bucket;
+      const s3client = new S3();
+      const Key = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_JSON_KEY;
+      const ResponseContentDisposition = `attachment; filename="ReleaseCandidateV1Draft.json"`;
+
+      const params = {
+        Bucket,
+        Key,
+        ResponseContentDisposition,
+      }
+      const url = await s3client.getSignedUrlPromise('getObject', params);
+      return {url}
+  }
+
+  @Post('change-preview-xml')
+  @UseGuards(AuthGuard())
+  async downloadReleaseCandidateV1DraftXML() {
+    const Bucket = this.appService.serverConfig.payload.Bucket;
+      const s3client = new S3();
+      const Key = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_XML_KEY;
+      const ResponseContentDisposition = `attachment; filename="ReleaseCandidateV1Draft.xml"`;
+
+      const params = {
+        Bucket,
+        Key,
+        ResponseContentDisposition,
+      }
+      const url = await s3client.getSignedUrlPromise('getObject', params);
+      return {url}
+  }
+
   @Post('release_notes')
   @UseGuards(AuthGuard())
   async downloadNotes() {

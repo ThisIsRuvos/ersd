@@ -1,0 +1,37 @@
+<nav class="navbar navbar-expand-md navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" title="Electronic Reporting and Surveillance Distribution">
+      <img class="ersd-logo" src="/assets/ersd-logo-full.png" />
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div *ngIf="authService.loggedIn" class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item" [class.active]="homeLink.isActive">
+          <a class="nav-link" routerLink="/home" routerLinkActive #homeLink="routerLinkActive">Home<span
+              class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item" [class.active]="apiKeysLink.isActive">
+          <a class="nav-link" routerLink="/api-keys" routerLinkActive #apiKeysLink="routerLinkActive">Polling</a>
+        </li>
+
+      </ul>
+      <div class="dropdown">
+        <button class="btn btn-sm btn-primary rounded-pill" type="button" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          {{ authService.fullName }} <i class="fas fa-ellipsis-v px-1"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-lg-end rounded-0 border-0">
+          <li><a class="dropdown-item" routerLink="/admin"><i class="fas fa-users-cog"></i> Admin </a></li>
+          <li><a class="dropdown-item" routerLink="/subscription"><i class="fas fa-bell"></i> Notifications </a></li>
+          <li><a class="dropdown-item" routerLink="/contact-info" routerLinkActive
+              #contactInfoLink="routerLinkActive"><i class="fas fa-envelope"></i> Contact Info </a></li>
+          <li><a class="dropdown-item" href="javascript:void(0)" (click)="authService.logout()"><i
+                class="fas fa-sign-out-alt"></i> Sign out </a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

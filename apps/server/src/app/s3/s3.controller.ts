@@ -68,8 +68,11 @@ export class S3Controller {
       Key,
       ResponseContentDisposition,
     }
+    // const data = await s3client.getObject(params).promise();
+    // const fileData = data.Body.toString('utf-8');
     const url = await s3client.getSignedUrlPromise('getObject', params);
-    return {url}
+    // return { data: fileData, url: url };
+    return { url: url };
   }
 
   @Post('xml')

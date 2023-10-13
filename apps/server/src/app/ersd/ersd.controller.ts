@@ -25,7 +25,7 @@ export class eRSDController {
   constructor(private httpService: HttpService, private appService: AppService) {
   }
 
-  private validFormat(format): boolean { return format === 'xml' || format === 'json' }
+  private validFormat(format): boolean { return format === 'xml' || format === 'json' || format ==='md'}
   
   private assertApiKey(request: Request): Promise<Person> {
     let authorization: string;
@@ -81,14 +81,11 @@ export class eRSDController {
   async getV1Spec(@Req() request: Request, @Query() queryParams, @Response() response: Res) {
     await this.assertApiKey(request);
     const format = queryParams['format'].toLowerCase()
-    if (!format || !this.validFormat(format)) { 
-      throw new BadRequestException('Please specify a valid download format: XML or JSON')
-    }
+    if (!format || !this.validFormat(format)) { throw new BadRequestException('Please specify a valid download format: XML or JSON') }
 
     const Bucket = this.appService.serverConfig.payload.Bucket;
-    const Key = format === 'xml' 
-    ? this.appService.serverConfig.payload.ERSDV1_SPECIFICATION_XML_KEY
-    : this.appService.serverConfig.payload.ERSDV1_SPECIFICATION_JSON_KEY
+    const Key = format === 'xml' ? this.appService.serverConfig.payload.ERSDV1_XML_KEY :
+      this.appService.serverConfig.payload.ERSDV1_JSON_KEY
 
     if (typeof Bucket === 'undefined' || Bucket === '' || Key === '') {
       const errorMessage = 'Failed to download from S3, no Bucket or Key specified'
@@ -98,22 +95,18 @@ export class eRSDController {
 
     const s3client = new S3();
 
-    const params = {
+    const headParams = {
       Bucket,
-      Key,
-      Expires: 3600,
+      Key
     }
 
-    try {
-      // Generate a presigned URL using getSignedUrlPromise
-      const presignedUrl = await s3client.getSignedUrlPromise('getObject', params);
+    const data = await s3client.getObject(headParams).promise();
+    const body = data.Body.toString('utf-8')
 
-      // Redirect the client to the presigned URL
-      response.redirect(presignedUrl);
-    } catch (error) {
-      // Handle errors here
-      console.error('Error generating presigned URL:', error);
-      throw error;
+    if (format === 'xml') {
+      return response.set({'Content-Type': 'text/xml'}).send(this.stripOuterBundleXML(body))
+    } else {
+      return response.set({'Content-Type': 'application/json'}).json(this.stripOuterBundleJSON(JSON.parse(body)))
     }
   }
 
@@ -121,15 +114,12 @@ export class eRSDController {
   async getV2Spec(@Req() request: Request, @Query() queryParams, @Response() response: Res) {
     await this.assertApiKey(request);
 
-    const format = queryParams['format']?.toLowerCase()
-    if (!format || !this.validFormat(format)) { 
-      throw new BadRequestException('Please specify a valid download format: XML or JSON') 
-    }
+    const format = queryParams['format'].toLowerCase()
+    if (!format || !this.validFormat(format)) { throw new BadRequestException('Please specify a valid download format: XML or JSON') }
 
     const Bucket = this.appService.serverConfig.payload.Bucket;
-    const Key = format === 'xml' 
-    ? this.appService.serverConfig.payload.ERSDV2_SPECIFICATION_XML_KEY 
-    : this.appService.serverConfig.payload.ERSDV2_SPECIFICATION_JSON_KEY
+    const Key = format === 'xml' ? this.appService.serverConfig.payload.ERSDV2_SPECIFICATION_XML_KEY :
+      this.appService.serverConfig.payload.ERSDV2_SPECIFICATION_JSON_KEY
 
     if (typeof Bucket === 'undefined' || Bucket === '' || Key === '') {
       const errorMessage = 'Failed to download from S3, no Bucket or Key specified'
@@ -139,22 +129,17 @@ export class eRSDController {
 
     const s3client = new S3();
 
-    const params = {
+    const headParams = {
       Bucket,
       Key,
-      Expires: 3600, // Set the expiration time for the presigned URL (in seconds)
-    };
+    }
 
-    try {
-      // Generate a presigned URL using getSignedUrlPromise
-      const presignedUrl = await s3client.getSignedUrlPromise('getObject', params);
-
-      // Redirect the client to the presigned URL
-      response.redirect(presignedUrl);
-    } catch (error) {
-      // Handle errors here
-      console.error('Error generating presigned URL:', error);
-      throw error;
+    const data = await s3client.getObject(headParams).promise();
+    const body = data.Body.toString('utf-8')
+    if (format === 'xml') {
+      return response.set({'Content-Type': 'text/xml'}).send(body)
+    } else {
+      return response.set({'Content-Type': 'application/json'}).json(JSON.parse(body))
     }
   }
 
@@ -190,5 +175,36 @@ export class eRSDController {
     } else {
       return response.set({'Content-Type': 'application/json'}).json(JSON.parse(body))
     }
+  }
+
+  // Markdown functions
+  @Get('markdown')
+  async getMarkdown(@Response() response: Res) {
+
+    const Bucket = this.appService.serverConfig.payload.Bucket;
+    const Key = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_SUMMARY_KEY
+    
+
+    if (typeof Bucket === 'undefined' || Bucket === '' || Key === '') {
+      const errorMessage = 'Failed to download from S3, no Bucket or Key specified'
+      this.logger.error(errorMessage);
+      throw Error(errorMessage);
+    } 
+
+    const s3client = new S3();
+    const params = {
+      Bucket,
+      Key,
+    };
+
+    try {
+      const data = await s3client.getObject(params).promise();
+      response.set('Content-Type', 'text/markdown');
+      response.send(data.Body.toString());
+    } catch (error) {
+      console.error('Error fetching Markdown from S3:', error);
+      return response.status(500).json({ error: 'Error fetching Markdown from S3' });
+    }
+
   }
 }

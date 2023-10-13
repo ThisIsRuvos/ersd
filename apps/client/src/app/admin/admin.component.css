@@ -46,3 +46,9 @@ table > thead > tr > th:last-child {
 .form-control {
   height: initial;
 }
+
+.btn-primary {
+  color: #fff;
+  background-color: #b12c36 ;
+  border-color: #b12c36 ;
+} 

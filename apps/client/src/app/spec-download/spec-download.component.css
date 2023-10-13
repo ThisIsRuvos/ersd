@@ -1,91 +1,92 @@
-.accordion {
-  background-color: white;
+.btn-primary {
+  --bs-btn-color: var(--text-color-dark); 
+  --bs-btn-bg: var(--primary-color); 
+  --bs-btn-border-color: var(--tertiary-color);
+
+  --bs-btn-hover-color: var(--text-color-dark); 
+  --bs-btn-hover-bg: var(--primary-alt-color); 
+  --bs-btn-hover-border-color: var(--tertiary-color);
+
+  --bs-btn-focus-shadow-rgb: 130, 138, 145;
+
+  --bs-btn-active-color: var(--text-color-dark); 
+  --bs-btn-active-bg: var(--primary-color);
+  --bs-btn-active-border-color: var(--tertiary-color);
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+
+  /* --bs-btn-disabled-color: var(--text-color); 
+  --bs-btn-disabled-bg: #var(--primary-color); 
+  --bs-btn-disabled-border-color: var(--icon-color); */
 }
 
-.accordion-header {
-  background-color: #b12c36;
-  border-color: #b12c36;
-  text-align: left;
+
+.btn-secondary {
+--bs-btn-color: var(--text-color-light); 
+--bs-btn-bg: var(--secondary-color); 
+--bs-btn-border-color: var(--secondary-color) !important;
+
+--bs-btn-hover-color: var(--text-color-light); 
+--bs-btn-hover-bg: var(--secondary-alt-color); 
+--bs-btn-hover-border-color: var(--secondary-alt-color);
+
+--bs-btn-focus-shadow-rgb: 130, 138, 145;
+
+--bs-btn-active-color: var(--text-color-light); 
+--bs-btn-active-bg: var(--secondary-color);
+--bs-btn-active-border-color: var(--secondary-color);
+--bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+
+/* --bs-btn-disabled-color: var(--text-color); 
+--bs-btn-disabled-bg: #var(--primary-color); 
+--bs-btn-disabled-border-color: var(--icon-color); */
 }
 
-.accordion-button {
-  color: white;
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  border: 0;
-  padding: 10px;
+.btn-tertiary {
+--bs-btn-color: var(--text-color-dark); 
+--bs-btn-bg: var(--primary-alert-color); 
+--bs-btn-border-color: var(--tertiary-color);
+
+--bs-btn-hover-color: var(--text-color-dark); 
+--bs-btn-hover-bg: var(--primary-alert-alt-color); 
+--bs-btn-hover-border-color: var(--tertiary-color);
+
+--bs-btn-focus-shadow-rgb: 130, 138, 145;
+
+--bs-btn-active-color: var(--text-color-dark); 
+--bs-btn-active-bg: var(--primary-alert-color);
+--bs-btn-active-border-color: var(--tertiary-color);
+--bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+
+/* --bs-btn-disabled-color: var(--text-color); 
+--bs-btn-disabled-bg: #var(--primary-color); 
+--bs-btn-disabled-border-color: var(--icon-color); */
+}
+.superscript-icon {
+font-size: 60%;
+vertical-align: super; /* Apply superscript style to the icon */
 }
 
-.internal-fieldsets {
-  margin: 10px;
+.form-check-input:checked {
+background-color: var(--tertiary-color);
+border-color: var(--tertiary-color);
 }
 
-.fieldset-container {
-  color: black;
-  font-size: 1.0rem;
-  margin: 48px;
+.form-check-input:focus {
+border-color: var( --tertiary-alt-color);
+outline: 0;
+box-shadow: 0 0 0 .25rem #4DAEB34D;
+}
+/* repeated  */
+.link-primary {
+  color: var( --text-color-dark) !important;
+  text-decoration-color: var(--text-color-dark) !important;
 }
 
-fieldset {
-  border-width: 1px !important;
-  padding: 24px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  border-style: groove;
-  border-color: black;
-  font-family: Helvetica;
-  text-align: left;
-  margin-bottom: 5px;
+.link-primary:focus, .link-primary:hover {
+  color: #094045b0!important;
+  text-decoration-color: #094045b0 !important;
 }
 
-.bolded-legend {
-  font-weight: bold;
-  font-size: 1.0rem;
-  padding-left: 5px;
-  padding-right: 10px;
-  max-width: fit-content;
-}
-
-.version-legend {
-  font-size: 1.0rem;
-  padding-left: 5px;
-}
-
-.radio-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.input-subtitle {
-  color: rgba(0, 0, 0, 0.6);
-  padding-left: .75rem;
-}
-
-.supplemental-notice {
-  padding-left: .75rem;
-}
-
-.input-title {
-  text-align: start;
-  margin-bottom: 0;
-  padding-left: .75rem;
-}
-
-.check {
-  margin-left: 12px;
-}
-
-.excelDownload {
-  font-size: .80rem;
-  margin-bottom: 10px;
-}
-
-.release-notes-link {
-  float: right;
-  font-size: .90rem;
-  color: blue;
-  border: none;
-  background: none;
-  margin-bottom: 10px;
+.dropdown-menu {
+  min-width: 14rem;
 }

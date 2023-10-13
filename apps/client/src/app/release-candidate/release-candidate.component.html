@@ -1,0 +1,72 @@
+<div *ngIf="authService.loggedIn">
+  <main role="main" class="container">
+    <div class="card bg-primary border-0 rounded-0">
+      <div class="card-body p-0">
+        <h5 class="card-title text-uppercase p-3">CHANGE PREVIEW - eRSD V2, Structural/Query Changes</h5>
+        <div class="px-4 mb-4">
+          <!-- <div class="alert alert-primary border-0 rounded-0" role="alert"> -->
+          <div class="row">
+            <div class="col-auto pe-0"><span><i class="fas fa-flag"></i></span></div>
+            <div class="col fst-italic">
+              <p class="">
+
+                Note: This preview is not an accurate representation of the trigger codes that will be in the release.
+                It is intended for high-level review of structural changes to the metadata, targeted at implementers who
+                may find their application logic affected.
+              </p>
+              <span>
+
+                The preview is under development and subject to change.
+              </span>
+            </div>
+          </div>
+          <!-- </div> -->
+
+          <!-- Spec Downloads Component -->
+          <!-- <ersd-spec-download></ersd-spec-download> -->
+          <!-- End of Spec Downloads Component -->
+        </div>
+        <hr />
+        <div class="px-4 mb-4">
+          <div class="text-end mb-4">
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#downloadModal">
+              <i class="fas fa-file-download me-2"></i> Download Files </button>
+
+            <!-- <button class="btn btn-secondary" type="submit" (click)="getReleasePreview()"><i
+                class="fas fa-file-download me-2"></i> Download Files </button> -->
+          </div>
+          <div markdown [data]="markdownContent" [disableSanitizer]="true"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade"  #modalAcknowledgement id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-0">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="downloadModalLabel">Download Change Preview</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="checkbox" id="checkboxAgreement" (change)="setAcknowledgement($event)">
+          <label class="form-check-label" for="checkboxAgreement">
+            I acknowledge that this preview is under development and does not include accurate trigger codes.
+          </label>
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-3">
+              <button name="ersdv2-draft-json" style="width: 100px;" class="btn btn-secondary me-md-2" (click)="getReleasePreview($event)" [disabled]="(isDisabled)">JSON</button>
+              <button name="ersdv2-draft-xml" style="width: 100px;" class="btn btn-secondary" (click)="getReleasePreview($event)" [disabled]="(isDisabled)">XML</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
