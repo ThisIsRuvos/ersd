@@ -11,9 +11,9 @@
           <label class="form-check-label" for="versions-1">
             <span class="fw-bold">eRSD Version 1</span>
           </label>
-          <a href="javascript:void(0)" (click)="downloadReleaseNotes()" class="ms-2 link-primary form-text">eRSD RELEASE
+          <a href="javascript:void(0)" (click)="downloadReleaseNotes('ersdv1')" class="ms-2 link-primary form-text">eRSD RELEASE
             DESCRIPTION</a><i class="fas fa-external-link-alt superscript-icon"></i>
-          <a href="#" class="ms-2 link-primary form-text">RCTC CHANGELOG</a><i
+          <a href="javascript:void(0)" (click)="downloadChangeLogs()" class="ms-2 link-primary form-text">RCTC CHANGELOG</a><i
             class="fas fa-external-link-alt superscript-icon"></i>
         </div>
         <div class="form-text fst-italic">For eCR Now App Release 2.X and Release 3.X and for many existing vendor
@@ -27,9 +27,9 @@
           <label class="form-check-label" for="versions-2">
             <span class="fw-bold">eRSD Version 2</span>
           </label>
-          <a href="javascript:void(0)" (click)="downloadReleaseNotes()" class="ms-2 link-primary form-text">eRSD RELEASE
+          <a href="javascript:void(0)" (click)="downloadReleaseNotes('ersdv2')" class="ms-2 link-primary form-text">eRSD RELEASE
             DESCRIPTION</a><i class="fas fa-external-link-alt superscript-icon"></i>
-          <a href="#" class="ms-2 link-primary form-text">RCTC CHANGELOG</a><i
+          <a href="javascript:void(0)" (click)="downloadChangeLogs()" class="ms-2 link-primary form-text">RCTC CHANGELOG</a><i
             class="fas fa-external-link-alt superscript-icon"></i>
         </div>
         <div class="form-text fst-italic">
@@ -120,7 +120,7 @@
       </div>
     </div>
     <div class="text-center mb-4">
-      <button class="btn btn-secondary" type="button" (click)="downloadExcel()">
+      <button class="btn btn-secondary" type="button" (click)="downloadRCTCReleaseSpreadsheet()">
         <i class="fas fa-file-download me-2"></i> RCTC Spreadsheet
         
         <!-- <div class="d-flex justify-content-md-between align-items-center">

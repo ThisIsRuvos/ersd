@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Logger,
   Post,
+  Query,
   Req,
   Response,
   UseGuards
@@ -129,14 +130,14 @@ export class DownloadController {
     }
   }
 
-  @Post('excel')
+  @Post('rctc_release')
   @UseGuards(AuthGuard())
-  async downloadExcel() {
+  async downloadRCTCReleaseSpreadsheet() {
     const Bucket = this.appService.serverConfig.payload.Bucket;
       const s3client = new S3();
 
-      const Key = this.appService.serverConfig.payload.RCTCKey;
-      const ResponseContentDisposition = `attachment; filename="rctc.zip"`;
+      const Key = this.appService.serverConfig.payload.RCTC_RELEASE_SPREADSHEET_KEY;
+      const ResponseContentDisposition = `attachment; filename="RCTC_Release.xlsx"`;
 
       const params = {
         Bucket,
@@ -153,7 +154,7 @@ export class DownloadController {
     const Bucket = this.appService.serverConfig.payload.Bucket;
       const s3client = new S3();
       const Key = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_JSON_KEY;
-      const ResponseContentDisposition = `attachment; filename="ReleaseCandidateV1Draft.json"`;
+      const ResponseContentDisposition = `attachment; filename="eRSDv2_specification_bundle_draft.json"`;
 
       const params = {
         Bucket,
@@ -170,7 +171,7 @@ export class DownloadController {
     const Bucket = this.appService.serverConfig.payload.Bucket;
       const s3client = new S3();
       const Key = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_XML_KEY;
-      const ResponseContentDisposition = `attachment; filename="ReleaseCandidateV1Draft.xml"`;
+      const ResponseContentDisposition = `attachment; filename="eRSDv2_specification_bundle_draft.xml"`;
 
       const params = {
         Bucket,
@@ -183,22 +184,49 @@ export class DownloadController {
 
   @Post('release_notes')
   @UseGuards(AuthGuard())
-  async downloadNotes() {
+  async downloadNotes(@Query() queryParams) {
+    const { version } = queryParams;
     const Bucket = this.appService.serverConfig.payload.Bucket;
-
-      const s3client = new S3();
-
-      const Key = this.appService.serverConfig.payload.ERSD_RELEASE_DESCRIPTION_KEY;
-      const ResponseContentDisposition = `attachment; filename="latestersdreleasedescription.txt"`;
-
-      const params = {
-        Bucket,
-        Key,
-        ResponseContentDisposition,
-      }
-      const url = await s3client.getSignedUrlPromise('getObject', params);
-      return {url}
+    const s3client = new S3();
+    let Key, ResponseContentDisposition;
+  
+    if (version === "ersdv1") {
+      Key = this.appService.serverConfig.payload.ERSD_RELEASE_DESCRIPTION_V1_KEY;
+      ResponseContentDisposition = `attachment; filename="eRSDv1_specification_release_description.txt"`;
+    } else if (version === "ersdv2") {
+      Key = this.appService.serverConfig.payload.ERSD_RELEASE_DESCRIPTION_V2_KEY;
+      ResponseContentDisposition = `attachment; filename="eRSDv2_specification_release_description.txt"`;
+    }
+  
+    const params = {
+      Bucket,
+      Key,
+      ResponseContentDisposition,
+    };
+  
+    const url = await s3client.getSignedUrlPromise('getObject', params);
+    return { url };
   }
+  
+
+@Post('change_logs')
+@UseGuards(AuthGuard())
+async downloadChangeLogs() {
+  const Bucket = this.appService.serverConfig.payload.Bucket;
+
+  const s3client = new S3();
+  const Key = this.appService.serverConfig.payload.RCTC_CHANGE_LOG_KEY;
+  const ResponseContentDisposition = `attachment; filename="RCTC_Change_Log.xlsx"`;
+
+  const params = {
+    Bucket,
+    Key,
+    ResponseContentDisposition,
+  }
+  const url = await s3client.getSignedUrlPromise('getObject', params);
+  return {url}
+}
+
 
   @Get('localexcel')
   @UseGuards(AuthGuard())

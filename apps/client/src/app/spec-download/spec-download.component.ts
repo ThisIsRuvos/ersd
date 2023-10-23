@@ -35,6 +35,7 @@ export class SpecDownloadComponent implements OnInit {
 
   setVersion(e) { 
     this.version = e.target.value 
+    console.log(this.version)
   } // eRSD (eCR) V1 or V2
 
   setBundle(e) { 
@@ -135,15 +136,26 @@ export class SpecDownloadComponent implements OnInit {
     }
   }
 
-    async downloadReleaseNotes() {
+  async downloadReleaseNotes(description) {
+    try {
+      let url = `api/download/release_notes?version=${description}`;
+  
+      const data = await firstValueFrom(this.httpClient.post(url, this.request)) as PayloadDownload;
+      await this.downloadS3(data);
+  
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+    async downloadChangeLogs() {
       try {
-        const data = await firstValueFrom(this.httpClient.post('api/download/release_notes', this.request)) as PayloadDownload;
+        const data = await firstValueFrom(this.httpClient.post('api/download/change_logs', this.request)) as PayloadDownload;
         await this.downloadS3(data);
       } catch (err) {
         console.error(err);
       }
     }
-
 
   async queryServer(url) {
     try {
@@ -170,9 +182,9 @@ export class SpecDownloadComponent implements OnInit {
 
   // RCTC Spreadsheet specific function.
   // This will be removed when the spreadsheet is removed
-  async downloadExcel() {
+  async downloadRCTCReleaseSpreadsheet() {
     try {
-      const data = await firstValueFrom(this.httpClient.post('/api/download/excel', this.request)) as PayloadDownload;
+      const data = await firstValueFrom(this.httpClient.post('/api/download/rctc_release', this.request)) as PayloadDownload;
       await this.downloadS3(data);
     } catch (err) {
       console.log(err);
