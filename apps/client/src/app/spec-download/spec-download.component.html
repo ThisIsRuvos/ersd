@@ -2,7 +2,7 @@
   <!-- Specification Bundle(s -->
   <fieldset class="px-4">
     <div class="fw-medium">Select Specification Bundle(s)</div>
-    <p>Bundles contain trigger codes and a computable representation of the reporting workflow</p>
+    <p>Bundles contain trigger codes and a computable representation of the reporting timing and workflow</p>
     <form>
       <div class="form-check mb-4">
         <input class="form-check-input" type="radio" name="drone" id="versions-1" value="ecrv1"
@@ -16,9 +16,8 @@
           <a href="javascript:void(0)" (click)="downloadChangeLogs()" class="ms-2 link-primary form-text">RCTC CHANGELOG</a><i
             class="fas fa-external-link-alt superscript-icon"></i>
         </div>
-        <div class="form-text fst-italic">For eCR Now App Release 2.X and Release 3.X and for many existing vendor
-          developed
-          implementations</div>
+        <div class="form-text fst-italic">For eCR Now App Release 2.X and Release 3.X and for many existing EHR Company
+          developed implementations</div>
       </div>
       <div class="form-check mb-4">
         <input class="form-check-input" type="radio" name="drone" id="versions-2" value="ecrv2"
@@ -33,18 +32,18 @@
             class="fas fa-external-link-alt superscript-icon"></i>
         </div>
         <div class="form-text fst-italic">
-          <p>For eCR Now App Release 3.X and greater and some recently vendor developed implementations</p>
-          <p>
+          <p>For eCR Now App Release 3.X and greater and some recently EHR company developed implementations</p>
+          <!-- <p>
             In Progress: <br />
             Support for distributed reportability determination using the eRSD Version 2 - Supplemental bundle
-          </p>
+          </p> -->
         </div>
       </div>
       <div class="mb-4">
         <span class="fw-medium me-2">Select Download Format:</span>
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="radio" id="file-type-1" name="content-type" value="json"
-            (change)="setContentType($event)">
+            (change)="setContentType($event)" checked>
           <label class="form-check-label" for="file-type-1">JSON</label>
         </div>
         <div class="form-check form-check-inline">
@@ -57,7 +56,8 @@
       <div class="text-center mb-4">
         <!-- <button class="btn btn-secondary" type="submit" (click)="handleSubmit()" [disabled]="(isDisabled)"><i class="fas fa-file-download me-2"></i> eRSD Files</button> -->
 
-        <button class="btn btn-secondary" type="submit" (click)="handleSubmit()" [disabled]="isDisabled" style="width: 135px">
+        <!-- added below if needed [disabled]="isDisabled"  -->
+        <button class="btn btn-secondary" type="submit" (click)="handleSubmit()" style="width: 135px">
           <div class="d-flex justify-content-md-between align-items-center">
             <ng-container *ngIf="!loading; else loadingSpinner">
               <i class="fas fa-file-download mx-auto"></i> 
@@ -85,15 +85,13 @@
         <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
         <div class="col">
           <span class="fw-bold">A new version of the eRSD is under development:</span> implementors may view an
-          in-progress draft of the next eRSD Version 2 to anticipate possible structural changes that may affect their
-          queries.
+          in-progress draft of the next eRSD Version 2 to anticipate possible usage or structural changes.
         </div>
       </div>
       <div class="row">
         <div class="col-auto pe-0"><span><i class="fas fa-exclamation-triangle"></i></span></div>
         <div class="col">
-          Please note: Previews <span class="fw-bold">do not</span> contain new trigger codes. Those are only available
-          upon full release.
+          Please note: Previews <span class="fw-bold">do not</span> contain up to date trigger codes. Do not use a preview in a production setting.
         </div>
       </div>
     </div>

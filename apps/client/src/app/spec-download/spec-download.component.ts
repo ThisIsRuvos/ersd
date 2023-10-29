@@ -21,7 +21,7 @@ export class SpecDownloadComponent implements OnInit {
 
   version = 'ecrv1'
   bundleType = ''
-  contentType = ''
+  contentType = 'json'
   isDisabled = true;
 
   constructor(
@@ -73,7 +73,7 @@ export class SpecDownloadComponent implements OnInit {
     this.contentType = value;
 
     // Check if no radio button is selected and set isDisabled accordingly
-    this.isDisabled = this.contentType === null;
+    // this.isDisabled = this.contentType === null;
   }
 
 

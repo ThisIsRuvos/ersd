@@ -2,33 +2,39 @@
   <navigation></navigation>
   <main role="main" class="container w-75 pb-3">
     <div *ngIf="authService.person"><router-outlet></router-outlet></div>
-      <div *ngIf="!authService.loggedIn">
-        <div>
-          <img src="../../assets/ersd-logo-full.png" class="img-fluid mt-5"/>
-        </div>
-        <div class="card bg-primary border-0 rounded-0 mb-4">
-          <div class="card-body p-4">
-            <div class="alert alert-primary border-0 rounded-0" role="alert">
-              <span><i class="fas fa-info-circle me-2 fa-lg"></i></span>
-              <span>You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()" class="alert-link">login</a> or <a href="javascript:void(0)" (click)="authService.register()" class="alert-link">register</a> to continue.</span>
-            </div>
-            <p>
-              This site provides access to the eRSD specifications for electronic Case Reporting (eCR). The eRSD is used to
-              guide triggering and reporting of initial case reports within participating Electronic Health Records. For more 
-              information, please visit the <a class="link-primary" href="https://ecr.aimsplatform.org/ehr-implementers/triggering/">EHR triggering documentation for EHR implementers</a>. The site may also contain 
-              specifications for other public health reporting programs and pilots.
-            </p>
-            <p>
-              Registration - If this is your first time visiting the site, please register for an account. Registration is needed 
-              so we have contact information to alert you for subsequent routine and emergent eRSD updates.
-            </p>
-            <p>
-              Access to Content - Once registered, you will receive notices of content updates. You can choose to receive the content 
-              through manual download or automated polling of the eRSD server. You will also be able to choose whether you receive 
-              the content in XML or JSON formats.
-            </p>   
+    <div *ngIf="!authService.loggedIn">
+      <div>
+        <img src="../../assets/ersd-logo-full.png" class="img-fluid mt-5" />
+      </div>
+      <div class="card bg-primary border-0 rounded-0 mb-4">
+        <div class="card-body p-4">
+          <div class="alert alert-primary border-0 rounded-0" role="alert">
+            <span><i class="fas fa-info-circle me-2 fa-lg"></i></span>
+            <span>You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()"
+                class="alert-link">login</a> or <a href="javascript:void(0)" (click)="authService.register()"
+                class="alert-link">register</a> to continue.</span>
           </div>
+          <p>
+            This site provides access to the electronic Reporting and Surveillance Distribution (eRSD) for electronic
+            Case Reporting (eCR). The eRSD is used to
+            guide triggering and reporting of initial electronic case reports (eICRs) from participating Healthcare
+            Organizations and their Electronic Health Records. For
+            more information, please visit the <a class="link-primary"
+              href="https://ecr.aimsplatform.org/ehr-implementers/triggering/">EHR
+              triggering documentation for EHR implementers</a>.
+          </p>
+          <p>
+            Registration - If this is your first time visiting the site, please register for an account. Registration is
+            needed so we have contact information to alert you for subsequent routine and emergent eRSD updates.
+          </p>
+          <p>
+            Access to Content - Once registered, you will receive notices of content updates. You can choose to receive
+            the content through manual download or automated polling of the eRSD server. You will also be able to choose
+            whether you
+            receive the content in XML or JSON formats.
+          </p>
         </div>
       </div>
+    </div>
   </main>
 </div>
