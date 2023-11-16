@@ -16,6 +16,9 @@
     "dep-graph": "./node_modules/.bin/nx dep-graph"
   },
   "private": true,
+  "overrides": {
+    "esbuild": "0.19.5"
+  },
   "dependencies": {
     "@angular-devkit/architect": "^0.1601.4",
     "@angular/animations": "^16.1.4",
