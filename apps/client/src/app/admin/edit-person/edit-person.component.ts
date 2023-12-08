@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { IPerson, Person } from '../../../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
@@ -10,6 +10,7 @@ import { EditPersonComponent } from '../../edit-person/edit-person.component';
   styleUrls: ['./edit-person.component.css']
 })
 export class AdminEditPersonComponent implements OnInit {
+  @Output() updatedUser: EventEmitter<any> = new EventEmitter<any>();
   @Input() id: string;
   public person: Person;
   public message: string;
@@ -32,6 +33,7 @@ export class AdminEditPersonComponent implements OnInit {
     this.httpClient.put<IPerson>('/api/user/' + this.id, this.person).toPromise()
       .then((results) => {
         this.activeModal.close(results);
+        this.updatedUser.emit(results); 
       })
       .catch((err) => {
         this.message = getErrorString(err);

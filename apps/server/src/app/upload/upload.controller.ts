@@ -5,7 +5,9 @@ import { Parser } from '@json2csv/plainjs';
 import {AuthGuard} from '@nestjs/passport';
 import type { AuthRequest } from '../auth-module/auth-request';
 import {Constants} from '../../../../../libs/ersdlib/src/lib/constants';
-import {IUploadRequest} from '../../../../../libs/ersdlib/src/lib/upload-request';
+import {IUploadRequest,} from '../../../../../libs/ersdlib/src/lib/upload-request';
+import { IEmailExportRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
+
 import {Fhir} from 'fhir/fhir';
 import {IBundle} from '../../../../../libs/ersdlib/src/lib/bundle';
 import {AppService} from '../app.service';
@@ -13,10 +15,6 @@ import S3 from 'aws-sdk/clients/s3';
 import path, { join } from "path";
 import { validateEmail } from '../helper';
 import { createReadStream, writeFileSync, unlinkSync } from 'fs';
-
-interface EmailExportRequest {
-  exportTypeOrigin: 'Subscription' | 'Person' | 'Both';
-}
 
 @Controller('upload')
 export class UploadController {
@@ -36,7 +34,7 @@ export class UploadController {
     if (typeof Bucket === 'undefined' || Bucket === "") {
       this.logger.log(`Uploading RCTC excel to local storage`);
       const rctcExcelPath = path.resolve(this.appService.serverConfig.rctcExcelPath);
-      fs.writeFileSync(rctcExcelPath, buf);
+      writeFileSync(rctcExcelPath, buf);
       this.logger.log(`Updated RCTC excel file at path ${rctcExcelPath}.`);
     }
     else {
@@ -93,14 +91,22 @@ export class UploadController {
           }
         })
       }
+      this.logger.log(`emails for csv: ${emails}`);
     return emails
   }
+
+   @Post('get-emails')
+   @UseGuards(AuthGuard())
+    async getEmaisl(@Body() { exportTypeOrigin }: { exportTypeOrigin: string }) {
+      const emails = await this.getEmails(exportTypeOrigin);
+      return emails;
+    }
 
   @Post('export')
   @Header('Content-Type', 'text/csv')
   @Header('Content-Disposition', 'attachment; filename="emails.csv"')  
   @UseGuards(AuthGuard())
-  async exportEmails(@Req() request: AuthRequest, @Res({ passthrough: true }) res: Response, @Body() body: EmailExportRequest) {
+  async exportEmails(@Req() request: AuthRequest, @Res({ passthrough: true }) res: Response, @Body() body: IEmailExportRequest) {
     this.appService.assertAdmin(request);
     const exportTypeOrigin = body.exportTypeOrigin;
     if (exportTypeOrigin !== 'Subscription' && exportTypeOrigin !== 'Person' && exportTypeOrigin !== 'Both') throw new BadRequestException('Invalid export type origin');
@@ -183,7 +189,7 @@ export class UploadController {
       if (typeof Bucket === 'undefined' || Bucket === "") {
         this.logger.log(`Uploading bundle to local storage`);
         const bundlePath = path.resolve(this.appService.serverConfig.bundlePath);
-        fs.writeFileSync(bundlePath, xmlData);
+        writeFileSync(bundlePath, xmlData);
         this.logger.log(`Updated bundle file at path ${bundlePath}.`);
       }
       else {

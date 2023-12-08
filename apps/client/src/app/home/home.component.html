@@ -1,39 +1,75 @@
 <div *ngIf="authService.loggedIn">
   <main role="main" class="container">
-    <div class="card bg-primary border-0 rounded-0 mb-4">
+    <div class="card bg-primary border-0 rounded-1 mb-4">
       <div class="card-body">
         <p class="mb-0">
           This site provides access to the eRSD specifications for electronic Case Reporting (eCR). The eRSD is used to
           guide triggering and reporting of initial case reports within participating Electronic Health Records. For
-          more
-          information, please visit the <a class="link-primary"
-            href="https://ecr.aimsplatform.org/ehr-implementers/triggering/">EHR
-            triggering documentation for EHR implementers</a>. The site may also contain
-          specifications for other public health reporting programs and pilots.
+          more information, please visit the <a class="link-primary"
+            href="https://ecr.aimsplatform.org/ehr-implementers/triggering/">EHR triggering documentation for EHR
+            implementers</a>.
+          The site may also contain specifications for other public health reporting programs and pilots.
         </p>
       </div>
     </div>
-    <div class="card bg-primary border-0 rounded-0 mb-4">
+    <div class="card bg-primary border-0 rounded-1 mb-4">
       <div class="card-body p-0">
         <h4 class="card-title fw-bold p-4 mb-0">Downloads</h4>
         <div class="bg-primary-heading mb-3">
           <h5 class="mb-0 px-4 fw-medium py-1">New Versions of eRSD Specification</h5>
         </div>
-        <div>
-          <div class="alert alert-primary border-0 rounded-0 mx-4" role="alert">
+        <div class="mx-4">
+          <div class="alert alert-primary border-0 shadow-sm" role="alert">
             <div class="row">
               <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
               <div class="col">
                 <span class="fw-bold">If you do not know which eRSD version to use:</span> please contact your EHR
-                vendor or for eCR Now
-                App implementations read the “eRSD Configuration Instructions” file in your eCR Now App download folder.
+                vendor or for eCR Now App implementations read the “eRSD Configuration Instructions” file in your eCR
+                Now App download folder.
               </div>
             </div>
           </div>
+
+          <p>
+            An eRSD Specification bundle contains the Reportable Condition Trigger Codes (RCTC) list along with a
+            computable representation of the reporting workflow. Each of the eRSD versions available contain the
+            same RCTC.
+          </p>
           <!-- Spec Downloads Component -->
           <ersd-spec-download></ersd-spec-download>
           <!-- End of Spec Downloads Component -->
         </div>
+
+         <!-- Preview Upcoming eRSD Updates -->
+         <div class="bg-primary-heading mb-3">
+          <h5 class="mb-0 px-4 fw-medium py-1">Preview Upcoming eRSD Updates</h5>
+        </div>
+        <div class="px-4">
+          <div class="alert alert-primary border-0 shadow-sm mb-4" role="alert">
+            <div class="row mb-3">
+              <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
+              <div class="col">
+                <span class="fw-bold">New versions of the eRSD are under development:</span> implementers may view
+                in-progress
+                drafts of upcoming eRSD Versions to anticipate possible structural changes that may affect their
+                queries.
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto pe-0"><span><i class="fas fa-exclamation-triangle"></i></span></div>
+              <div class="col">
+                Please note: Previews <span class="fw-bold">do not</span> contain new trigger codes. Those are only
+                available
+                upon full release.
+              </div>
+            </div>
+          </div>
+          <div class="text-center mb-4">
+            <a role="button" class="btn btn-tertiary" routerLink="/release-candidate">View Change Preview <i
+                class="fas fa-external-link-alt superscript-icon"></i></a>
+          </div>
+        </div>
+        <!-- End of Preview Upcoming eRSD Updates -->
       </div>
     </div>
   </main>

@@ -45,7 +45,8 @@ export class Person implements IPerson {
   public link?: [{
     target?: IResourceReference;
     assurance?: 'level1'|'level2'|'level3'|'level4';
-  }];
+  }]
+  ;
 
   constructor(obj?) {
     if (obj) {

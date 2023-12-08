@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { NgModel } from '@angular/forms';
 import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
@@ -11,10 +11,12 @@ import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
 export class EditPersonComponent implements OnInit {
   @Input() person: Person;
 
+  
+
   @ViewChild('firstName') firstNameField: NgModel;
   @ViewChild('lastName') lastNameField: NgModel;
   @ViewChild('email') emailField: NgModel;
-  @ViewChild('mobile') mobileField: NgModel;
+  @ViewChild('primaryMobile') primaryMobileField: NgModel;
   @ViewChild('office') officeField: NgModel;
   @ViewChild('secondaryEmail') secondaryEmailField: NgModel;
   @ViewChild('secondaryMobile') secondaryMobileField: NgModel;
@@ -64,7 +66,7 @@ export class EditPersonComponent implements OnInit {
     return (!this.firstNameField || this.firstNameField.valid) &&
       (!this.lastNameField || this.lastNameField.valid) &&
       (!this.emailField || this.emailField.valid) &&
-      (!this.mobileField || this.mobileField.valid) &&
+      (!this.primaryMobileField || this.primaryMobileField.valid) &&
       (!this.officeField || this.officeField.valid) &&
       (!this.secondaryEmailField || this.secondaryEmailField.valid) &&
       (!this.secondaryMobileField || this.secondaryMobileField.valid) &&

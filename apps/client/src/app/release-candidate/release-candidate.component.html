@@ -1,6 +1,6 @@
 <div *ngIf="authService.loggedIn">
   <main role="main" class="container">
-    <div class="card bg-primary border-0 rounded-0 mb-4">
+    <div class="card bg-primary border-0 rounded mb-4">
       <div class="card-body p-0">
         <h4 class="card-title fw-bold p-4 mb-0">CHANGE PREVIEW - eRSD V2, Structural/Query Changes</h4>
         <div class="px-4 mb-4">
@@ -12,7 +12,7 @@
 
                 Note: This preview is not a representation of the current trigger codes that are in use.
                 It is intended for a review of any structural changes targeted at implementers who
-                may find their implementation  affected.
+                may find their implementation affected.
               </p>
               <span>
 
@@ -46,9 +46,10 @@
 
 
 <!-- Modal -->
-<div class="modal fade"  #modalAcknowledgement id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
+<div class="modal fade" #modalAcknowledgement id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 rounded-0">
+    <div class="modal-content border-0 rounded">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="downloadModalLabel">Download Change Preview</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -58,13 +59,18 @@
         <div class="form-check mb-3">
           <input class="form-check-input" type="checkbox" id="checkboxAgreement" (change)="setAcknowledgement($event)">
           <label class="form-check-label" for="checkboxAgreement">
-            I acknowledge that this preview is for development purposes and does not include current trigger codes for production use.
+            I acknowledge that this preview is for development purposes and does not include current trigger codes for
+            production use.
           </label>
         </div>
 
+      </div>
+      <div class="modal-footer">
         <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-3">
-              <button name="ersdv2-draft-json" style="width: 100px;" class="btn btn-secondary me-md-2" (click)="getReleasePreview($event)" [disabled]="(isDisabled)">JSON</button>
-              <button name="ersdv2-draft-xml" style="width: 100px;" class="btn btn-secondary" (click)="getReleasePreview($event)" [disabled]="(isDisabled)">XML</button>
+          <button name="ersdv2-draft-json" style="width: 100px;" class="btn btn-secondary me-md-2"
+            (click)="getReleasePreview($event)" [disabled]="(isDisabled)">JSON</button>
+          <button name="ersdv2-draft-xml" style="width: 100px;" class="btn btn-secondary"
+            (click)="getReleasePreview($event)" [disabled]="(isDisabled)">XML</button>
         </div>
       </div>
     </div>

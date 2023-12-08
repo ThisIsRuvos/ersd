@@ -1,11 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-
 import { AppComponent } from './app.component';
 import { AdminComponent } from './admin/admin.component';
 import { NgbModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule, Routes } from '@angular/router';
-import { SubscriptionComponent } from './subscription/subscription.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 import { ApiKeysComponent } from './api-keys/api-keys.component';
 import { HomeComponent } from './home/home.component';
 import { ReleaseCandidateComponent } from './release-candidate/release-candidate.component';
@@ -27,7 +26,7 @@ import { MarkdownModule } from 'ngx-markdown';
 
 const appRoutes: Routes = [
   { path: 'admin', component: AdminComponent },
-  { path: 'subscription', component: SubscriptionComponent },
+  { path: 'user-profile', component: UserProfileComponent },
   { path: 'api-keys', component: ApiKeysComponent },
   { path: 'contact-info', component: ContactInfoComponent },
   { path: 'release-candidate',component: ReleaseCandidateComponent },
@@ -70,7 +69,7 @@ export function initializer(keycloak: KeycloakService, httpClient: HttpClient, c
   declarations: [
     AppComponent,
     AdminComponent,
-    SubscriptionComponent,
+    UserProfileComponent,
     ApiKeysComponent,
     HomeComponent,
     ContactInfoComponent,

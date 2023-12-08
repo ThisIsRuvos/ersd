@@ -22,13 +22,14 @@ body {
    background-color: var(--primary-color) !important;
  }
  
- .bg-primary-heading{
+ .bg-primary-heading, .sidebar-primary{
    background-color: var(--primary-header-color) !important;
  }
  
- .alert-primary, .sidebar-primary {
+ .alert-primary {
    color: var(--font-color);
    background-color: var(--primary-alert-color);
+   /* background-color: var(--primary-header-color) !important; */
  }
  
  .fa-info-circle, .fa-ellipsis-v {
@@ -113,10 +114,10 @@ div.footer {
   margin: 0 auto;
 }
 
-.modal-dialog {
+/* .modal-dialog {
   height: 100%;
   margin: 0 auto;
-}
+} */
 
 .register-button {
   background-color: #b12c36 !important;

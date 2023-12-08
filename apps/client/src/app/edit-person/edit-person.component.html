@@ -1,230 +1,253 @@
+<div class="mb-5">
+  <div class="fw-bold">Primary Contact</div>
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <label for="firstName" class="form-label">First Name *</label>
+      <input id="firstName" type="text" class="form-control" [(ngModel)]="person.firstName" required="required"
+        #firstName="ngModel" [class.is-invalid]="firstName.errors?.required" />
+    </div>
+    <div class="col-md-6">
+      <label for="lastName" class="form-label">Last Name *</label>
+      <input id="lastName" type="text" class="form-control" [(ngModel)]="person.lastName" required="required"
+        #lastName="ngModel" [class.is-invalid]="lastName.errors?.required" />
+    </div>
+    <div class="col-md-6">
+      <label for="email" class="form-label">Email *</label>
+      <input id="email" type="text" class="form-control" [(ngModel)]="person.email" email="true" required="required"
+        placeholder="joe@somewhere.com" #email="ngModel"
+        [class.is-invalid]="email.errors?.email || email.errors?.required" />
+    </div>
+    <div class="col-md-6">
+      <label for="primaryMobile" class="form-label">Mobile Phone</label>
+      <input id="primaryMobile" type="text" class="form-control" [(ngModel)]="person.mobile"
+        pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" placeholder="(XXX) XXX-XXXX" #primaryMobile="ngModel"
+        [class.is-invalid]="primaryMobile.errors?.pattern" />
+    </div>
+    <div class="col-md-12">
+      <label for="organizationName" class="form-label">Organization</label>
+      <input id="organizationName" type="text" class="form-control"
+        [ngModel]="Person.getOrganizationName(person, person)"
+        (ngModelChange)="Person.setOrganizationName(person, person, $event)" />
+    </div>
+    <div class="col-md-6">
+      <label for="organizationTitle" class="form-label">Title</label>
+      <input id="organizationTitle" type="text" class="form-control" [(ngModel)]="person.organizationTitle" />
+    </div>
+    <div class="col-md-6">
+      <label for="office" class="form-label">Office Phone *</label>
+      <input id="office" type="text" class="form-control" [(ngModel)]="person.office"
+        pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" required="required" placeholder="(XXX) XXX-XXXX"
+        #office="ngModel" [class.is-invalid]="office.errors?.pattern || office.errors?.required" />
+    </div>
+    <div class="col-md-12">
+      <label for="street" class="form-label">Street Address</label>
+      <input id="street" type="text" class="form-control" [(ngModel)]="person.addressLine" />
+    </div>
+    <div class="col-md-6">
+      <label for="city" class="form-label">City</label>
+      <input id="city" type="text" class="form-control" [(ngModel)]="person.addressCity" />
+    </div>
+
+    <div class="col-md-4">
+      <label for="state" class="form-label">State</label>
+      <select id="state" class="form-select" [(ngModel)]="person.addressState">
+        <option value="">--SELECT--</option>
+        <option value="AL">ALABAMA</option>
+        <option value="AK">ALASKA</option>
+        <option value="AZ">ARIZONA</option>
+        <option value="AR">ARKANSAS</option>
+        <option value="CA">CALIFORNIA</option>
+        <option value="CO">COLORADO</option>
+        <option value="CT">CONNECTICUT</option>
+        <option value="DE">DELAWARE</option>
+        <option value="FL">FLORIDA</option>
+        <option value="GA">GEORGIA</option>
+        <option value="HI">HAWAII</option>
+        <option value="ID">IDAHO</option>
+        <option value="IL">ILLINOIS</option>
+        <option value="IN">INDIANA</option>
+        <option value="IA">IOWA</option>
+        <option value="KS">KANSAS</option>
+        <option value="KY">KENTUCKY</option>
+        <option value="LA">LOUISIANA</option>
+        <option value="ME">MAINE</option>
+        <option value="MD">MARYLAND</option>
+        <option value="MA">MASSACHUSETTS</option>
+        <option value="MI">MICHIGAN</option>
+        <option value="MN">MINNESOTA</option>
+        <option value="MS">MISSISSIPPI</option>
+        <option value="MO">MISSOURI</option>
+        <option value="MT">MONTANA</option>
+        <option value="NE">NEBRASKA</option>
+        <option value="NV">NEVADA</option>
+        <option value="NH">NEW HAMPSHIRE</option>
+        <option value="NJ">NEW JERSEY</option>
+        <option value="NM">NEW MEXICO</option>
+        <option value="NY">NEW YORK</option>
+        <option value="NC">NORTH CAROLINA</option>
+        <option value="ND">NORTH DAKOTA</option>
+        <option value="OH">OHIO</option>
+        <option value="OK">OKLAHOMA</option>
+        <option value="OR">OREGON</option>
+        <option value="PA">PENNSYLVANIA</option>
+        <option value="RI">RHODE ISLAND</option>
+        <option value="SC">SOUTH CAROLINA</option>
+        <option value="SD">SOUTH DAKOTA</option>
+        <option value="TN">TENNESSEE</option>
+        <option value="TX">TEXAS</option>
+        <option value="UT">UTAH</option>
+        <option value="VT">VERMONT</option>
+        <option value="VA">VIRGINIA</option>
+        <option value="WA">WASHINGTON</option>
+        <option value="WV">WEST VIRGINIA</option>
+        <option value="WI">WISCONSIN</option>
+        <option value="WY">WYOMING</option>
+        <option value="GU">GUAM</option>
+        <option value="PR">PUERTO RICO</option>
+        <option value="VI">VIRGIN ISLANDS</option>
+      </select>
+    </div>
+
+    <div class="col-md-2">
+      <label for="postalCode" class="form-label">Postal Code</label>
+      <input id="postalCode" type="text" class="form-control" [(ngModel)]="person.addressPostalCode" />
+    </div>
+  </div>
+
+  <!-- Toggle switch -->
+  <div class="">
+    <div class="form-check form-switch mb-3">
+      <input class="form-check-input" type="checkbox" [ngModel]="!!secondary" (ngModelChange)="toggleSecondary($event)"
+        role="switch" id="flexSwitchCheckDefault">
+      <label class="form-check-label" for="flexSwitchCheckDefault">Enable Secondary Contact</label>
+    </div>
+  </div>
+
+  <div *ngIf="secondary">
 
 
-<div class="card">
-  <div class="card-header">Primary</div>
-  <div class="card-body">
-    <div>
-      <div>
-        <div class="form-group">
-          <label for="firstName">First Name *</label>
-          <input id="firstName" type="text" class="form-control" [(ngModel)]="person.firstName" required="required" #firstName="ngModel" [class.is-invalid]="firstName.errors?.required" />
-        </div>
-        <div class="form-group">
-          <label for="lastName">Last Name *</label>
-          <input id="lastName" type="text" class="form-control" [(ngModel)]="person.lastName" required="required" #lastName="ngModel" [class.is-invalid]="lastName.errors?.required" />
-        </div>
-        <div class="form-group">
-          <label for="email">Email *</label>
-          <input id="email" type="text" class="form-control" [(ngModel)]="person.email" email="true" required="required" placeholder="joe@somewhere.com" #email="ngModel" [class.is-invalid]="email.errors?.email || email.errors?.required" />
-        </div>
-        <div class="form-group">
-          <label for="mobile">Mobile Phone</label>
-          <input id="mobile" type="text" class="form-control" [(ngModel)]="person.mobile" pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" placeholder="(XXX) XXX-XXXX" #mobile="ngModel" [class.is-invalid]="mobile.errors?.pattern" />
-        </div>
+    <div class="fw-bold">Secondary Contact</div>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label for="secondaryFirstName" class="form-label">First Name</label>
+        <input id="secondaryFirstName" type="text" class="form-control" [(ngModel)]="secondary.firstName" />
       </div>
-      <div>
-        <div class="form-group">
-          <label for="organizationName">Organization</label>
-          <input id="organizationName" type="text" class="form-control" [ngModel]="Person.getOrganizationName(person, person)" (ngModelChange)="Person.setOrganizationName(person, person, $event)" />
-        </div>
-        <div class="form-group">
-          <label for="organizationTitle">Title</label>
-          <input id="organizationTitle" type="text" class="form-control" [(ngModel)]="person.organizationTitle" />
-        </div>
-        <div class="form-group">
-          <label for="office">Office Phone *</label>
-          <input id="office" type="text" class="form-control" [(ngModel)]="person.office" pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" required="required" placeholder="(XXX) XXX-XXXX" #office="ngModel" [class.is-invalid]="office.errors?.pattern || office.errors?.required" />
-        </div>
+      <div class="col-md-6">
+        <label for="secondaryLastName" class="form-label">Last Name</label>
+        <input id="secondaryLastName" type="text" class="form-control" [(ngModel)]="secondary.lastName" />
       </div>
-      <div>
-        <div class="form-group">
-          <label for="street">Street Address</label>
-          <input id="street" type="text" class="form-control" [(ngModel)]="person.addressLine" />
-        </div>
-        <div class="form-group">
-          <label for="city">City</label>
-          <input id="city" type="text" class="form-control" [(ngModel)]="person.addressCity" />
-        </div>
-        <div class="form-group">
-          <label for="state">State</label>
-          <select id="state" class="form-control" [(ngModel)]="person.addressState">
-            <option value="">--SELECT--</option>
-            <option value="AL">ALABAMA</option>
-            <option value="AK">ALASKA</option>
-            <option value="AZ">ARIZONA</option>
-            <option value="AR">ARKANSAS</option>
-            <option value="CA">CALIFORNIA</option>
-            <option value="CO">COLORADO</option>
-            <option value="CT">CONNECTICUT</option>
-            <option value="DE">DELAWARE</option>
-            <option value="FL">FLORIDA</option>
-            <option value="GA">GEORGIA</option>
-            <option value="HI">HAWAII</option>
-            <option value="ID">IDAHO</option>
-            <option value="IL">ILLINOIS</option>
-            <option value="IN">INDIANA</option>
-            <option value="IA">IOWA</option>
-            <option value="KS">KANSAS</option>
-            <option value="KY">KENTUCKY</option>
-            <option value="LA">LOUISIANA</option>
-            <option value="ME">MAINE</option>
-            <option value="MD">MARYLAND</option>
-            <option value="MA">MASSACHUSETTS</option>
-            <option value="MI">MICHIGAN</option>
-            <option value="MN">MINNESOTA</option>
-            <option value="MS">MISSISSIPPI</option>
-            <option value="MO">MISSOURI</option>
-            <option value="MT">MONTANA</option>
-            <option value="NE">NEBRASKA</option>
-            <option value="NV">NEVADA</option>
-            <option value="NH">NEW HAMPSHIRE</option>
-            <option value="NJ">NEW JERSEY</option>
-            <option value="NM">NEW MEXICO</option>
-            <option value="NY">NEW YORK</option>
-            <option value="NC">NORTH CAROLINA</option>
-            <option value="ND">NORTH DAKOTA</option>
-            <option value="OH">OHIO</option>
-            <option value="OK">OKLAHOMA</option>
-            <option value="OR">OREGON</option>
-            <option value="PA">PENNSYLVANIA</option>
-            <option value="RI">RHODE ISLAND</option>
-            <option value="SC">SOUTH CAROLINA</option>
-            <option value="SD">SOUTH DAKOTA</option>
-            <option value="TN">TENNESSEE</option>
-            <option value="TX">TEXAS</option>
-            <option value="UT">UTAH</option>
-            <option value="VT">VERMONT</option>
-            <option value="VA">VIRGINIA</option>
-            <option value="WA">WASHINGTON</option>
-            <option value="WV">WEST VIRGINIA</option>
-            <option value="WI">WISCONSIN</option>
-            <option value="WY">WYOMING</option>
-            <option value="GU">GUAM</option>
-            <option value="PR">PUERTO RICO</option>
-            <option value="VI">VIRGIN ISLANDS</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="postalCode">Postal Code</label>
-          <input id="postalCode" type="text" class="form-control" [(ngModel)]="person.addressPostalCode" />
-        </div>
+      <div class="col-md-6">
+        <label for="secondaryEmail" class="form-label">Email</label>
+        <input id="secondaryEmail" type="text" class="form-control" [(ngModel)]="secondary.email" email="true"
+          placeholder="joe@somewhere.com" #secondaryEmail="ngModel" [class.is-invalid]="secondaryEmail.errors?.email" />
+      </div>
+      <div class="col-md-6">
+        <label for="secondaryMobile" class="form-label">Mobile Phone</label>
+        <input id="secondaryMobile" type="text" class="form-control" [(ngModel)]="secondary.mobile"
+          pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" placeholder="(XXX) XXX-XXXX"
+          #secondaryMobile="ngModel" [class.is-invalid]="secondaryMobile.errors?.pattern" />
+      </div>
+      <div class="col-md-12">
+        <label for="secondaryOrganizationName" class="form-label">Organization</label>
+        <input id="secondaryOrganizationName" type="text" class="form-control"
+          [ngModel]="Person.getOrganizationName(person, secondary)"
+          (ngModelChange)="Person.setOrganizationName(person, secondary, $event)" />
+      </div>
+      <div class="col-md-6">
+        <label for="secondaryOrganizationTitle" class="form-label">Title</label>
+        <input id="secondaryOrganizationTitle" type="text" class="form-control"
+          [(ngModel)]="secondary.organizationTitle" />
+      </div>
+      <div class="col-md-6">
+        <label for="secondaryOffice" class="form-label">Office Phone</label>
+        <input id="secondaryOffice" type="text" class="form-control" [(ngModel)]="secondary.office"
+          pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" placeholder="(XXX) XXX-XXXX"
+          #secondaryOffice="ngModel" [class.is-invalid]="secondaryOffice.errors?.pattern" />
+      </div>
+      <div class="col-md-12">
+        <label for="secondaryStreet" class="form-label">Street Address</label>
+        <input id="secondaryStreet" type="text" class="form-control" [(ngModel)]="secondary.addressLine" />
+      </div>
+      <div class="col-md-6">
+        <label for="secondaryCity" class="form-label">City</label>
+        <input id="secondaryCity" type="text" class="form-control" [(ngModel)]="secondary.addressCity" />
+      </div>
+
+      <div class="col-md-4">
+        <label for="secondaryState" class="form-label">State</label>
+        <select id="secondaryState" class="form-select" [(ngModel)]="secondary.addressState">
+          <option value="">--SELECT--</option>
+          <option value="AL">ALABAMA</option>
+          <option value="AK">ALASKA</option>
+          <option value="AZ">ARIZONA</option>
+          <option value="AR">ARKANSAS</option>
+          <option value="CA">CALIFORNIA</option>
+          <option value="CO">COLORADO</option>
+          <option value="CT">CONNECTICUT</option>
+          <option value="DE">DELAWARE</option>
+          <option value="FL">FLORIDA</option>
+          <option value="GA">GEORGIA</option>
+          <option value="HI">HAWAII</option>
+          <option value="ID">IDAHO</option>
+          <option value="IL">ILLINOIS</option>
+          <option value="IN">INDIANA</option>
+          <option value="IA">IOWA</option>
+          <option value="KS">KANSAS</option>
+          <option value="KY">KENTUCKY</option>
+          <option value="LA">LOUISIANA</option>
+          <option value="ME">MAINE</option>
+          <option value="MD">MARYLAND</option>
+          <option value="MA">MASSACHUSETTS</option>
+          <option value="MI">MICHIGAN</option>
+          <option value="MN">MINNESOTA</option>
+          <option value="MS">MISSISSIPPI</option>
+          <option value="MO">MISSOURI</option>
+          <option value="MT">MONTANA</option>
+          <option value="NE">NEBRASKA</option>
+          <option value="NV">NEVADA</option>
+          <option value="NH">NEW HAMPSHIRE</option>
+          <option value="NJ">NEW JERSEY</option>
+          <option value="NM">NEW MEXICO</option>
+          <option value="NY">NEW YORK</option>
+          <option value="NC">NORTH CAROLINA</option>
+          <option value="ND">NORTH DAKOTA</option>
+          <option value="OH">OHIO</option>
+          <option value="OK">OKLAHOMA</option>
+          <option value="OR">OREGON</option>
+          <option value="PA">PENNSYLVANIA</option>
+          <option value="RI">RHODE ISLAND</option>
+          <option value="SC">SOUTH CAROLINA</option>
+          <option value="SD">SOUTH DAKOTA</option>
+          <option value="TN">TENNESSEE</option>
+          <option value="TX">TEXAS</option>
+          <option value="UT">UTAH</option>
+          <option value="VT">VERMONT</option>
+          <option value="VA">VIRGINIA</option>
+          <option value="WA">WASHINGTON</option>
+          <option value="WV">WEST VIRGINIA</option>
+          <option value="WI">WISCONSIN</option>
+          <option value="WY">WYOMING</option>
+          <option value="GU">GUAM</option>
+          <option value="PR">PUERTO RICO</option>
+          <option value="VI">VIRGIN ISLANDS</option>
+        </select>
+      </div>
+
+      <div class="col-md-2">
+        <label for="secondaryPostal" class="form-label">Postal Code</label>
+        <input id="secondaryPostal" type="text" class="form-control" [(ngModel)]="secondary.addressPostalCode" />
       </div>
     </div>
+
+
   </div>
 </div>
 
-<div class="card">
-  <div class="card-header">
-    <!--suppress HtmlFormInputWithoutLabel -->
-    <input type="checkbox" [ngModel]="!!secondary" (ngModelChange)="toggleSecondary($event)" /> Secondary
-  </div>
-  <div class="card-body" *ngIf="secondary">
-    <div>
-      <div>
-        <div class="form-group">
-          <label for="secondaryFirstName">First Name</label>
-          <input id="secondaryFirstName" type="text" class="form-control" [(ngModel)]="secondary.firstName" />
-        </div>
-        <div class="form-group">
-          <label for="secondaryLastName">Last Name</label>
-          <input id="secondaryLastName" type="text" class="form-control" [(ngModel)]="secondary.lastName" />
-        </div>
-        <div class="form-group">
-          <label for="secondaryEmail">Email</label>
-          <input id="secondaryEmail" type="text" class="form-control" [(ngModel)]="secondary.email" email="true" placeholder="joe@somewhere.com" #secondaryEmail="ngModel" [class.is-invalid]="secondaryEmail.errors?.email" />
-        </div>
-        <div class="form-group">
-          <label for="secondaryMobile">Mobile Phone</label>
-          <input id="secondaryMobile" type="text" class="form-control" [(ngModel)]="secondary.mobile" pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" placeholder="(XXX) XXX-XXXX" #secondaryMobile="ngModel" [class.is-invalid]="secondaryMobile.errors?.pattern" />
-        </div>
-      </div>
-      <div>
-        <div class="form-group">
-          <label for="secondaryOrganizationName">Organization</label>
-          <input id="secondaryOrganizationName" type="text" class="form-control" [ngModel]="Person.getOrganizationName(person, secondary)" (ngModelChange)="Person.setOrganizationName(person, secondary, $event)" />
-        </div>
-        <div class="form-group">
-          <label for="secondaryOrganizationTitle">Title</label>
-          <input id="secondaryOrganizationTitle" type="text" class="form-control" [(ngModel)]="secondary.organizationTitle" />
-        </div>
-        <div class="form-group">
-          <label for="secondaryOffice">Office Phone</label>
-          <input id="secondaryOffice" type="text" class="form-control" [(ngModel)]="secondary.office" pattern="^(((\d{3}-)|(\(\d{3}\)\s))\d{3}-\d{4})|\d{10}$" placeholder="(XXX) XXX-XXXX" #secondaryOffice="ngModel" [class.is-invalid]="secondaryOffice.errors?.pattern" />
-        </div>
-      </div>
-      <div>
-        <div class="form-group">
-          <label for="secondaryStreet">Street Address</label>
-          <input id="secondaryStreet" type="text" class="form-control" [(ngModel)]="secondary.addressLine" />
-        </div>
-        <div class="form-group">
-          <label for="secondaryCity">City</label>
-          <input id="secondaryCity" type="text" class="form-control" [(ngModel)]="secondary.addressCity" />
-        </div>
-        <div class="form-group">
-          <label for="secondaryState">State</label>
-          <select id="secondaryState" class="form-control" [(ngModel)]="secondary.addressState">
-            <option value="">--SELECT--</option>
-            <option value="AL">ALABAMA</option>
-            <option value="AK">ALASKA</option>
-            <option value="AZ">ARIZONA</option>
-            <option value="AR">ARKANSAS</option>
-            <option value="CA">CALIFORNIA</option>
-            <option value="CO">COLORADO</option>
-            <option value="CT">CONNECTICUT</option>
-            <option value="DE">DELAWARE</option>
-            <option value="FL">FLORIDA</option>
-            <option value="GA">GEORGIA</option>
-            <option value="HI">HAWAII</option>
-            <option value="ID">IDAHO</option>
-            <option value="IL">ILLINOIS</option>
-            <option value="IN">INDIANA</option>
-            <option value="IA">IOWA</option>
-            <option value="KS">KANSAS</option>
-            <option value="KY">KENTUCKY</option>
-            <option value="LA">LOUISIANA</option>
-            <option value="ME">MAINE</option>
-            <option value="MD">MARYLAND</option>
-            <option value="MA">MASSACHUSETTS</option>
-            <option value="MI">MICHIGAN</option>
-            <option value="MN">MINNESOTA</option>
-            <option value="MS">MISSISSIPPI</option>
-            <option value="MO">MISSOURI</option>
-            <option value="MT">MONTANA</option>
-            <option value="NE">NEBRASKA</option>
-            <option value="NV">NEVADA</option>
-            <option value="NH">NEW HAMPSHIRE</option>
-            <option value="NJ">NEW JERSEY</option>
-            <option value="NM">NEW MEXICO</option>
-            <option value="NY">NEW YORK</option>
-            <option value="NC">NORTH CAROLINA</option>
-            <option value="ND">NORTH DAKOTA</option>
-            <option value="OH">OHIO</option>
-            <option value="OK">OKLAHOMA</option>
-            <option value="OR">OREGON</option>
-            <option value="PA">PENNSYLVANIA</option>
-            <option value="RI">RHODE ISLAND</option>
-            <option value="SC">SOUTH CAROLINA</option>
-            <option value="SD">SOUTH DAKOTA</option>
-            <option value="TN">TENNESSEE</option>
-            <option value="TX">TEXAS</option>
-            <option value="UT">UTAH</option>
-            <option value="VT">VERMONT</option>
-            <option value="VA">VIRGINIA</option>
-            <option value="WA">WASHINGTON</option>
-            <option value="WV">WEST VIRGINIA</option>
-            <option value="WI">WISCONSIN</option>
-            <option value="WY">WYOMING</option>
-            <option value="GU">GUAM</option>
-            <option value="PR">PUERTO RICO</option>
-            <option value="VI">VIRGIN ISLANDS</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="secondaryPostal">Postal Code</label>
-          <input id="secondaryPostal" type="text" class="form-control" [(ngModel)]="secondary.addressPostalCode" />
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+
+
+
+
+<!-- 
+
+  this is the main modal component
+ -->

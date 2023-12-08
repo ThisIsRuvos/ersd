@@ -148,6 +148,7 @@ export class DownloadController {
       return {url}
   }
 
+  // this needs to be changed to get both files v2 and v3
   @Post('change-preview-json')
   @UseGuards(AuthGuard())
   async downloadReleaseCandidateV1DraftJSON() {
@@ -165,6 +166,7 @@ export class DownloadController {
       return {url}
   }
 
+    // this needs to be changed to get both files v2 and v3
   @Post('change-preview-xml')
   @UseGuards(AuthGuard())
   async downloadReleaseCandidateV1DraftXML() {
@@ -196,6 +198,9 @@ export class DownloadController {
     } else if (version === "ersdv2") {
       Key = this.appService.serverConfig.payload.ERSD_RELEASE_DESCRIPTION_V2_KEY;
       ResponseContentDisposition = `attachment; filename="eRSDv2_specification_release_description.txt"`;
+    } else if (version === "ersdv3") {
+      Key = this.appService.serverConfig.payload.ERSD_RELEASE_DESCRIPTION_V2_KEY;
+      ResponseContentDisposition = `attachment; filename="eRSDv3_specification_release_description.txt"`;
     }
   
     const params = {

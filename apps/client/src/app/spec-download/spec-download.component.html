@@ -1,44 +1,61 @@
 <div>
   <!-- Specification Bundle(s -->
   <fieldset class="px-4">
-    <div class="fw-medium">Select Specification Bundle(s)</div>
-    <p>Bundles contain trigger codes and a computable representation of the reporting timing and workflow</p>
+    <div class="fw-medium">Select Specification Bundle</div>
     <form>
+      <!-- Version 1 -->
       <div class="form-check mb-4">
-        <input class="form-check-input" type="radio" name="drone" id="versions-1" value="ecrv1"
+        <input class="form-check-input" type="radio" name="ersdVersion" id="versions-1" value="ecrv1"
           (change)="setVersion($event)" checked>
         <div class="d-flex">
           <label class="form-check-label" for="versions-1">
             <span class="fw-bold">eRSD Version 1</span>
           </label>
-          <a href="javascript:void(0)" (click)="downloadReleaseNotes('ersdv1')" class="ms-2 link-primary form-text">eRSD RELEASE
-            DESCRIPTION</a><i class="fas fa-external-link-alt superscript-icon"></i>
-          <a href="javascript:void(0)" (click)="downloadChangeLogs()" class="ms-2 link-primary form-text">RCTC CHANGELOG</a><i
-            class="fas fa-external-link-alt superscript-icon"></i>
+          <a href="javascript:void(0)" (click)="downloadReleaseNotes('ersdv1')" class="ms-2 link-primary form-text">
+            eRSD VERSION 1 RELEASE DESCRIPTION
+          </a><i class="fas fa-external-link-alt superscript-icon"></i>
         </div>
-        <div class="form-text fst-italic">For eCR Now App Release 2.X and Release 3.X and for many existing EHR Company
-          developed implementations</div>
+        <div class="form-text fst-italic">
+          <p>eRSD Version 1 includes the queries necessary for producing a CDA eICR R1.1 report. For eCR Now App Release
+            2.X and Release 3.X and greater.</p>
+        </div>
       </div>
+      <!-- Version 2 -->
       <div class="form-check mb-4">
-        <input class="form-check-input" type="radio" name="drone" id="versions-2" value="ecrv2"
+        <input class="form-check-input" type="radio" name="ersdVersion" id="versions-2" value="ecrv2"
           (change)="setVersion($event)">
         <div class="d-flex">
           <label class="form-check-label" for="versions-2">
             <span class="fw-bold">eRSD Version 2</span>
           </label>
-          <a href="javascript:void(0)" (click)="downloadReleaseNotes('ersdv2')" class="ms-2 link-primary form-text">eRSD RELEASE
-            DESCRIPTION</a><i class="fas fa-external-link-alt superscript-icon"></i>
-          <a href="javascript:void(0)" (click)="downloadChangeLogs()" class="ms-2 link-primary form-text">RCTC CHANGELOG</a><i
-            class="fas fa-external-link-alt superscript-icon"></i>
+          <a href="javascript:void(0)" (click)="downloadReleaseNotes('ersdv2')" class="ms-2 link-primary form-text">
+            eRSD VERSION 2 RELEASE DESCRIPTION
+          </a><i class="fas fa-external-link-alt superscript-icon"></i>
         </div>
         <div class="form-text fst-italic">
-          <p>For eCR Now App Release 3.X and greater and some recently EHR company developed implementations</p>
-          <!-- <p>
-            In Progress: <br />
-            Support for distributed reportability determination using the eRSD Version 2 - Supplemental bundle
-          </p> -->
+          <p>eRSD Version 2 includes the queries necessary for producing CDA eICR R1.1 reports. It is for users of the
+            eCR Now FHIR App release 3.X and greater.</p>
         </div>
       </div>
+      <!-- Version 3 -->
+      <div class="form-check mb-4">
+        <input class="form-check-input" type="radio" name="ersdVersion" id="versions-3" value="ecrv3"
+          (change)="setVersion($event)">
+        <div class="d-flex">
+          <label class="form-check-label" for="versions-3">
+            <span class="fw-bold">eRSD Version 3</span>
+          </label>
+          <a href="javascript:void(0)" (click)="downloadReleaseNotes('ersdv3')" class="ms-2 link-primary form-text">
+            eRSD VERSION 3 RELEASE DESCRIPTION
+          </a><i class="fas fa-external-link-alt superscript-icon"></i>
+        </div>
+        <div class="form-text fst-italic">
+          <p>eRSD Version 3 includes the queries necessary for producing both CDA eICR R1.1 and CDA eICR R3.1 reports.
+            It is for users of the eCR Now FHIR App release 3.X and greater.
+          </p>
+        </div>
+      </div>
+
       <div class="mb-4">
         <span class="fw-medium me-2">Select Download Format:</span>
         <div class="form-check form-check-inline">
@@ -54,29 +71,30 @@
       </div>
 
       <div class="text-center mb-4">
-        <!-- <button class="btn btn-secondary" type="submit" (click)="handleSubmit()" [disabled]="(isDisabled)"><i class="fas fa-file-download me-2"></i> eRSD Files</button> -->
-
         <!-- added below if needed [disabled]="isDisabled"  -->
-        <button class="btn btn-secondary" type="submit" (click)="handleSubmit()" style="width: 135px">
-          <div class="d-flex justify-content-md-between align-items-center">
-            <ng-container *ngIf="!loading; else loadingSpinner">
-              <i class="fas fa-file-download mx-auto"></i> 
-            </ng-container>
-            <ng-template #loadingSpinner>
-              <span class="spinner-border spinner-border-sm mx-auto" role="status" aria-hidden="true"></span>   
-            </ng-template>
-            <span>eRSD Files</span>   
-          </div>
-        </button>
-            
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <button class="btn btn-secondary me-md-2" type="submit" (click)="handleSubmit()" style="width: 135px">
+            <div class="d-flex justify-content-md-between align-items-center">
+              <ng-container *ngIf="!loading; else loadingSpinner">
+                <i class="fas fa-file-download mx-auto"></i>
+              </ng-container>
+              <ng-template #loadingSpinner>
+                <span class="spinner-border spinner-border-sm mx-auto" role="status" aria-hidden="true"></span>
+              </ng-template>
+              <span>eRSD Files</span>
+            </div>
+          </button>
+          <button class="btn btn-secondary" type="button" (click)="downloadRCTCReleaseSpreadsheet()">
+            <i class="fas fa-file-download me-2"></i> Latest RCTC Spreadsheet & Change Log
+          </button>
+        </div>
       </div>
-      
     </form>
   </fieldset>
   <!-- End of Specification Bundle(s -->
 
   <!-- Preview Upcoming eRSD Updates -->
-  <div class="bg-primary-heading mb-3">
+  <!-- <div class="bg-primary-heading mb-3">
     <h5 class="mb-0 px-4 fw-medium py-1">Preview Upcoming eRSD Updates</h5>
   </div>
   <div class="px-4">
@@ -84,55 +102,22 @@
       <div class="row mb-3">
         <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
         <div class="col">
-          <span class="fw-bold">A new version of the eRSD is under development:</span> implementors may view an
-          in-progress draft of the next eRSD Version 2 to anticipate possible usage or structural changes.
+          <span class="fw-bold">New versions of the eRSD are under development:</span> implementers may view in-progress
+          drafts of upcoming eRSD Versions to anticipate possible structural changes that may affect their queries.
         </div>
       </div>
       <div class="row">
         <div class="col-auto pe-0"><span><i class="fas fa-exclamation-triangle"></i></span></div>
         <div class="col">
-          Please note: Previews <span class="fw-bold">do not</span> contain up to date trigger codes. Do not use a preview in a production setting.
+          Please note: Previews <span class="fw-bold">do not</span> contain new trigger codes. Those are only available
+          upon full release.
         </div>
       </div>
     </div>
     <div class="text-center mb-4">
-      <a role="button" class="btn btn-tertiary" routerLink="/release-candidate"> Release Candidate <i
+      <a role="button" class="btn btn-tertiary" routerLink="/release-candidate"> View Release Preview <i
           class="fas fa-external-link-alt superscript-icon"></i></a>
     </div>
-  </div>
+  </div> -->
   <!-- End of Preview Upcoming eRSD Updates -->
-
-
-  <!-- Legacy RCTC Spreadsheet -->
-  <div class="bg-primary-heading mb-3">
-    <h5 class="mb-0 px-4 fw-medium py-1">Legacy RCTC Spreadsheet</h5>
-  </div>
-  <div class="px-4">
-    <div class="alert alert-primary border-0 rounded-0 mb-4" role="alert">
-      <div class="row">
-        <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
-        <div class="col">
-          <span class="fw-bold">Could add som info here:</span> <br />
-          Some descriptions of what these are, if necessary
-        </div>
-      </div>
-    </div>
-    <div class="text-center mb-4">
-      <button class="btn btn-secondary" type="button" (click)="downloadRCTCReleaseSpreadsheet()">
-        <i class="fas fa-file-download me-2"></i> RCTC Spreadsheet
-        
-        <!-- <div class="d-flex justify-content-md-between align-items-center">
-          <ng-container *ngIf="!loading; else loadingSpinner">
-            <i class="fas fa-file-download mx-auto"></i> 
-          </ng-container>
-          <ng-template #loadingSpinner>
-            <span class="spinner-border spinner-border-sm mx-auto" role="status" aria-hidden="true"></span>   
-          </ng-template>
-          <span>RCTC Spreadsheet</span>   
-        </div> -->
-        
-      </button>
-    </div>
-  </div>
-  <!-- End of Legacy RCTC Spreadsheet -->
 </div>

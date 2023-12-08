@@ -28,6 +28,13 @@ export class S3Controller {
           key = this.appService.serverConfig.payload.ERSDV2_SUPPLEMENTAL_JSON_KEY
         case 'specification':
           key = this.appService.serverConfig.payload.ERSDV2_SPECIFICATION_JSON_KEY
+      } 
+    } else if (version == 'ecrv3' && bundle !== '') {
+      switch(bundle) {
+        // case 'supplemental':
+        //   key = this.appService.serverConfig.payload.ERSDV3_SUPPLEMENTAL_JSON_KEY
+        case 'specification':
+          key = this.appService.serverConfig.payload.ERSDV3_SPECIFICATION_JSON_KEY
       }
     }
     return key
@@ -43,6 +50,13 @@ export class S3Controller {
           key = this.appService.serverConfig.payload.ERSDV2_SUPPLEMENTAL_XML_KEY
         case 'specification':
           key = this.appService.serverConfig.payload.ERSDV2_SPECIFICATION_XML_KEY
+      }
+    } else if (version == 'ecrv3' && bundle !== '') {
+      switch(bundle) {
+        // case 'supplemental':
+        //   key = this.appService.serverConfig.payload.ERSDV3_SUPPLEMENTAL_JSON_KEY
+        case 'specification':
+          key = this.appService.serverConfig.payload.ERSDV3_SPECIFICATION_XML_KEY
       }
     }
     return key

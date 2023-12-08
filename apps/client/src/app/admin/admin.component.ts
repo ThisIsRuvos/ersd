@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { IPerson, Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
 import { getErrorString } from '../../../../../libs/ersdlib/src/lib/get-error-string';
@@ -6,7 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AdminEditPersonComponent } from './edit-person/edit-person.component';
 import { AuthService } from '../auth.service';
 import { IUploadRequest } from '../../../../../libs/ersdlib/src/lib/upload-request';
-import { IEmailRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
+import { IEmailRequest , IEmailExportRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -30,12 +30,42 @@ export class AdminComponent implements OnInit {
   public active = 1
   public uploading: boolean = false;
 
+
   @ViewChild('bundleUploadFile') bundleUploadField: ElementRef;
   @ViewChild('excelUploadFile') excelUploadField: ElementRef;
+  @ViewChild('emailType1') emailType1!: ElementRef<HTMLInputElement>;
+  @ViewChild('emailType2') emailType2!: ElementRef<HTMLInputElement>;
+  emailType: IEmailExportRequest = {
+    exportTypeOrigin: '',
+  };
+  isDisabled = true;
+  downloading = false
+
 
   constructor(private httpClient: HttpClient,
               private modalService: NgbModal,
-              private authService: AuthService) { }
+              private authService: AuthService,
+              private cdRef: ChangeDetectorRef) { }
+
+    setEmailType() {
+      const person= this.emailType1.nativeElement.checked;
+      const subscription = this.emailType2.nativeElement.checked;
+
+      if (person && subscription) {
+        this.emailType = { exportTypeOrigin: 'Both' };
+      } else if (person) {
+        this.emailType = { exportTypeOrigin: 'Person' };
+      } else if (subscription) {
+        this.emailType = { exportTypeOrigin: 'Subscription' };
+      } else {
+        this.emailType = { exportTypeOrigin: '' };
+      }
+
+      this.isDisabled = this.emailType.exportTypeOrigin.length === 0;
+
+    
+    // console.log("email", this.emailType)
+    }
 
   async sendEmail() {
     if (!this.emailRequest.subject || !this.emailRequest.message) {
@@ -61,8 +91,17 @@ export class AdminComponent implements OnInit {
   }
 
   editUser(user: IPerson) {
-    const modalRef = this.modalService.open(AdminEditPersonComponent, { size: 'lg' });
+    const modalRef = this.modalService.open(AdminEditPersonComponent, { size: 'lg'});
     modalRef.componentInstance.id = user.id;
+    modalRef.componentInstance.updatedUser.subscribe((updatedUser: any) => {
+      const index = this.users.findIndex(u => u.id === updatedUser.id);
+      
+      if (index !== -1) {
+        this.users[index] = updatedUser;
+        this.fetchUserData();
+      }
+    });
+
   }
 
   handleBundleFileInput(files: FileList) {
@@ -95,6 +134,70 @@ export class AdminComponent implements OnInit {
     };
     fileReader.readAsDataURL(this.excelFile);
   }
+
+  // decommissioned atm
+
+  // async getEmail() {
+  //   const request = this.emailType
+  //   // get emailtype from checkboc and assign it to exportTypeOrigin
+
+  //   try {
+  //     const response = await firstValueFrom(this.httpClient.post('/api/upload/get-emails', request))
+  //     this.sendEmailsFromClient(response)
+  //   } catch (error) {
+  //      // Handle error if the request fails
+  //      console.error('Error:', error);
+  //   }
+  // }
+
+
+  async getEmailCSV() {
+    const request = this.emailType
+    this.downloading = true;
+  
+    try {
+      const response = await firstValueFrom(this.httpClient.post('/api/upload/export', request, {
+        responseType: 'blob', // Set response type as blob
+        observe: 'response', // Get the full response object
+      }));
+
+      // console.log(response.body);
+  
+      let fileName = '';
+      const contentDisposition = response.headers.get('Content-Disposition');
+      if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
+        const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+        if (matches != null && matches[1]) {
+          fileName = matches[1].replace(/['"]/g, '');
+        }
+      }
+  
+      const blob = new Blob([response.body], { type: 'text/csv' }); // Create a blob from the response body
+  
+      const downloadLink = document.createElement('a');
+      downloadLink.href = window.URL.createObjectURL(blob);
+      downloadLink.download = fileName;
+      downloadLink.click();
+    } catch (error) {
+      // Handle error
+    } finally {
+      this.downloading = false;
+    }
+  }
+
+  sendEmailsFromClient(emailList) {
+
+    const emailString = emailList.join(',');
+    // console.log("emailString",emailString);
+
+    // Construct the mailto link with the list of email addresses
+    const mailtoLink = `mailto:${emailString}`;
+
+    // Open the default mail client using Angular's Router service
+    // this.router.navigateByUrl(mailtoLink);
+    window.location.href = mailtoLink;
+  }
+
 
   async uploadExcel() {
     this.uploading = true; 
@@ -199,15 +302,29 @@ export class AdminComponent implements OnInit {
     }
   }
 
+  // async ngOnInit() {
+  //   try {
+  //     const users = await firstValueFrom(this.httpClient.get<IPerson[]>('/api/user'));
+  //     this.users = users.map((user) => new Person(user));
+  //   } catch (err) {
+  //     this.message = getErrorString(err);
+  //     this.messageIsError = true;
+  //   }
+  // }
+
   async ngOnInit() {
+    await this.fetchUserData(); // Initial data fetch when component initializes
+  }
+
+  async fetchUserData() {
     try {
       const users = await firstValueFrom(this.httpClient.get<IPerson[]>('/api/user'));
       this.users = users.map((user) => new Person(user));
     } catch (err) {
-      this.message = getErrorString(err);
-      this.messageIsError = true;
+      // Handle errors if any
     }
   }
+  
 }
 
 

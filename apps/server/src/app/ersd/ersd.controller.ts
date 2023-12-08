@@ -143,6 +143,39 @@ export class eRSDController {
     }
   }
 
+
+  @Get('v3specification')
+  async getV3Spec(@Req() request: Request, @Query() queryParams, @Response() response: Res) {
+    await this.assertApiKey(request);
+
+    const format = queryParams['format'].toLowerCase()
+    if (!format || !this.validFormat(format)) { throw new BadRequestException('Please specify a valid download format: XML or JSON') }
+
+    const Bucket = this.appService.serverConfig.payload.Bucket;
+    const Key = format === 'xml' ? this.appService.serverConfig.payload.ERSDV3_SPECIFICATION_XML_KEY :
+      this.appService.serverConfig.payload.ERSDV3_SPECIFICATION_JSON_KEY
+
+    if (typeof Bucket === 'undefined' || Bucket === '' || Key === '') {
+      const errorMessage = 'Failed to download from S3, no Bucket or Key specified'
+      this.logger.error(errorMessage);
+      throw Error(errorMessage);
+    } 
+
+    const s3client = new S3();
+
+    const headParams = {
+      Bucket,
+      Key,
+    }
+    const data = await s3client.getObject(headParams).promise();
+    const body = data.Body.toString('utf-8')
+    if (format === 'xml') {
+      return response.set({'Content-Type': 'text/xml'}).send(body)
+    } else {
+      return response.set({'Content-Type': 'application/json'}).json(JSON.parse(body))
+    }
+  }
+
   @Get('v2supplemental')
   async getV2Supplemental(@Req() request: Request, @Query() queryParams, @Response() response: Res) {
     if (!this.appService.serverConfig.serveV2) { throw new BadRequestException('eRSD V2 Supplemental Bundle not currently available') }
@@ -178,6 +211,7 @@ export class eRSDController {
   }
 
   // Markdown functions
+  // change to get both v2 and v3
   @Get('markdown')
   async getMarkdown(@Response() response: Res) {
 
