@@ -11,10 +11,12 @@ import { EditPersonComponent } from '../../edit-person/edit-person.component';
 })
 export class AdminEditPersonComponent implements OnInit {
   @Output() updatedUser: EventEmitter<any> = new EventEmitter<any>();
+  @Output() messageIsSuccess: EventEmitter<any> = new EventEmitter<any>();
+
   @Input() id: string;
   public person: Person;
   public message: string;
-  public messageIsError: boolean;
+isError = false;
 
   @ViewChild('editPerson') editPersonField: EditPersonComponent;
 
@@ -28,16 +30,19 @@ export class AdminEditPersonComponent implements OnInit {
 
   save() {
     this.message = null;
-    this.messageIsError = false;
+    this.isError = false;
 
     this.httpClient.put<IPerson>('/api/user/' + this.id, this.person).toPromise()
       .then((results) => {
         this.activeModal.close(results);
         this.updatedUser.emit(results); 
+        this.messageIsSuccess.emit(true)
+        
       })
       .catch((err) => {
         this.message = getErrorString(err);
-        this.messageIsError = true;
+        // this.messageIsError = true;
+        this.messageIsSuccess.emit(false)
       });
   }
 
@@ -46,7 +51,8 @@ export class AdminEditPersonComponent implements OnInit {
       .then((results) => this.person = new Person(results))
       .catch((err) => {
         this.message = getErrorString(err);
-        this.messageIsError = true;
+        // this.messageIsError = true;
+        this.messageIsSuccess.emit(false)
       });
   }
 }

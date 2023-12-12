@@ -47,6 +47,6 @@ export class ContactInfoComponent implements OnInit {
   ngOnInit() {
     this.httpClient.get<IPerson>('/api/user/me').toPromise()
       .then((person: IPerson) => this.person = new Person(person))
-      .catch((err) => this.message = getErrorString(err));
+      .catch((err) => this.message = getErrorString(err));//redirect user to home page of unauthorized user page with lgo in link???? maybe?
   }
 }

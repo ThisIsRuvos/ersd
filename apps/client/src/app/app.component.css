@@ -1,4 +1,6 @@
 .app-container {
+  flex-direction: column;
+  display: flex;
   min-height: 100vh;
   background: url(../assets/background.jpg) no-repeat center center fixed; 
   -webkit-background-size: cover;
@@ -7,7 +9,15 @@
   background-size: cover;
   font-family: 'Work Sans', sans-serif;
 }
+main {
+  flex: 1; /* This allows the main content to grow and fill the available space */
+}
 
+footer {
+  flex-shrink: 0; /* Prevent the footer from shrinking */
+  /* Add your styles for the footer */
+  width: 100%;
+}
 .container {
   padding-top: 40px;
 }

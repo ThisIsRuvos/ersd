@@ -73,7 +73,7 @@
       <div class="text-center mb-4">
         <!-- added below if needed [disabled]="isDisabled"  -->
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-          <button class="btn btn-secondary me-md-2" type="submit" (click)="handleSubmit()" style="width: 135px">
+          <button class="btn btn-secondary me-md-2" type="submit" (click)="handleSubmit()" style="width: 225px">
             <div class="d-flex justify-content-md-between align-items-center">
               <ng-container *ngIf="!loading; else loadingSpinner">
                 <i class="fas fa-file-download mx-auto"></i>
@@ -81,11 +81,11 @@
               <ng-template #loadingSpinner>
                 <span class="spinner-border spinner-border-sm mx-auto" role="status" aria-hidden="true"></span>
               </ng-template>
-              <span>eRSD Files</span>
+              <span>Download eRSD Files</span>
             </div>
           </button>
           <button class="btn btn-secondary" type="button" (click)="downloadRCTCReleaseSpreadsheet()">
-            <i class="fas fa-file-download me-2"></i> Latest RCTC Spreadsheet & Change Log
+            <i class="fas fa-file-download me-2"></i>Download Latest RCTC Spreadsheet & Change Log
           </button>
         </div>
       </div>

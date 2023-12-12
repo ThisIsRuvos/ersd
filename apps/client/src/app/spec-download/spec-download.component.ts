@@ -35,7 +35,6 @@ export class SpecDownloadComponent implements OnInit {
 
   setVersion(e) { 
     this.version = e.target.value 
-    console.log(this.version)
   } // eRSD (eCR) V1 or V2
 
   setBundle(e) { 
@@ -184,7 +183,7 @@ export class SpecDownloadComponent implements OnInit {
   // This will be removed when the spreadsheet is removed
   async downloadRCTCReleaseSpreadsheet() {
     try {
-      const data = await firstValueFrom(this.httpClient.post('/api/download/rctc_release', this.request)) as PayloadDownload;
+      const data = await firstValueFrom(this.httpClient.post('/api/download/excel', this.request)) as PayloadDownload;
       await this.downloadS3(data);
     } catch (err) {
       console.log(err);

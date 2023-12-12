@@ -130,6 +130,26 @@ export class DownloadController {
     }
   }
 
+  @Post('excel')
+  @UseGuards(AuthGuard())
+  async downloadExcel() {
+    const Bucket = this.appService.serverConfig.payload.Bucket;
+      const s3client = new S3();
+
+      const Key = this.appService.serverConfig.payload.RCTCKey;
+      const ResponseContentDisposition = `attachment; filename="rctc.zip"`;
+
+      const params = {
+        Bucket,
+        Key,
+        ResponseContentDisposition,
+      }
+      const url = await s3client.getSignedUrlPromise('getObject', params);
+      return {url}
+  }
+
+
+  // Not used atm
   @Post('rctc_release')
   @UseGuards(AuthGuard())
   async downloadRCTCReleaseSpreadsheet() {
@@ -151,11 +171,24 @@ export class DownloadController {
   // this needs to be changed to get both files v2 and v3
   @Post('change-preview-json')
   @UseGuards(AuthGuard())
-  async downloadReleaseCandidateV1DraftJSON() {
+  async downloadReleaseCandidateV1DraftJSON(@Query() queryParams) {
+    const { version } = queryParams;
+
+
     const Bucket = this.appService.serverConfig.payload.Bucket;
       const s3client = new S3();
-      const Key = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_JSON_KEY;
-      const ResponseContentDisposition = `attachment; filename="eRSDv2_specification_bundle_draft.json"`;
+      let Key, ResponseContentDisposition;
+
+      if (version === "ersdv2-draft") {
+        Key = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_JSON_KEY;
+        ResponseContentDisposition = `attachment; filename="eRSDv2_specification_bundle_draft.json"`;
+      } else if (version === "ersdv3-draft") {
+        Key = this.appService.serverConfig.payload.ERSDV3_CHANGE_PREVIEW_JSON_KEY;
+        ResponseContentDisposition = `attachment; filename="eRSDv3_specification_bundle_draft.json"`;
+      }
+
+      // const Key = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_JSON_KEY;
+      // const ResponseContentDisposition = `attachment; filename="eRSDv2_specification_bundle_draft.json"`;
 
       const params = {
         Bucket,
@@ -169,11 +202,21 @@ export class DownloadController {
     // this needs to be changed to get both files v2 and v3
   @Post('change-preview-xml')
   @UseGuards(AuthGuard())
-  async downloadReleaseCandidateV1DraftXML() {
+  async downloadReleaseCandidateV1DraftXML(@Query() queryParams) {
+    const { version } = queryParams;
+
     const Bucket = this.appService.serverConfig.payload.Bucket;
       const s3client = new S3();
-      const Key = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_XML_KEY;
-      const ResponseContentDisposition = `attachment; filename="eRSDv2_specification_bundle_draft.xml"`;
+
+      let Key, ResponseContentDisposition;
+
+      if (version === "ersdv2-draft") {
+        Key = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_XML_KEY;
+        ResponseContentDisposition = `attachment; filename="eRSDv2_specification_bundle_draft.xml"`;
+      } else if (version === "ersdv3-draft") {
+        Key = this.appService.serverConfig.payload.ERSDV3_CHANGE_PREVIEW_XML_KEY;
+        ResponseContentDisposition = `attachment; filename="eRSDv3_specification_bundle_draft.xml"`;
+      }
 
       const params = {
         Bucket,
@@ -182,6 +225,18 @@ export class DownloadController {
       }
       const url = await s3client.getSignedUrlPromise('getObject', params);
       return {url}
+
+      // const Key1 = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_XML_KEY;
+      // const Key2 = this.appService.serverConfig.payload.ERSDV3_CHANGE_PREVIEW_XML_KEY;
+      // const ResponseContentDisposition1 = `attachment; filename="eRSDv2_specification_bundle_draft.xml"`;
+      // const ResponseContentDisposition2 = `attachment; filename="eRSDv3_specification_bundle_draft.xml"`;
+
+      // const params1 = { Bucket, Key: Key1, ResponseContentDisposition1 };
+      // const params2 = { Bucket, Key: Key2,  ResponseContentDisposition2 };
+
+      // const urlV2 = await s3client.getSignedUrlPromise('getObject', params1);
+      // const urlV3 = await s3client.getSignedUrlPromise('getObject', params2);
+      // return {urlV2, urlV3}
   }
 
   @Post('release_notes')
@@ -199,7 +254,7 @@ export class DownloadController {
       Key = this.appService.serverConfig.payload.ERSD_RELEASE_DESCRIPTION_V2_KEY;
       ResponseContentDisposition = `attachment; filename="eRSDv2_specification_release_description.txt"`;
     } else if (version === "ersdv3") {
-      Key = this.appService.serverConfig.payload.ERSD_RELEASE_DESCRIPTION_V2_KEY;
+      Key = this.appService.serverConfig.payload.ERSD_RELEASE_DESCRIPTION_V3_KEY;
       ResponseContentDisposition = `attachment; filename="eRSDv3_specification_release_description.txt"`;
     }
   

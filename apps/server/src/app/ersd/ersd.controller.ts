@@ -216,29 +216,54 @@ export class eRSDController {
   async getMarkdown(@Response() response: Res) {
 
     const Bucket = this.appService.serverConfig.payload.Bucket;
-    const Key = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_SUMMARY_KEY
+    const Key1 = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_SUMMARY_KEY
+    const Key2= this.appService.serverConfig.payload.ERSDV3_CHANGE_PREVIEW_SUMMARY_KEY
+    
+    if (!Bucket || !Key1 || !Key2) {
+      const errorMessage = 'Failed to download from S3, missing Bucket, Key1, or Key2';
+      console.error(errorMessage);
+      return response.status(500).json({ error: errorMessage });
+    }
+
     
 
-    if (typeof Bucket === 'undefined' || Bucket === '' || Key === '') {
-      const errorMessage = 'Failed to download from S3, no Bucket or Key specified'
-      this.logger.error(errorMessage);
-      throw Error(errorMessage);
-    } 
+    // if (typeof Bucket === 'undefined' || Bucket === '' || Key === '') {
+    //   const errorMessage = 'Failed to download from S3, no Bucket or Key specified'
+    //   this.logger.error(errorMessage);
+    //   throw Error(errorMessage);
+    // } 
 
     const s3client = new S3();
-    const params = {
-      Bucket,
-      Key,
-    };
+  const params1 = { Bucket, Key: Key1 };
+  const params2 = { Bucket, Key: Key2 };
+
+    // const s3client = new S3();
+    // const params = {
+    //   Bucket,
+    //   Key,
+    // };
 
     try {
-      const data = await s3client.getObject(params).promise();
-      response.set('Content-Type', 'text/markdown');
-      response.send(data.Body.toString());
+      const data1 = await s3client.getObject(params1).promise();
+      const data2 = await s3client.getObject(params2).promise();
+  
+      response.set('Content-Type', 'application/json');
+      response.json({
+        markdownFile1: data1.Body.toString(),
+        markdownFile2: data2.Body.toString()
+      });
     } catch (error) {
       console.error('Error fetching Markdown from S3:', error);
       return response.status(500).json({ error: 'Error fetching Markdown from S3' });
     }
+    // try {
+    //   const data = await s3client.getObject(params).promise();
+    //   response.set('Content-Type', 'text/markdown');
+    //   response.send(data.Body.toString());
+    // } catch (error) {
+    //   console.error('Error fetching Markdown from S3:', error);
+    //   return response.status(500).json({ error: 'Error fetching Markdown from S3' });
+    // }
 
   }
 }

@@ -6,8 +6,10 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AdminEditPersonComponent } from './edit-person/edit-person.component';
 import { AuthService } from '../auth.service';
 import { IUploadRequest } from '../../../../../libs/ersdlib/src/lib/upload-request';
-import { IEmailRequest , IEmailExportRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
+import { IEmailRequest, IEmailExportRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
 import { firstValueFrom } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
   templateUrl: './admin.component.html',
@@ -43,29 +45,27 @@ export class AdminComponent implements OnInit {
 
 
   constructor(private httpClient: HttpClient,
-              private modalService: NgbModal,
-              private authService: AuthService,
-              private cdRef: ChangeDetectorRef) { }
+    private modalService: NgbModal,
+    private authService: AuthService,
+    private cdRef: ChangeDetectorRef,
+    private toastr: ToastrService) { }
 
-    setEmailType() {
-      const person= this.emailType1.nativeElement.checked;
-      const subscription = this.emailType2.nativeElement.checked;
+  setEmailType() {
+    const person = this.emailType1.nativeElement.checked;
+    const subscription = this.emailType2.nativeElement.checked;
 
-      if (person && subscription) {
-        this.emailType = { exportTypeOrigin: 'Both' };
-      } else if (person) {
-        this.emailType = { exportTypeOrigin: 'Person' };
-      } else if (subscription) {
-        this.emailType = { exportTypeOrigin: 'Subscription' };
-      } else {
-        this.emailType = { exportTypeOrigin: '' };
-      }
-
-      this.isDisabled = this.emailType.exportTypeOrigin.length === 0;
-
-    
-    // console.log("email", this.emailType)
+    if (person && subscription) {
+      this.emailType = { exportTypeOrigin: 'Both' };
+    } else if (person) {
+      this.emailType = { exportTypeOrigin: 'Person' };
+    } else if (subscription) {
+      this.emailType = { exportTypeOrigin: 'Subscription' };
+    } else {
+      this.emailType = { exportTypeOrigin: '' };
     }
+    this.isDisabled = this.emailType.exportTypeOrigin.length === 0;
+  }
+
 
   async sendEmail() {
     if (!this.emailRequest.subject || !this.emailRequest.message) {
@@ -91,16 +91,25 @@ export class AdminComponent implements OnInit {
   }
 
   editUser(user: IPerson) {
-    const modalRef = this.modalService.open(AdminEditPersonComponent, { size: 'lg'});
+    const modalRef = this.modalService.open(AdminEditPersonComponent, { size: 'lg' });
     modalRef.componentInstance.id = user.id;
     modalRef.componentInstance.updatedUser.subscribe((updatedUser: any) => {
       const index = this.users.findIndex(u => u.id === updatedUser.id);
-      
+
       if (index !== -1) {
         this.users[index] = updatedUser;
         this.fetchUserData();
       }
     });
+
+    modalRef.componentInstance.messageIsSuccess.subscribe((isSuccess: boolean) => {
+      if (isSuccess) {
+        this.toastr.success('User details updated successfully!' );
+      } else {
+        this.toastr.error('Failed to update user details!');
+      }
+    });
+
 
   }
 
@@ -114,7 +123,7 @@ export class AdminComponent implements OnInit {
 
     const fileReader = new FileReader();
     fileReader.onload = () => {
-      this.bundleFileContent = <string> fileReader.result;
+      this.bundleFileContent = <string>fileReader.result;
     };
     fileReader.readAsText(this.bundleFile);
   }
@@ -129,14 +138,13 @@ export class AdminComponent implements OnInit {
 
     const fileReader = new FileReader();
     fileReader.onload = () => {
-      this.excelFileContent = <string> fileReader.result;
+      this.excelFileContent = <string>fileReader.result;
       this.excelFileContent = this.excelFileContent.substring(this.excelFileContent.indexOf('base64,') + 7);
     };
     fileReader.readAsDataURL(this.excelFile);
   }
 
   // decommissioned atm
-
   // async getEmail() {
   //   const request = this.emailType
   //   // get emailtype from checkboc and assign it to exportTypeOrigin
@@ -154,7 +162,7 @@ export class AdminComponent implements OnInit {
   async getEmailCSV() {
     const request = this.emailType
     this.downloading = true;
-  
+
     try {
       const response = await firstValueFrom(this.httpClient.post('/api/upload/export', request, {
         responseType: 'blob', // Set response type as blob
@@ -162,7 +170,7 @@ export class AdminComponent implements OnInit {
       }));
 
       // console.log(response.body);
-  
+
       let fileName = '';
       const contentDisposition = response.headers.get('Content-Disposition');
       if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
@@ -171,9 +179,9 @@ export class AdminComponent implements OnInit {
           fileName = matches[1].replace(/['"]/g, '');
         }
       }
-  
+
       const blob = new Blob([response.body], { type: 'text/csv' }); // Create a blob from the response body
-  
+
       const downloadLink = document.createElement('a');
       downloadLink.href = window.URL.createObjectURL(blob);
       downloadLink.download = fileName;
@@ -200,7 +208,7 @@ export class AdminComponent implements OnInit {
 
 
   async uploadExcel() {
-    this.uploading = true; 
+    this.uploading = true;
 
     const request: IUploadRequest = {
       fileContent: this.excelFileContent,
@@ -240,7 +248,7 @@ export class AdminComponent implements OnInit {
       return;
     }
 
-    this.uploading = true; 
+    this.uploading = true;
 
     const request: IUploadRequest = {
       fileContent: this.bundleFileContent,
@@ -268,8 +276,7 @@ export class AdminComponent implements OnInit {
     const currentUserPersonId = this.authService.person ? this.authService.person.id : null;
 
     if (currentUserPersonId === user.id) {
-      this.message = 'You cannot delete yourself!';
-      this.messageIsError = true;
+      this.toastr.error('You cannot delete your user details!');      
       window.scrollTo(0, 0);
       return;
     }
@@ -284,21 +291,23 @@ export class AdminComponent implements OnInit {
       if (index >= 0) {
         this.users.splice(index, 1);
       }
+      this.toastr.success(`${user.firstName} ${user.lastName} has been deleted!`);    
     } catch (err) {
+      // 
       this.message = getErrorString(err);
       this.messageIsError = true;
     }
   }
 
 
-  async removeEmailAttachments(){
+  async removeEmailAttachments() {
     try {
       await firstValueFrom(this.httpClient.get('/api/subscription/remove_artifacts'));
       this.message = 'Attachements Successfully Removed!';
       this.messageIsError = false;
     } catch (err) {
       this.message = getErrorString(err);
-        this.messageIsError = true;
+      this.messageIsError = true;
     }
   }
 
@@ -324,7 +333,16 @@ export class AdminComponent implements OnInit {
       // Handle errors if any
     }
   }
-  
+
+  ngOnDestroy() {
+    // if (this.updatedUserSubscription) {
+    //   this.updatedUserSubscription.unsubscribe();
+    // }
+    // if (this.messageIsSuccessSubscription) {
+    //   this.messageIsSuccessSubscription.unsubscribe();
+    // }
+  }
+
 }
 
 

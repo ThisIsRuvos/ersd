@@ -18,10 +18,11 @@ interface PayloadDownload {
 export class ReleaseCandidateComponent implements OnInit {
   @ViewChild('modalAcknowledgement') modalAcknowledgement: ElementRef;
   request: any = {}
-  version = 'ecrv1'
+  version = 'ersdv2-draft'
   bundleType = ''
   contentType = 'json'
-  markdownContent: string = '';
+  markdownContentV2: string = '';
+  markdownContentV3: string = '';
   draftVersion : string = '';
   isDisabled: boolean = true;
   checkboxChecked: boolean = false;
@@ -34,11 +35,31 @@ export class ReleaseCandidateComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.httpClient.get('/api/ersd/markdown', { responseType: 'text' }).subscribe((data) => {
-      this.markdownContent = data;
-    });
+    this.fetchMarkdown();
+
+    // this.httpClient.get('/api/ersd/markdown', { responseType: 'text' }).subscribe((data) => {
+    //   this.markdownContent = data;
+    // });
 
   }  
+
+  setVersion(e) { 
+    this.version = e.target.value 
+    console.log(this.version)
+
+  } // eRSD (eCR) V1 or V2
+
+
+  fetchMarkdown() {
+    this.httpClient.get('/api/ersd/markdown')
+      .subscribe((data: any) => {
+        this.markdownContentV2 = data.markdownFile1;
+        this.markdownContentV3 = data.markdownFile2;
+      }, (error: any) => {
+        console.error('Error fetching Markdown:', error);
+        // Handle error if needed
+      });
+  }
 
   ngAfterViewInit() {
     this.modalAcknowledgement.nativeElement.addEventListener('hidden.bs.modal', () => {
@@ -48,16 +69,22 @@ export class ReleaseCandidateComponent implements OnInit {
 
   async getReleasePreview(e) {
     const button = e.target as HTMLButtonElement;
-    this.draftVersion = button.name;
+    this.draftVersion = `${this.version}-${button.name}`;
   
     const urls = {
       'ersdv2-draft-json': 'api/download/change-preview-json',
       'ersdv2-draft-xml': 'api/download/change-preview-xml',
+      'ersdv3-draft-json': 'api/download/change-preview-json',
+      'ersdv3-draft-xml': 'api/download/change-preview-xml',
       // Add more versions here if needed
     };
   
-    const url = urls[this.draftVersion];
-  
+    console.log("button name", button.name)
+    console.log("this.draftVersion", this.draftVersion)
+    const url = `${urls[this.draftVersion]}?version=${this.version}`;
+
+    console.log("url", url)
+
     if (!url) {
       console.error('Invalid draft version:', this.draftVersion);
       return;

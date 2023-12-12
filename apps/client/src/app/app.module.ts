@@ -23,6 +23,8 @@ import { SpecDownloadComponent } from './spec-download/spec-download.component';
 import { HttpRequestInterceptor } from './loading-spinner/http-interceptor';
 import { NavigationComponent } from './navigation/navigation.component';
 import { MarkdownModule } from 'ngx-markdown';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const appRoutes: Routes = [
   { path: 'admin', component: AdminComponent },
@@ -89,7 +91,9 @@ export function initializer(keycloak: KeycloakService, httpClient: HttpClient, c
     RouterModule.forRoot(appRoutes, { enableTracing: true, useHash: true }),
     FormsModule,
     KeycloakAngularModule,
-    MarkdownModule.forRoot()
+    MarkdownModule.forRoot(),
+    BrowserAnimationsModule, // required animations module
+    ToastrModule.forRoot({positionClass: 'toast-bottom-right',}),
   ],
   providers: [
     AuthService,
