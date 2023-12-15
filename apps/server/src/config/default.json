@@ -21,12 +21,11 @@
       "ERSDV2_CHANGE_PREVIEW_JSON_KEY": "eRSDv2_change_preview.json",
       "ERSDV2_CHANGE_PREVIEW_XML_KEY": "eRSDv2_change_preview.xml",
       "ERSDV3_CHANGE_PREVIEW_JSON_KEY": "eRSDv3_change_preview.json",
-      "ERSDV3_CHANGE_PREVIEW_XML_KEY": "eRSDv3change_preview.xml",
+      "ERSDV3_CHANGE_PREVIEW_XML_KEY": "eRSDv3_change_preview.xml",
       "ERSDV2_CHANGE_PREVIEW_SUMMARY_KEY": "eRSDv2_change_preview_summary.md",
       "ERSDV3_CHANGE_PREVIEW_SUMMARY_KEY": "eRSDv3_change_preview_summary.md",
-      "RCTC_CHANGE_LOG_KEY" : "RCTC_Change_Log.xlsx",
-      "RCTC_RELEASE_SPREADSHEET_KEY" : "RCTC_Release.xlsx"
-
+      "RCTC_CHANGE_LOG_KEY": "RCTC_Change_Log.xlsx",
+      "RCTC_RELEASE_SPREADSHEET_KEY": "RCTC_Release.xlsx"
     },
     "port": 3333,
     "authCertificate": "",
