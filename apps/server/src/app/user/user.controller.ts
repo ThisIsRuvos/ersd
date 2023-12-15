@@ -317,7 +317,12 @@ export class UserController {
     this.appService.assertAdmin(request);
 
     const url = this.appService.buildFhirUrl('Person', id);
-    await this.httpService.put<IPerson>(url, body).toPromise();
+    // await this.httpService.put<IPerson>(url, body).toPromise();
+    const results = await this.httpService.put<IPerson>(url, body).toPromise();
+
+    return results.data; // Return the data from the response to the client
+ 
+
   }
 
   private async deleteUserById(id: string) {

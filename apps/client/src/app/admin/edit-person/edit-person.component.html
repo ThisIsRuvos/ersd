@@ -1,17 +1,30 @@
-<div class='edit-person-container'>
-  <div>
-      <div class='heading-container'>
-          <h2 class='section-heading'>Edit User Info</h2>
-        </div>
-    <!-- <h4 class="modal-title">Edit User Information</h4> -->
+<div>
+  <div class="modal-header">
+    <h1 class="modal-title fs-5" id="editContactModelLabel">Edit User Info</h1>
+    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
   </div>
-  <div class="modal-body">
+  <div class="modal-body p-3">
     <div class="alert alert-danger" *ngIf="message">{{message}}</div>
-
     <ersd-edit-person *ngIf="person" [person]="person" #editPerson></ersd-edit-person>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn save-button" (click)="save()" [disabled]="!isValid">Save</button>
-    <button type="button" class="btn btn-light" (click)="activeModal.dismiss()">Cancel</button>
+    <!-- <button type="button" class="btn save-button" (click)="save()" [disabled]="!isValid">Save</button>
+    <button type="button" class="btn btn-light" (click)="activeModal.dismiss()">Cancel</button> -->
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+      <button id="saveBtn" type="button" class="btn btn-secondary" style="width: 150px" [disabled]="!isValid" (click)="save()">
+        <span>
+          <i class="fas fa-save me-1"></i>
+          <span>Save</span>
+        </span>
+      </button>
+      <button id="cancelBtn" type="button" class="btn btn-tertiary" style="width: 150px"
+        (click)="activeModal.dismiss()">
+        <span>
+          <i class="fas fa-window-close me-1"></i>
+          <span>Cancel</span>
+        </span>
+      </button>
+    </div>
   </div>
 </div>

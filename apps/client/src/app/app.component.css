@@ -1,3 +1,33 @@
+.app-container {
+  flex-direction: column;
+  display: flex;
+  min-height: 100vh;
+  background: url(../assets/background.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  font-family: 'Work Sans', sans-serif;
+}
+main {
+  flex: 1; /* This allows the main content to grow and fill the available space */
+}
+
+footer {
+  flex-shrink: 0; /* Prevent the footer from shrinking */
+  /* Add your styles for the footer */
+  width: 100%;
+}
+.container {
+  padding-top: 40px;
+}
+
+a {
+  color:  var(--font-color);
+  text-decoration: underline;
+  background-color: transparent;
+}
+
 nav {
   margin-bottom: 0px;
   background-image: url(../assets/nav-bg.png);
@@ -8,12 +38,6 @@ nav {
   z-index: 100;
 }
 
-/* nav > a > img {
-  position: absolute;
-  width: 45px;
-  height: 45px;
-  margin-top: -7px;
-} */
 
 nav > a > span {
   margin-left: 45px;
@@ -23,25 +47,17 @@ nav > li > a {
   color: black;
 }
 
-.app-container {
-  min-height: 100vh;
-  min-width: 100vw;
-  background: url(../assets/background.jpg) no-repeat center center fixed; 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  font-family: 'Work Sans', sans-serif;
+.ersd-logo {
+  height: 40px;
 }
 
+/* Old code below */
 .nav-link {
   color: black;
   font-family: 'Work Sans', sans-serif;
 }
 
-.ersd-logo {
-  height: 30px;
-}
+
 
 .ersd-bg-img {
   padding-top: 150px;
@@ -53,4 +69,15 @@ nav > li > a {
   height: 100px;
   margin: auto;
   margin-bottom: 100px;
+}
+
+/* repeated */
+.link-primary {
+  color: var( --text-color-dark) !important;
+  text-decoration-color: var(--text-color-dark) !important;
+}
+
+.link-primary:focus, .link-primary:hover {
+  color: #094045b0!important;
+  text-decoration-color: #094045b0 !important;
 }

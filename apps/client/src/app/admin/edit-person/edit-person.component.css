@@ -1,17 +1,17 @@
-.edit-person-container {
+/* .edit-person-container {
   padding: 170px 0 0 0;
-}
+} */
 
-.section-heading {
+/* .section-heading {
   color: white;
   font-weight: 400;
   text-transform: uppercase;
   font-size: 1.7rem;
   position: relative;
   letter-spacing: 7px;
-}
+} */
 
-.section-heading::after {
+/* .section-heading::after {
   content: '';
   position: absolute;
   width: 400px;
@@ -20,10 +20,67 @@
   opacity: 0.3;
   top: 46px;
   left: -20px;
-}
+} */
 
-.heading-container {
+/* .heading-container {
   position: absolute;
   top: 90px;
   left: 0;
+} */
+
+/* are tese modal classes working */
+.modal-content {
+  border: none;
 }
+
+.custom-modal .modal-dialog {
+  position: fixed;
+  top: 10%; /* Adjust this value to create space from the top */
+  bottom: 10%; /* Adjust this value to create space from the bottom */
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modal { overflow-y: auto !important; }
+
+.btn-secondary {
+  --bs-btn-color: var(--text-color-light); 
+  --bs-btn-bg: var(--secondary-color); 
+  --bs-btn-border-color: var(--secondary-color) !important;
+  
+  --bs-btn-hover-color: var(--text-color-light); 
+  --bs-btn-hover-bg: var(--secondary-alt-color); 
+  --bs-btn-hover-border-color: var(--secondary-alt-color);
+  
+  --bs-btn-focus-shadow-rgb: 130, 138, 145;
+  
+  --bs-btn-active-color: var(--text-color-light); 
+  --bs-btn-active-bg: var(--secondary-color);
+  --bs-btn-active-border-color: var(--secondary-color);
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+  
+  /* --bs-btn-disabled-color: var(--text-color); 
+  --bs-btn-disabled-bg: #var(--primary-color); 
+  --bs-btn-disabled-border-color: var(--icon-color); */
+  }
+  
+.btn-tertiary {
+  --bs-btn-color: var(--text-color-dark); 
+  --bs-btn-bg: var(--primary-alert-color); 
+  --bs-btn-border-color: var(--tertiary-color);
+  
+  --bs-btn-hover-color: var(--text-color-dark); 
+  --bs-btn-hover-bg: var(--primary-alert-alt-color); 
+  --bs-btn-hover-border-color: var(--tertiary-color);
+  
+  --bs-btn-focus-shadow-rgb: 130, 138, 145;
+  
+  --bs-btn-active-color: var(--text-color-dark); 
+  --bs-btn-active-bg: var(--primary-alert-color);
+  --bs-btn-active-border-color: var(--tertiary-color);
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+  
+  /* --bs-btn-disabled-color: var(--text-color); 
+  --bs-btn-disabled-bg: #var(--primary-color); 
+  --bs-btn-disabled-border-color: var(--icon-color); */
+  }

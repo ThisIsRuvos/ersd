@@ -1,0 +1,153 @@
+<div *ngIf="authService.loggedIn">
+  <main role="main" class="container vw-75 pb-5">
+    <div class="card bg-primary border-0 rounded-1">
+      <div class="card-body p-0">
+        <h4 class="card-title fw-bold p-4 mb-0">Change Preview</h4>
+        <div class="px-4">
+          <div class="alert alert-primary border-0 shadow-sm" role="alert">
+            <div class="row">
+              <div class="col-auto pe-0"><span><i class="fas fa-flag"></i></span></div>
+              <div class="col">
+                <p>
+                  This preview is not a representation of the current trigger codes that are in use.
+                  It is intended for a review of any structural changes targeted at implementers who
+                  may find their implementation affected.
+                </p>
+                <span>
+                  The preview is for testing and development purposes.
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card border-0 mb-4">
+            <div class="card-body m-3">
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button (click)="setVersion($event)"  value="ersdv2-draft" class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#ersdv2"
+                    type="button" role="tab" aria-controls="home" aria-selected="true">eRSD Version 2</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button (click)="setVersion($event)" value="ersdv3-draft" class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#ersdv3" type="button"
+                    role="tab" aria-controls="profile" aria-selected="false">eRSD Version 3</button>
+                </li>
+              </ul>
+              <div class="tab-content p-3" id="myTabContent">
+                <div class="tab-pane fade show active" id="ersdv2" role="tabpanel" aria-labelledby="ersdv2-tab">
+                  <div class="text-end mb-4">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                      data-bs-target="#downloadModal">
+                      <i class="fas fa-file-download me-2"></i> Download Files </button>
+                  </div>
+                  <div markdown [data]="markdownContentV2" [disableSanitizer]="true"></div>
+                </div>
+                <div class="tab-pane fade" id="ersdv3" role="tabpanel" aria-labelledby="ersdv3-tab">
+                  <div class="text-end mb-4">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                      data-bs-target="#downloadModal">
+                      <i class="fas fa-file-download me-2"></i> Download Files </button>
+                  </div>
+                  <div markdown [data]="markdownContentV3" [disableSanitizer]="true"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+
+<div *ngIf="authService.loggedIn" class="d-none">
+  <main role="main" class="container">
+    <div class="card bg-primary border-0 rounded mb-4">
+      <div class="card-body p-0">
+        <h4 class="card-title fw-bold p-4 mb-0">CHANGE PREVIEW</h4>
+        <div class="px-4 mb-4">
+          <!-- <div class="alert alert-primary border-0 rounded-0" role="alert"> -->
+          <div class="row">
+            <div class="col-auto pe-0"><span><i class="fas fa-flag"></i></span></div>
+            <div class="col fst-italic">
+              <p class="">
+
+                This preview is not a representation of the current trigger codes that are in use.
+                It is intended for a review of any structural changes targeted at implementers who
+                may find their implementation affected.
+              </p>
+              <span>
+
+                The preview is for testing and development purposes.
+              </span>
+            </div>
+          </div>
+          <!-- </div> -->
+
+          <!-- Spec Downloads Component -->
+          <!-- <ersd-spec-download></ersd-spec-download> -->
+          <!-- End of Spec Downloads Component -->
+        </div>
+        <hr />
+        <div class="px-4 mb-4">
+          <div class="text-end mb-4">
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#downloadModal">
+              <i class="fas fa-file-download me-2"></i> Download Files </button>
+
+            <!-- <button class="btn btn-secondary" type="submit" (click)="getReleasePreview()"><i
+                class="fas fa-file-download me-2"></i> Download Files </button> -->
+          </div>
+          <div markdown [data]="markdownContentV2" [disableSanitizer]="true"></div>
+        </div>
+
+
+        <h3>v3</h3>
+
+        <div class="px-4 mb-4">
+          <div class="text-end mb-4">
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#downloadModal">
+              <i class="fas fa-file-download me-2"></i> Download Files </button>
+
+            <!-- <button class="btn btn-secondary" type="submit" (click)="getReleasePreview()"><i
+                class="fas fa-file-download me-2"></i> Download Files </button> -->
+          </div>
+          <div markdown [data]="markdownContentV3" [disableSanitizer]="true"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" #modalAcknowledgement id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="downloadModalLabel">Download Change Preview</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="checkbox" id="checkboxAgreement" (change)="setAcknowledgement($event)">
+          <label class="form-check-label" for="checkboxAgreement">
+            I acknowledge that this preview is for development purposes and does not include current trigger codes for
+            production use.
+          </label>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-3">
+          <button name="json" style="width: 100px;" class="btn btn-secondary me-md-2"
+            (click)="getReleasePreview($event)"  [disabled]="(isDisabled)">JSON</button>
+          <button name="xml" style="width: 100px;" class="btn btn-secondary"
+            (click)="getReleasePreview($event)" [disabled]="(isDisabled)">XML</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

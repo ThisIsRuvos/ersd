@@ -28,6 +28,13 @@ export class S3Controller {
           key = this.appService.serverConfig.payload.ERSDV2_SUPPLEMENTAL_JSON_KEY
         case 'specification':
           key = this.appService.serverConfig.payload.ERSDV2_SPECIFICATION_JSON_KEY
+      } 
+    } else if (version == 'ecrv3' && bundle !== '') {
+      switch(bundle) {
+        // case 'supplemental':
+        //   key = this.appService.serverConfig.payload.ERSDV3_SUPPLEMENTAL_JSON_KEY
+        case 'specification':
+          key = this.appService.serverConfig.payload.ERSDV3_SPECIFICATION_JSON_KEY
       }
     }
     return key
@@ -43,6 +50,13 @@ export class S3Controller {
           key = this.appService.serverConfig.payload.ERSDV2_SUPPLEMENTAL_XML_KEY
         case 'specification':
           key = this.appService.serverConfig.payload.ERSDV2_SPECIFICATION_XML_KEY
+      }
+    } else if (version == 'ecrv3' && bundle !== '') {
+      switch(bundle) {
+        // case 'supplemental':
+        //   key = this.appService.serverConfig.payload.ERSDV3_SUPPLEMENTAL_JSON_KEY
+        case 'specification':
+          key = this.appService.serverConfig.payload.ERSDV3_SPECIFICATION_XML_KEY
       }
     }
     return key
@@ -68,8 +82,11 @@ export class S3Controller {
       Key,
       ResponseContentDisposition,
     }
+    // const data = await s3client.getObject(params).promise();
+    // const fileData = data.Body.toString('utf-8');
     const url = await s3client.getSignedUrlPromise('getObject', params);
-    return {url}
+    // return { data: fileData, url: url };
+    return { url: url };
   }
 
   @Post('xml')

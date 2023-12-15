@@ -1,51 +1,72 @@
-<div class="api-keys-container">
-  <div class="heading-container">
-    <h2 class="section-heading">Polling Management</h2>
-  </div>
-
-  <div class="page-info api-keys-info">
-    <p>Please configure your API key below in order to establish authentication to poll the eRSD server for content.</p>
-  </div>
-
-  <div class="alert" *ngIf="message" [class.alert-success]="!messageIsError" [class.alert-danger]="messageIsError">{{message}}</div>
-
-  <div class="alert alert-info">
-    <p>New eRSD bundle-specific endpoints for accessing the eRSD are available (described below).</p>
-    <p>
-      Going forward, eRSD bundles will be accessible at the bundle-specific endpoints documented below. 
-      Implementers are encouraged to transition to these new endpoints as soon as possible.
-    </p>  
-    <p>
-      The old and new endpoints both require authentication. To authenticate, generate an API key in the field below. Your API key will be saved in your account. 
-      When making a request, specify the API key in a query parameter as part of the URL for the request, as shown in the endpoint URLs below.
-    </p>
-    <p><strong>Old endpoint:</strong></p>
-    <ul>
-      <li class="specification-item">
-        Version 1 - Specification Bundle <span class="red-text">(deprecated)</span>
-        <ul><li>{{baseUrl}}/Bundle?_sort=-_lastUpdated&_count=1&api-key=YOUR-API-KEY</li></ul>
-      </li>
-    </ul>
-    <p><strong>New endpoints:</strong></p>
-    <ul>
-      <li class="specification-item">
-        Version 1 - Specification Bundle
-        <ul><li>{{s3BaseUrl}}/v1specification?format=[json | xml]&api-key=YOUR-API-KEY</li></ul>
-      </li>
-      <li class="specification-item"> 
-        Version 2 - Specification Bundle
-        <ul><li>{{s3BaseUrl}}/v2specification?format=[json | xml]&api-key=YOUR-API-KEY</li></ul>
-      </li>
-    </ul>
-  </div>
-
-  <div class="form-group">
-    <label for="inboundApiKey" class="api-key-label">Inbound API Key</label>
-    <div class="input-group">
-      <input id="inboundApiKey" type="text" class="form-control" [(ngModel)]="apiKeys.inbound" [readOnly]="true" />
-      <div class="input-group-btn">
-        <button type="button" class="btn btn-dark" (click)="generate()">Re-generate</button>
+<div>
+  <main role="main" class="container vw-75 pb-5">
+    <div class="card bg-primary border-0 rounded-1">
+      <div class="card-body p-0">
+        <h4 class="card-title fw-bold p-4 mb-0">Polling Management</h4>
+        <div class="px-4">
+          <div class="alert alert-primary border-0 shadow-sm" role="alert">
+            <div class="row">
+              <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
+              <div class="col">
+                <p class="mb-0">
+                  Please configure your API key below in order to establish authentication to poll the eRSD server for
+                  content.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p>
+              New eRSD bundle-specific endpoints for accessing the eRSD are available (described below).
+            </p>
+            <p>
+              Going forward, eRSD bundles will be accessible at the bundle-specific endpoints documented below.
+              Implementers are encouraged to transition to these new endpoints as soon as possible.
+            </p>
+            <p>
+              The old and new endpoints both require authentication. To authenticate, generate an API key in the field
+              below. Your API key will be saved in your account. When making a request, specify the API key in a query
+              parameter as part of the URL for the request, as shown in the endpoint URLs below.
+            </p>
+            <div class="fw-bold">Old endpoint:</div>
+            <ul>
+              <li class="specification-item">
+                Version 1 - Specification Bundle <span class="text-danger">(deprecated)</span>
+                <ul>
+                  <li>{{baseUrl}}/Bundle?_sort=-_lastUpdated&_count=1&api-key=YOUR-API-KEY</li>
+                </ul>
+              </li>
+            </ul>
+            <div class="fw-bold">New endpoints:</div>
+            <ul>
+              <li class="specification-item">
+                Version 1 - Specification Bundle
+                <ul>
+                  <li>{{s3BaseUrl}}/v1specification?format=[json | xml]&api-key=YOUR-API-KEY</li>
+                </ul>
+              </li>
+              <li class="specification-item">
+                Version 2 - Specification Bundle
+                <ul>
+                  <li>{{s3BaseUrl}}/v2specification?format=[json | xml]&api-key=YOUR-API-KEY</li>
+                </ul>
+              </li>
+              <li class="specification-item">
+                Version 3 - Specification Bundle
+                <ul>
+                  <li>{{s3BaseUrl}}/v3specification?format=[json | xml]&api-key=YOUR-API-KEY</li>
+                </ul>
+              </li>
+            </ul>
+            <!-- V3 api -->
+            <div class="input-group my-4">
+              <span class="input-group-text" id="inputGroup-sizing-sm">Inbound API Key</span>
+              <input type="text" class="form-control" [(ngModel)]="apiKeys.inbound" [readOnly]="true">
+              <button class="btn btn-secondary" type="button" (click)="generate()">Re-generate</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </main>
 </div>
