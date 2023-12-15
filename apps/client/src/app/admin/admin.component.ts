@@ -230,7 +230,7 @@ export class AdminComponent implements OnInit {
   }
 
   async uploadBundle() {
-    if (!this.bundleFile || !this.bundleUploadMessage) {
+    if (!this.bundleFile) {
       return;
     }
 
@@ -258,8 +258,9 @@ export class AdminComponent implements OnInit {
 
     try {
       await firstValueFrom(this.httpClient.post('/api/upload/bundle', request));
-      this.message = 'Successfully uploaded!';
-      this.messageIsError = false;
+      // this.message = 'Successfully uploaded!';
+      // this.messageIsError = false;
+      this.toastr.success("Successfully uploaded!");   
       this.bundleUploadField.nativeElement.value = '';
       this.bundleUploadMessage = null;
       this.bundleFile = null;
@@ -267,6 +268,7 @@ export class AdminComponent implements OnInit {
     } catch (err) {
       this.message = getErrorString(err);
       this.messageIsError = true;
+      this.toastr.error("Failed to upload!");  
     } finally {
       this.uploading = false;
     }
