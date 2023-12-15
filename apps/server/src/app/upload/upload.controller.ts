@@ -83,12 +83,16 @@ export class UploadController {
       })
       } else if (exportTypeOrigin === 'Person') {
         response?.data?.entry?.forEach(i => {
-          const email = i?.resource?.telecom?.find(j => j.system === 'email')?.value
-          if (validateEmail(email)) {
-            emails.push(email)
-          } else {
-            this.logger.error(`Invalid email address ${email}`);
-          }
+          const primaryEmail = i?.resource?.telecom?.find(j => j.system === 'email')?.value
+          const secondaryEmail = i?.resource?.contained?.find?.(c => c?.resourceType === 'Person')?.telecom?.find(j => j.system === 'email')?.value
+          const allPersonEmails = [primaryEmail, secondaryEmail].map(i => i && i.replaceAll('mailto:', '')).filter(i => i)
+          allPersonEmails.forEach(email => {
+            if (validateEmail(email)) {
+              emails.push(email)
+            } else {
+              this.logger.error(`Invalid email address ${email}`);
+            }
+          })
         })
       }
       this.logger.log(`emails for csv: ${emails}`);
@@ -123,7 +127,7 @@ export class UploadController {
     this.logger.log('Found ' + emails.length + ' emails')
     try {
       this.logger.log('Converting emails to CSV');
-      const parser = new Parser();
+      const parser = new Parser({delimiter: ','});
       const csv = parser.parse(emails.map(i => ({email: i})));
       writeFileSync('tmp.csv', csv)
 
