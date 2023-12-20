@@ -1,7 +1,9 @@
 import {Body, Controller, Logger, Post, Req, Res, Header, UseGuards, InternalServerErrorException, StreamableFile, BadRequestException} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { Parser } from '@json2csv/plainjs';
-
+import { Parser, } from '@json2csv/plainjs';
+import {
+  string as stringFormatter,
+} from '@json2csv/formatters';
 import {AuthGuard} from '@nestjs/passport';
 import type { AuthRequest } from '../auth-module/auth-request';
 import {Constants} from '../../../../../libs/ersdlib/src/lib/constants';
@@ -127,7 +129,11 @@ export class UploadController {
     this.logger.log('Found ' + emails.length + ' emails')
     try {
       this.logger.log('Converting emails to CSV');
-      const parser = new Parser({delimiter: ','});
+      const parser = new Parser({
+        formatters: {
+          string: stringFormatter({ quote: '' }),
+        }
+      });
       const csv = parser.parse(emails.map(i => ({email: i})));
       writeFileSync('tmp.csv', csv)
 
