@@ -1,6 +1,6 @@
 {
   "server": {
-    "serveV2": false,
+    "serveV2Supplemental": false,
     "serveV3": false,
     "payload": {
       "Key": "",

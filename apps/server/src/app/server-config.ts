@@ -39,7 +39,7 @@ export interface IServerConfig {
   contactInfo: IServerConfigContactInfo;
   exampleQuery?: string;
   serveV3: boolean,
-  serveV2: boolean,
+  serveV2Supplemental: boolean,
   payload: {
     Bucket: string;
     Key: string;

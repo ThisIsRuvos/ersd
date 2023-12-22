@@ -178,7 +178,7 @@ export class eRSDController {
 
   @Get('v2supplemental')
   async getV2Supplemental(@Req() request: Request, @Query() queryParams, @Response() response: Res) {
-    if (!this.appService.serverConfig.serveV2) { throw new BadRequestException('eRSD V2 Supplemental Bundle not currently available') }
+    if (!this.appService.serverConfig.serveV2Supplemental) { throw new BadRequestException('eRSD V2 Supplemental Bundle not currently available') }
     await this.assertApiKey(request);
     
     const format = queryParams['format'].toLowerCase()
