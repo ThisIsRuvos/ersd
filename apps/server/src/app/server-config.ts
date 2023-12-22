@@ -38,7 +38,8 @@ export interface IServerConfig {
   restrictedResourceTypes: string[];
   contactInfo: IServerConfigContactInfo;
   exampleQuery?: string;
-  serveV2: boolean,
+  serveV3: boolean,
+  serveV2Supplemental: boolean,
   payload: {
     Bucket: string;
     Key: string;

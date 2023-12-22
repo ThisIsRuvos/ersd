@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
 import { firstValueFrom } from 'rxjs';
+import { ConfigService } from '../config.service';
 
 
 
@@ -32,6 +33,7 @@ export class ReleaseCandidateComponent implements OnInit {
   constructor(
     private httpClient: HttpClient,
     public authService: AuthService,
+    public configService: ConfigService
   ) { }
 
   ngOnInit() {

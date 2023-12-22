@@ -7,4 +7,5 @@ import { IClientConfig } from '../../../../libs/ersdlib/src/lib/client-config';
 export class ConfigService implements IClientConfig {
   hasExcelDownload: boolean;
   keycloak: { url: string; realm: string; clientId: string };
+  serveV3: boolean;
 }
