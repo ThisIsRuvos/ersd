@@ -51,7 +51,7 @@
                   <li>{{s3BaseUrl}}/v2specification?format=[json | xml]&api-key=YOUR-API-KEY</li>
                 </ul>
               </li>
-              <li class="specification-item">
+              <li *ngIf="configService.serveV3" class="specification-item">
                 Version 3 - Specification Bundle
                 <ul>
                   <li>{{s3BaseUrl}}/v3specification?format=[json | xml]&api-key=YOUR-API-KEY</li>

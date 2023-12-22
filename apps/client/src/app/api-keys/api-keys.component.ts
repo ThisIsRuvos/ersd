@@ -4,6 +4,7 @@ import { IUserApiKeys } from '../../../../../libs/ersdlib/src/lib/user-api-keys'
 import { getErrorString } from '../../../../../libs/ersdlib/src/lib/get-error-string';
 import { generateKey } from '../../../../../libs/ersdlib/src/lib/generate-key';
 import { joinUrl } from '../../../../server/src/app/helper';
+import { ConfigService } from '../config.service';
 
 @Component({
   templateUrl: './api-keys.component.html',
@@ -15,7 +16,10 @@ export class ApiKeysComponent implements OnInit {
   public messageIsError: boolean;
   public baseAddress: string;
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(
+    private httpClient: HttpClient,
+    public configService: ConfigService
+  ) {}
 
   get baseUrl() {
     return joinUrl(window.location.origin, '/api/fhir');

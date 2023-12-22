@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import saveAs from 'save-as';
 import { delay } from 'rxjs/operators';
 import { LoadingService } from '../loading-spinner/loading.service';
 import { firstValueFrom } from 'rxjs';
+import { ConfigService } from '../config.service';
 
 interface PayloadDownload {
   url: string;
@@ -26,7 +26,8 @@ export class SpecDownloadComponent implements OnInit {
 
   constructor(
     private httpClient: HttpClient,
-    private _loading: LoadingService
+    private _loading: LoadingService,
+    public configService: ConfigService
   ) { }
 
   ngOnInit() {
