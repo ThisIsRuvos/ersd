@@ -28,6 +28,10 @@ a {
   background-color: transparent;
 }
 
+.fw-bold {
+  color: white;
+}
+
 nav {
   margin-bottom: 0px;
   background-image: url(../assets/nav-bg.png);
