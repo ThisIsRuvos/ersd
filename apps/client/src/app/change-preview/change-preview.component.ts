@@ -12,11 +12,11 @@ interface PayloadDownload {
 }
 
 @Component({
-  selector: 'release-candidate',
-  templateUrl: './release-candidate.component.html',
-  styleUrls: ['./release-candidate.component.css']
+  selector: 'change-preview',
+  templateUrl: './change-preview.component.html',
+  styleUrls: ['./change-preview.component.css']
 })
-export class ReleaseCandidateComponent implements OnInit {
+export class ChangePreviewComponent implements OnInit {
   @ViewChild('modalAcknowledgement') modalAcknowledgement: ElementRef;
   request: any = {}
   version = 'ersdv2-draft'
