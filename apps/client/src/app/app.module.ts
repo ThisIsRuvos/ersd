@@ -7,7 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { ApiKeysComponent } from './api-keys/api-keys.component';
 import { HomeComponent } from './home/home.component';
-import { ReleaseCandidateComponent } from './release-candidate/release-candidate.component';
+import { ChangePreviewComponent } from './change-preview/change-preview.component';
 import { ContactInfoComponent } from './contact-info/contact-info.component';
 import { FormsModule } from '@angular/forms';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
@@ -31,7 +31,7 @@ const appRoutes: Routes = [
   { path: 'user-profile', component: UserProfileComponent },
   { path: 'api-keys', component: ApiKeysComponent },
   { path: 'contact-info', component: ContactInfoComponent },
-  { path: 'release-candidate',component: ReleaseCandidateComponent },
+  { path: 'change-preview',component: ChangePreviewComponent },
   { path: 'home', component: HomeComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full'
   }
@@ -81,7 +81,7 @@ export function initializer(keycloak: KeycloakService, httpClient: HttpClient, c
     UpdateNoticeComponent,
     SpecDownloadComponent,
     NavigationComponent,
-    ReleaseCandidateComponent
+    ChangePreviewComponent
   ],
   imports: [
     BrowserModule,

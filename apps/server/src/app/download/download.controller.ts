@@ -171,7 +171,7 @@ export class DownloadController {
   // this needs to be changed to get both files v2 and v3
   @Post('change-preview-json')
   @UseGuards(AuthGuard())
-  async downloadReleaseCandidateV1DraftJSON(@Query() queryParams) {
+  async downloadChangePreviewV1DraftJSON(@Query() queryParams) {
     const { version } = queryParams;
 
 
@@ -202,7 +202,7 @@ export class DownloadController {
     // this needs to be changed to get both files v2 and v3
   @Post('change-preview-xml')
   @UseGuards(AuthGuard())
-  async downloadReleaseCandidateV1DraftXML(@Query() queryParams) {
+  async downloadChangePreviewV1DraftXML(@Query() queryParams) {
     const { version } = queryParams;
 
     const Bucket = this.appService.serverConfig.payload.Bucket;
