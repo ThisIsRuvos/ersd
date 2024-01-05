@@ -1,7 +1,7 @@
 <div>
   <!-- Specification Bundle(s -->
   <fieldset class="px-4">
-    <div class="fw-medium">Select Specification Bundle</div>
+    <div class="fw-medium">Select Specification Bundle:</div>
     <form>
       <!-- Version 1 -->
       <div class="form-check mb-4">
@@ -16,8 +16,8 @@
           </a><i class="fas fa-external-link-alt superscript-icon"></i>
         </div>
         <div class="form-text fst-italic">
-          <p>eRSD Version 1 includes the queries necessary for producing a CDA eICR R1.1 report. For eCR Now App Release
-            2.X and Release 3.X and greater.</p>
+          <p>eRSD Version 1 includes the queries necessary for producing CDA eICR R1.1 reports. For eCR Now App Release
+            2.X.</p>
         </div>
       </div>
       <!-- Version 2 -->
@@ -72,7 +72,7 @@
 
       <div class="text-center mb-4">
         <!-- added below if needed [disabled]="isDisabled"  -->
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">          
           <button class="btn btn-secondary me-md-2" type="submit" (click)="handleSubmit()" style="width: 225px">
             <div class="d-flex justify-content-md-between align-items-center">
               <ng-container *ngIf="!loading; else loadingSpinner">

@@ -28,7 +28,7 @@ body {
  }
  
  .alert-primary {
-   color: var(--font-color);
+   color: var(--font-color)! important;
    background-color: var(--primary-alert-color);
    /* background-color: var(--primary-header-color) !important; */
  }
