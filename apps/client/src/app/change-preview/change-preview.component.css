@@ -56,3 +56,5 @@
             background-color: var(--bs-nav-tabs-link-active-bg);
             border-color: var(--bs-nav-tabs-link-active-border-color);
         }
+
+        .tab-pane-body { max-width: 80ch }

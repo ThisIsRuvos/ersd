@@ -3,7 +3,7 @@
     <h1 class="modal-title fs-5" id="editContactModelLabel">Edit User Info</h1>
     <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
   </div>
-  <div class="modal-body p-3">
+  <div class="modal-body py-3 px-5">
     <div class="alert alert-danger" *ngIf="message">{{message}}</div>
     <ersd-edit-person *ngIf="person" [person]="person" #editPerson></ersd-edit-person>
   </div>
@@ -28,3 +28,4 @@
     </div>
   </div>
 </div>
+

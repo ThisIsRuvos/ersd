@@ -136,3 +136,13 @@ margin-bottom: 15px;
   }
 
   .modal { overflow-y: auto !important; }
+
+  .alert-link {
+    color: var(--font-color) !important;
+  }
+
+  .alert-primary {
+    color: var(--font-color)! important;
+    background-color: var(--primary-alert-color);
+    /* background-color: var(--primary-header-color) !important; */
+  }
