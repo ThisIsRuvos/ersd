@@ -4,12 +4,12 @@ export interface EmailSubscriptionInfo {
   format?: 'xml'|'json';
 }
 
-export interface SmsSubscriptionInfo {
-  carrier?: 'verizon'|'at&t'|'sprint'|'tmobile';
-  mobilePhone?: string;
-}
+// export interface SmsSubscriptionInfo {
+//   carrier?: 'verizon'|'at&t'|'sprint'|'tmobile';
+//   mobilePhone?: string;
+// }
 
 export class UserSubscriptions {
   emailSubscription?: EmailSubscriptionInfo;
-  smsSubscription?: SmsSubscriptionInfo;
+  // smsSubscription?: SmsSubscriptionInfo;
 }

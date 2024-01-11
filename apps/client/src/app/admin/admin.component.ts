@@ -193,6 +193,7 @@ export class AdminComponent implements OnInit {
     }
   }
 
+  // not currently used
   sendEmailsFromClient(emailList) {
 
     const emailString = emailList.join(',');

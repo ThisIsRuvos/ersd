@@ -31,7 +31,7 @@
                 </li>
               </ul>
               <div class="tab-content p-3" id="myTabContent">
-                <div class="tab-pane fade show active" id="ersdv2" role="tabpanel" aria-labelledby="ersdv2-tab">
+                <div class="tab-pane fade show active" id="ersdv2" role="tabpanel" aria-labelledby="ersdv2-tab" *ngIf="markdownContentV2">
                   <div class="d-flex flex-column flex-md-row align-items-start">
                     <button type="button" class="btn btn-secondary order-md-1 mb-2 w-100 " data-bs-toggle="modal" data-bs-target="#downloadModal">
                       <i class="fas fa-file-download me-2"></i> Download Files
@@ -39,7 +39,7 @@
                     <div class="flex-md-grow-1  pe-3 pe-md-0" markdown [data]="markdownContentV2" [disableSanitizer]="true"></div>
                   </div>
                 </div>
-                <div class="tab-pane fade" id="ersdv3" role="tabpanel" aria-labelledby="ersdv3-tab">
+                <div class="tab-pane fade" id="ersdv3" role="tabpanel" aria-labelledby="ersdv3-tab" *ngIf="markdownContentV3">
                   <div class="d-flex flex-column flex-md-row align-items-start">
                     <button type="button" class="btn btn-secondary order-md-1 mb-2 w-100 " data-bs-toggle="modal" data-bs-target="#downloadModal">
                       <i class="fas fa-file-download me-2"></i> Download Files

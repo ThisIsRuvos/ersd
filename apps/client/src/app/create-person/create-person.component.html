@@ -1,13 +1,21 @@
-<div class='create-person-container'>
-  <div class='heading-container'>
-    <h2 class='section-heading'>New User Registration</h2>
+<!-- This template is used for the Registration modal on initial login -->
+<div>
+  <div class="modal-header">
+    <h1 class="modal-title fs-5" id="editContactModelLabel">New User Registration</h1>
+    <!-- <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button> -->
   </div>
-  <div class="modal-body">
+  <div class="modal-body py-3 px-5">
     <div class="alert alert-danger" *ngIf="message">{{message}}</div>
-
     <ersd-edit-person [person]="person" #editPerson></ersd-edit-person>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn register-button" (click)="ok()" [disabled]="!editPerson.isValid">OK</button>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+      <button id="saveBtn" type="button" class="btn btn-secondary" style="width: 150px" [disabled]="!editPerson.isValid" (click)="ok()">
+        <span>
+          <i class="fas fa-save me-1"></i>
+          <span>Save</span>
+        </span>
+      </button>
+    </div>
   </div>
 </div>

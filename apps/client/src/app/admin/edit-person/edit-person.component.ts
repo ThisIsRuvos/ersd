@@ -40,8 +40,7 @@ isError = false;
         
       })
       .catch((err) => {
-        this.message = getErrorString(err);
-        // this.messageIsError = true;
+        this.message = getErrorString(err); // <-- TODO - if this is not being used, it could be removed in the future.
         this.messageIsSuccess.emit(false)
       });
   }
@@ -51,7 +50,6 @@ isError = false;
       .then((results) => this.person = new Person(results))
       .catch((err) => {
         this.message = getErrorString(err);
-        // this.messageIsError = true;
         this.messageIsSuccess.emit(false)
       });
   }

@@ -1,3 +1,5 @@
+
+<!-- This template is used for the Edit User modal on the Admin page -->
 <div>
   <div class="modal-header">
     <h1 class="modal-title fs-5" id="editContactModelLabel">Edit User Info</h1>
@@ -8,9 +10,6 @@
     <ersd-edit-person *ngIf="person" [person]="person" #editPerson></ersd-edit-person>
   </div>
   <div class="modal-footer">
-    <!-- <button type="button" class="btn save-button" (click)="save()" [disabled]="!isValid">Save</button>
-    <button type="button" class="btn btn-light" (click)="activeModal.dismiss()">Cancel</button> -->
-
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
       <button id="saveBtn" type="button" class="btn btn-secondary" style="width: 150px" [disabled]="!isValid" (click)="save()">
         <span>
@@ -28,4 +27,3 @@
     </div>
   </div>
 </div>
-
