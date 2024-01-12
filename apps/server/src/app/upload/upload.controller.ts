@@ -75,7 +75,7 @@ export class UploadController {
     // @ts-ignore
     if (exportTypeOrigin === 'Subscription') {
       response?.data?.entry?.forEach((i) => {
-        if (i?.resource?.status !== 'active' || i?.resource?.channel?.type !== 'email') return;
+        if (i?.resource?.status !== 'active' || i?.resource?.channel?.type !== 'email' || i?.resource?.channel?.payload === 'application/json') return;
         const email = i?.resource?.channel?.endpoint?.split('mailto:')?.[1]
         if (validateEmail(email)) {
           emails.push(email)
