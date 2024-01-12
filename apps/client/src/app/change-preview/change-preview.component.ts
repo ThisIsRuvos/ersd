@@ -47,8 +47,6 @@ export class ChangePreviewComponent implements OnInit {
 
   setVersion(e) { 
     this.version = e.target.value 
-    console.log(this.version)
-
   } // eRSD (eCR) V1 or V2
 
 
@@ -81,11 +79,7 @@ export class ChangePreviewComponent implements OnInit {
       // Add more versions here if needed
     };
   
-    console.log("button name", button.name)
-    console.log("this.draftVersion", this.draftVersion)
     const url = `${urls[this.draftVersion]}?version=${this.version}`;
-
-    console.log("url", url)
 
     if (!url) {
       console.error('Invalid draft version:', this.draftVersion);

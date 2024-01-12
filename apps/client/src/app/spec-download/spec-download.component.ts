@@ -68,10 +68,8 @@ export class SpecDownloadComponent implements OnInit {
 
   setContentType(e) {
     const value = e.target.value;
-
     // Set the selected content type
     this.contentType = value;
-
     // Check if no radio button is selected and set isDisabled accordingly
     // this.isDisabled = this.contentType === null;
   }

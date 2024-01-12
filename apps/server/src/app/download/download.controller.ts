@@ -187,9 +187,6 @@ export class DownloadController {
         ResponseContentDisposition = `attachment; filename="eRSDv3_specification_bundle_draft.json"`;
       }
 
-      // const Key = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_JSON_KEY;
-      // const ResponseContentDisposition = `attachment; filename="eRSDv2_specification_bundle_draft.json"`;
-
       const params = {
         Bucket,
         Key,
@@ -225,18 +222,6 @@ export class DownloadController {
       }
       const url = await s3client.getSignedUrlPromise('getObject', params);
       return {url}
-
-      // const Key1 = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_XML_KEY;
-      // const Key2 = this.appService.serverConfig.payload.ERSDV3_CHANGE_PREVIEW_XML_KEY;
-      // const ResponseContentDisposition1 = `attachment; filename="eRSDv2_specification_bundle_draft.xml"`;
-      // const ResponseContentDisposition2 = `attachment; filename="eRSDv3_specification_bundle_draft.xml"`;
-
-      // const params1 = { Bucket, Key: Key1, ResponseContentDisposition1 };
-      // const params2 = { Bucket, Key: Key2,  ResponseContentDisposition2 };
-
-      // const urlV2 = await s3client.getSignedUrlPromise('getObject', params1);
-      // const urlV3 = await s3client.getSignedUrlPromise('getObject', params2);
-      // return {urlV2, urlV3}
   }
 
   @Post('release_notes')

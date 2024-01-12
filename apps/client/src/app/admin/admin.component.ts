@@ -195,13 +195,10 @@ export class AdminComponent implements OnInit {
 
   // not currently used
   sendEmailsFromClient(emailList) {
-
     const emailString = emailList.join(',');
     // console.log("emailString",emailString);
-
     // Construct the mailto link with the list of email addresses
     const mailtoLink = `mailto:${emailString}`;
-
     // Open the default mail client using Angular's Router service
     // this.router.navigateByUrl(mailtoLink);
     window.location.href = mailtoLink;
@@ -313,16 +310,6 @@ export class AdminComponent implements OnInit {
       this.messageIsError = true;
     }
   }
-
-  // async ngOnInit() {
-  //   try {
-  //     const users = await firstValueFrom(this.httpClient.get<IPerson[]>('/api/user'));
-  //     this.users = users.map((user) => new Person(user));
-  //   } catch (err) {
-  //     this.message = getErrorString(err);
-  //     this.messageIsError = true;
-  //   }
-  // }
 
   async ngOnInit() {
     await this.fetchUserData(); // Initial data fetch when component initializes
