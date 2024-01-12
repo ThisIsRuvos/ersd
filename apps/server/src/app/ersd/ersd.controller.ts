@@ -216,32 +216,41 @@ export class eRSDController {
   async getMarkdown(@Response() response: Res) {
 
     const Bucket = this.appService.serverConfig.payload.Bucket;
-    const Key1 = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_SUMMARY_KEY
-    const Key2 = this.appService.serverConfig.payload.ERSDV3_CHANGE_PREVIEW_SUMMARY_KEY
+    const Key1 = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_SUMMARY_KEY;
+    const Key2 = this.appService.serverConfig.payload.ERSDV3_CHANGE_PREVIEW_SUMMARY_KEY;
 
-    if (!Bucket || !Key1 || !Key2) {
-      const errorMessage = 'Failed to download from S3, missing Bucket, Key1, or Key2';
+    if (!Bucket) {
+      const errorMessage = 'Failed to download from S3, missing Bucket';
       console.error(errorMessage);
       return response.status(500).json({ error: errorMessage });
     }
 
     const s3client = new S3();
-    const params1 = { Bucket, Key: Key1 };
-    const params2 = { Bucket, Key: Key2 };
+    let markdownFiles = {};
 
-    try {
-      const data1 = await s3client.getObject(params1).promise();
-      const data2 = await s3client.getObject(params2).promise();
+    if (Key1) {
+      const params1 = { Bucket, Key: Key1 };
 
-      response.set('Content-Type', 'application/json');
-      response.json({
-        markdownFile1: data1.Body.toString(),
-        markdownFile2: data2.Body.toString()
-      });
-    } catch (error) {
-      console.error('Error fetching Markdown from S3:', error);
-      return response.status(500).json({ error: 'Error fetching Markdown from S3' });
+      try {
+        const data1 = await s3client.getObject(params1).promise();
+        markdownFiles['markdownFile1'] = data1.Body.toString();
+      } catch (error) {
+        console.error(`Error fetching Markdown from S3 for Key1: ${error}`);
+      }
     }
 
+    if (Key2) {
+      const params2 = { Bucket, Key: Key2 };
+
+      try {
+        const data2 = await s3client.getObject(params2).promise();
+        markdownFiles['markdownFile2'] = data2.Body.toString();
+      } catch (error) {
+        console.error(`Error fetching Markdown from S3 for Key2: ${error}`);
+      }
+    }
+
+    response.set('Content-Type', 'application/json');
+    response.json(markdownFiles);
   }
 }
