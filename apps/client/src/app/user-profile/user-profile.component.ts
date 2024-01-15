@@ -27,41 +27,20 @@ export class UserProfileComponent implements OnInit {
 
   @ViewChild('emailAddress') emailAddressField: NgModel;
   @ViewChild('restEndpoint') endpointField: NgModel;
-  @ViewChild('carrier') carrierField: NgModel;
-  @ViewChild('mobileSubscription') mobileSubscriptionField: NgModel;
 
   constructor(private httpClient: HttpClient, private authService: AuthService, private toastr: ToastrService) { }
 
-  toggleSms(value: boolean) {
-    if (this.userSubscriptions.smsSubscription && !value) {
-      delete this.userSubscriptions.smsSubscription;
-    } else if (!this.userSubscriptions.smsSubscription && value) {
-      this.userSubscriptions.smsSubscription = {};
-
-      if (this.authService.person) {
-        const foundMobile = (this.authService.person.telecom || []).find(t => t.system === 'phone' && t.use === 'mobile');
-
-        if (foundMobile) {
-          this.userSubscriptions.smsSubscription.mobilePhone = formatPhone(foundMobile.value);
-        }
-      }
-    }
-  }
-
   get isUserValid() {
-    console.log(this.editPersonField )
     return this.editPersonField && this.editPersonField.isValid;
   }
 
   get isValid() {
-    if (!this.userSubscriptions.emailSubscription && !this.userSubscriptions.smsSubscription) {
+    if (!this.userSubscriptions.emailSubscription) {
       return false;
     }
 
     return (!this.emailAddressField || this.emailAddressField.valid) &&
-      (!this.endpointField || this.endpointField.valid) &&
-      (!this.carrierField || this.carrierField.valid) &&
-      (!this.mobileSubscriptionField || this.mobileSubscriptionField.valid);
+      (!this.endpointField || this.endpointField.valid);
   }
 
 
@@ -72,16 +51,9 @@ export class UserProfileComponent implements OnInit {
     this.httpClient.post<Person>('/api/user/me', this.person).toPromise()
       .then((person) => {
         this.person = new Person(person);
-
-        
           this.toastr.success('User details updated successfully!' );
-       
-          
-        
         // this.message = 'Saved contact information!';
         // this.messageIsError = false;
-
-
         this.authService.checkSession();
         window.scrollTo(0, 0);
       })
@@ -93,6 +65,7 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
+  // sms functionality removed
   saveSubscription() {
     // this.message = null;
     // this.messageIsError = false;

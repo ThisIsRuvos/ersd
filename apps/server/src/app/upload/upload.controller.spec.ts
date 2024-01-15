@@ -195,7 +195,6 @@ describe('Subscription Controller', () => {
 
     const req = nock('http://test-fhir-server.com')
       .put('/Bundle/4e701cb4-46a2-49df-becd-686e51fb99c4', (bundle) => {
-        console.log(bundle.entry[0])
         expect(bundle.resourceType).toEqual('Bundle');
         expect(bundle.type).toEqual('collection');
         expect(bundle.entry).toBeTruthy();
