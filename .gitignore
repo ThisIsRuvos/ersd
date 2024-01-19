@@ -43,3 +43,4 @@ apps/server/src/config/local.json
 .env
 .angular/
 localStartup.sh
+.nx/cache
