@@ -15,7 +15,17 @@ RUN npm ci
 RUN npm run build:server
 RUN npm run build:client
 
-FROM node:18.16
+FROM ubuntu:mantic
+
+RUN apt-get update && \
+	apt-get install curl -y
+
+RUN curl -SLO https://deb.nodesource.com/nsolid_setup_deb.sh
+RUN chmod 500 nsolid_setup_deb.sh
+RUN ./nsolid_setup_deb.sh 18
+RUN apt-get install nodejs -y
+RUN apt-get clean
+
 RUN mkdir -p /ersd/server && mkdir /ersd/client
 WORKDIR /ersd
 
