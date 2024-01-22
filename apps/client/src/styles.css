@@ -1,3 +1,50 @@
+/* Custom CSS variables */
+:root {
+  --primary-color: #EBF6F7;
+  --primary-alt-color: #d8eeef;
+  --primary-header-color: #3aa5ab4d;
+  --secondary-color: #EC1212;
+  --secondary-alt-color: #D41010;
+  --tertiary-color: #3AA5AB;
+  --tertiary-alt-color: #4DAEB3;
+  --icon-color: #3AA5AB;
+  --text-color-dark: #094045;
+  --text-color-light: #FFFFFF;
+  --primary-alert-color: #3ba6ab1a;
+  --primary-alert-alt-color: #3aa5ab4d;
+  --font-color: #010b0c;
+}
+
+body {
+  color: var(--font-color);
+ }
+ 
+ .bg-primary{
+   background-color: var(--primary-color) !important;
+ }
+ 
+ .bg-primary-heading, .sidebar-primary{
+   background-color: var(--primary-header-color) !important;
+ }
+ 
+ .alert-primary {
+   color: var(--font-color)! important;
+   background-color: var(--primary-alert-color);
+   /* background-color: var(--primary-header-color) !important; */
+ }
+ 
+ .fa-info-circle, .fa-ellipsis-v {
+   color: var(--tertiary-color);
+ }
+ 
+ .fa-exclamation-triangle, .fa-flag{
+   color: #EDAF10;
+ }
+
+
+ 
+
+/* Old styles below */
 nav li {
   white-space: pre;
 }
@@ -16,11 +63,11 @@ div.footer {
   cursor: pointer;
 }
 
-.card {
+/* .card {
   margin-bottom: 10px;
-}
+} */
 
-.modal-content {
+/* .modal-content {
   max-width: 1140px !important;
   height: 100% !important;
   overflow-y: scroll !important;
@@ -36,14 +83,14 @@ div.footer {
 
 .modal-footer {
   border: none !important;
-}
+} */
 
 
-.btn-primary {
+/* .btn-primary {
   color: #fff;
-  background-color: #b12c36 !important;
-  border-color: #b12c36 !important;
-}
+  background-color: #b12c36 ;
+  border-color: #b12c36 ;
+} */
 
 .custom-class {
   background-color:red;
@@ -68,10 +115,10 @@ div.footer {
   margin: 0 auto;
 }
 
-.modal-dialog {
+/* .modal-dialog {
   height: 100%;
   margin: 0 auto;
-}
+} */
 
 .register-button {
   background-color: #b12c36 !important;

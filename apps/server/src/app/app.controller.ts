@@ -13,7 +13,7 @@ export class AppController {
   getClientConfig(): IClientConfig {
     const rctcExcelPath = path.resolve(this.appService.serverConfig.rctcExcelPath);
     this.appService.clientConfig.hasExcelDownload = fs.existsSync(rctcExcelPath);
-
+    this.appService.clientConfig.serveV3 = this.appService.serverConfig.serveV3;
     return this.appService.clientConfig;
   }
 }

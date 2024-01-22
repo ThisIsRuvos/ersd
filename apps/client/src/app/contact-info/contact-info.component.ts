@@ -25,6 +25,7 @@ export class ContactInfoComponent implements OnInit {
         this.message = 'Saved contact information!';
         this.messageIsError = false;
         this.authService.checkSession();
+        window.scrollTo(0, 0);
       })
       .catch((err) => {
         this.message = getErrorString(err);

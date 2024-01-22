@@ -1,132 +1,260 @@
-<div class='admin-container'>
-  <div class='heading-container'>
-    <h2 class='section-heading'>Administration</h2>
-  </div>
+<div>
+  <main role="main" class="container vw-85 pb-5">
+    <div class="card bg-primary border-0">
+      <div class="card-body p-0">
+        <h4 class="card-title fw-bold p-4 mb-0">Administration</h4>
+        <div class="px-4 mb-4">
+          <div class="row px-3" style="min-height: 500px;">
+            <!-- Vertical Tab Navigation -->
 
-  <div class="alert" *ngIf="message" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError">{{message}}</div>
+            <div class="col-md-3 sidebar-primary p-3 rounded">
+              <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="v-pills-tab1" data-bs-toggle="pill" href="#tab1" role="tab"
+                  aria-controls="tab1" aria-selected="true">
+                  <div class="row align-items-center">
+                    <div class="col-auto pe-0"><span><i class="fas fa-users"></i></span></div>
+                    <div class="col">
+                      Users
+                    </div>
+                  </div>
+                </a>
 
-  <div class='admin-users-container'>
-    <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
-      <li [ngbNavItem]="1">
-        <button ngbNavLink>Users</button>
-        <ng-template ngbNavContent>
-          <table class="table table-striped">
-            <thead>
-            <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-              <th>&nbsp;</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let user of users">
-              <td>{{user.firstName}}</td>
-              <td>{{user.lastName}}</td>
-              <td>{{user.email}}</td>
-              <td>
-                <div class="pull-right">
-                  <button type="button" class="btn btn-dark" title="Edit this user's contact details" (click)="editUser(user)">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button type="button" class="btn btn-dark" title="Remove this user's contact information and their subscriptions" (click)="deleteUser(user)">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </ng-template>
-      </li>
-      <li [ngbNavItem]="2">
-        <button ngbNavLink>Upload</button>
-        <ng-template ngbNavContent>
+                <a class="nav-link" id="v-pills-tab2" data-bs-toggle="pill" href="#tab2" role="tab" aria-controls="tab2"
+                  aria-selected="false">
+                  <div class="row align-items-center">
+                    <div class="col-auto pe-0"><span><i class="fas fa-file-upload"></i></span></div>
+                    <div class="col">
+                      Uploads
+                    </div>
+                  </div>
+                </a>
 
-          <div class="alert alert-info">
-            <p>
-              Uploading new artifacts will send out a notification, containing the text 
-              entered below in the “Message” field, to subscribers.
-            </p>
-            <p>
-              The file uploaded here needs to be an XML file. It is meant to 
-              contain an eRSD Version 1 FHIR bundle. This file gets 
-              posted to a FHIR server and can be retrieved by users 
-              at the “Old endpoint” for “Version 1 - Specification Bundle” (documented in the 
-              <a class="alert-link" href="#/api-keys">Polling Management page</a>).
-            </p>
+                <a class="nav-link" id="v-pills-tab3" data-bs-toggle="pill" href="#tab3" role="tab" aria-controls="tab3"
+                  aria-selected="false">
+                  <div class="row align-items-center">
+                    <div class="col-auto pe-0"><span><i class="fas fa-file-archive"></i></span></div>
+                    <div class="col">
+                      RCTC Files
+                    </div>
+                  </div>
+                </a>
+
+                <a class="nav-link" id="v-pills-tab4" data-bs-toggle="pill" href="#tab4" role="tab" aria-controls="tab4"
+                  aria-selected="false">
+                  <div class="row align-items-center">
+                    <div class="col-auto pe-0"><span><i class="fas fa-at"></i></span></div>
+                    <div class="col">
+                      Email Addresses
+                    </div>
+                  </div>
+                </a>
+              </div>
             </div>
 
-          <div class="form-group">
-            <label>Bundle XML File</label>
-            <input type="file" class="form-control" (change)="handleBundleFileInput($any($event).target.files)" #bundleUploadFile [class.is-invalid]="!bundleFile" accept="application/json, application/xml" />
+            <!-- Tab Content -->
+            <div class="col-md-9 px-4">
+              <div class="tab-content" id="v-pills-tabContent">
+                <!-- Users -->
+                <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="v-pills-tab1">
+                  <div class="bg-primary-heading mb-3 rounded shadow-sm">
+                    <h5 class="mb-0 px-4 fw-medium py-2">Users</h5>
+                  </div>
+                  <div class="card border-0">
+                    <div class="card-body">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>&nbsp;</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let user of users">
+                            <td class="align-middle">{{user.firstName}}</td>
+                            <td class="align-middle">{{user.lastName}}</td>
+                            <td class="align-middle">{{user.email}}</td>
+                            <td class="align-middle">
+                              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button class="btn btn-secondary rounded-circle me-md-1" type="button"
+                                  title="Edit this user's contact details" (click)="editUser(user)">
+                                  <i class="fas fa-pen fa-xs"></i></button>
+                                <button class="btn btn-tertiary rounded-circle" type="button"
+                                  title="Remove this user's contact information and their subscriptions"
+                                  (click)="deleteUser(user)">
+                                  <i class="fas fa-times"></i></button>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <!-- Uploads -->
+                <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="v-pills-tab2">
+                  <div class="bg-primary-heading mb-3 rounded shadow-sm">
+                    <h5 class="mb-0 px-4 fw-medium py-2">Uploads</h5>
+                  </div>
+
+                  <div class="alert alert-primary border-0 shadow-sm" role="alert">
+                    <div class="row">
+                      <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
+                      <div class="col">                  
+                        <p class="m-0">
+                          The file uploaded here needs to be an XML file. It is meant to
+                          contain an eRSD Version 1 FHIR bundle. This file gets
+                          posted to a FHIR server and can be retrieved by users
+                          at the “Old endpoint” for “Version 1 - Specification Bundle” (documented in the
+                          <a class="alert-link" href="#/api-keys">Polling Management page</a>).
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Bundle XML File</label>
+                      <input type="file" class="form-control"
+                            (change)="handleBundleFileInput($any($event).target.files)" #bundleUploadFile
+                            [class.is-invalid]="!bundleFile" accept="application/json, application/xml" />
+                  </div>
+
+                  <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                    <button id="uploadBundleBtn" type="button" class="btn btn-secondary" (click)="uploadBundle()"
+                      style="width: 150px" [disabled]="!bundleFile">
+                      <span *ngIf="!uploading">
+                        <i class="fas fa-file-upload me-1"></i>
+                        <span>Upload</span>
+                      </span>
+                      <span *ngIf="uploading">
+                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                        <span>Uploading...</span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- RCTC files -->
+                <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="v-pills-tab3">
+                  <div class="bg-primary-heading mb-3 rounded shadow-sm">
+                    <h5 class="mb-0 px-4 fw-medium py-2">RCTC Files</h5>
+                  </div>
+
+                  <div class="alert alert-primary border-0 shadow-sm" role="alert">
+                    <div class="row">
+                      <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
+                      <div class="col">
+                        <p class="m-0">
+                          Upload a Zip file containing the 'RCTC_Release.xlsx' and 'RCTC_Change_Log.xlsx'
+                          spreadsheets. This Zip file will then be available to users via the 'Latest RCTC
+                          Spreadsheet and Change Log' button on the <a class="alert-link" href="#/">Home page</a>.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Zip File with 'RCTC_Release.xlsx' and 'RCTC_Change_Log.xlsx'
+                      Spreadsheets</label>
+                   
+                      <input type="file" class="form-control" (change)="handleExcelFileInput($any($event).target.files)" #excelUploadFile [class.is-invalid]="!excelFile" accept=".zip" />
+
+                  </div>
+
+                  <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                    <button id="uploadExcelBtn" type="button" class="btn btn-secondary" (click)="uploadExcel()"
+                      style="width: 150px" [disabled]="!excelFile">
+                      <span *ngIf="!uploading">
+                        <i class="fas fa-file-upload me-1"></i>
+                        <span>Upload</span>
+                      </span>
+
+                      <span *ngIf="uploading">
+                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                        <span>Uploading...</span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Emails -->
+                <div class="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="v-pills-tab4">
+                  <div class="bg-primary-heading mb-3 rounded shadow-sm">
+                    <h5 class="mb-0 px-4 fw-medium py-2">Email Addresses</h5>
+                  </div>
+
+                  <div class="alert alert-primary border-0 shadow-sm" role="alert">
+                    <div class="row">
+                      <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
+                      <div class="col">
+                        <p class="m-0">
+                          There are two email lists available for download, to be used in an email client of your
+                          choosing. You can select either or both of the lists below for download. Please ensure
+                          that
+                          you're using each respective list for the purposes described for each. Duplicate email
+                          addresses will be removed from the resulting list. The download will consist of a
+                          comma-separated values (CSV) file - the first row will be a header of "email".
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="emailType1" value="Person" #emailType1
+                      name="email-type" (change)="setEmailType()">
+                    <label class="form-check-label" for="emailType1">
+                      Account Contact(s)
+                    </label>
+                    <div class="form-text fst-italic">
+                      <p class="m-0">
+                        A list of email addresses that have been configured by the users in the Contact Info
+                        section
+                        for both Primary and Secondary contact information. This list is typically used for
+                        communications related to eRSD site accounts.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="emailType2" value="Subscription" #emailType2
+                      name="email-type" (change)="setEmailType()">
+                    <label class="form-check-label" for="emailType2">
+                      eRSD Updates Notification
+                    </label>
+                    <div class="form-text fst-italic">
+                      <p class="m-0">
+                        A list of email addresses, some of which are linked to phone numbers for receiving SMS
+                        notifications, that have been configured by the user to receive eRSD-specific updates.
+                        This
+                        list is typically used to communicate information or announcements that are specific to
+                        the
+                        eRSD itself, like new eRSD release announcements or notifications of coming changes to the
+                        eRSD, etc.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                    <button id="downloadCSVBtn" type="button" class="btn btn-secondary" (click)="getEmailCSV()"
+                      style="width: 160px" [disabled]="isDisabled">
+                      <span *ngIf="!downloading">
+                        <i class="fas fa-file-download me-1"></i>
+                        <span>Download</span>
+                      </span>
+
+                      <span *ngIf="downloading">
+                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                        <span>Downloading...</span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-
-          <div class="form-group">
-            <label for="uploadMessage">Message</label>
-            <textarea id="uploadMessage" class="form-control" rows="6" [(ngModel)]="bundleUploadMessage" [class.is-invalid]="!bundleUploadMessage"></textarea>
-          </div>
-
-          <button id="uploadBundleBtn" type="button" class="btn btn-primary" (click)="uploadBundle()" [disabled]="!bundleFile">
-            <span *ngIf="!uploading">Upload</span>
-            <span *ngIf="uploading">
-              <span class="spinner-border spinner-border-sm mr-3" role="status" aria-hidden="true"></span>
-              <span>Uploading...</span>
-            </span>
-          </button>
-
-          <!-- <button type="button" class="btn btn-primary" (click)="uploadBundle()" [disabled]="!bundleFile || !bundleUploadMessage">Upload</button> -->
-        </ng-template>
-      </li>
-      <li [ngbNavItem]="3">
-        <button ngbNavLink>Messages</button>
-        <ng-template ngbNavContent>
-          <div class="alert alert-info">This will send an email message directly to each of the user's contact email address (which may be different than the email address the user uses for subscriptions).</div>
-
-          <div class="form-group">
-            <label for="subject">Subject</label>
-            <input id="subject" type="text" class="form-control" [(ngModel)]="emailRequest.subject" [class.is-invalid]="!emailRequest.subject" />
-          </div>
-
-          <div class="form-group">
-            <label for="emailMessage">Message to be sent</label>
-            <textarea id="emailMessage" class="form-control" rows="6" [(ngModel)]="emailRequest.message" [class.is-invalid]="!emailRequest.message"></textarea>
-          </div>
-
-          <button type="button" class="btn btn-primary" [disabled]="!emailRequest.subject || !emailRequest.message" (click)="sendEmail()">Send</button>
-          <button type="button" class="btn btn-primary attachment-button" (click)="removeEmailAttachments()">Remove attachments from all emails</button>
-        </ng-template>
-      </li>
-      <li [ngbNavItem]="4">
-        <button ngbNavLink>RCTC Files</button>
-        <ng-template ngbNavContent>
-          <div class="alert alert-info">
-            <p>
-              Upload a Zip file containing the 'RCTC_Release.xlsx' and 'RCTC_Change_Log.xlsx' 
-              spreadsheets. This Zip file will then be available to users via the 'Latest RCTC 
-              Spreadsheet and Change Log' button on the <a class="alert-link" href="/"> Home page.</a>
-            </p>
-          
-          </div>
-
-          <div class="form-group">
-            <label>Zip File with 'RCTC_Release.xlsx' and 'RCTC_Change_Log.xlsx' Spreadsheets</label>
-            <input type="file" class="form-control" (change)="handleExcelFileInput($any($event).target.files)" #excelUploadFile [class.is-invalid]="!excelFile" accept=".zip" />
-            <!-- <input type="file" class="form-control" (change)="handleExcelFileInput($any($event).target.files)" #excelUploadFile [class.is-invalid]="!excelFile" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" /> -->
-          </div>
-
-          <button id="uploadExcelBtn" type="button" class="btn btn-primary" (click)="uploadExcel()" [disabled]="!excelFile">
-            <span *ngIf="!uploading">Upload</span>
-            <span *ngIf="uploading">
-              <span class="spinner-border spinner-border-sm mr-3" role="status" aria-hidden="true"></span>
-              <span>Uploading...</span>
-            </span>
-          </button>
-
-          <!-- <button type="button" class="btn btn-primary" (click)="uploadExcel()" [disabled]="!excelFile">Upload</button> -->
-        </ng-template>
-      </li>
-    </ul>
-    <div [ngbNavOutlet]="nav"></div>
-  </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </div>

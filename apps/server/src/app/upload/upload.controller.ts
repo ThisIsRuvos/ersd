@@ -1,16 +1,22 @@
-import {Body, Controller, Logger, Post, Req, UseGuards} from '@nestjs/common';
+import {Body, Controller, Logger, Post, Req, Res, Header, UseGuards, InternalServerErrorException, StreamableFile, BadRequestException} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-
+import { Parser, } from '@json2csv/plainjs';
+import {
+  string as stringFormatter,
+} from '@json2csv/formatters';
 import {AuthGuard} from '@nestjs/passport';
 import type { AuthRequest } from '../auth-module/auth-request';
 import {Constants} from '../../../../../libs/ersdlib/src/lib/constants';
-import {IUploadRequest} from '../../../../../libs/ersdlib/src/lib/upload-request';
+import {IUploadRequest,} from '../../../../../libs/ersdlib/src/lib/upload-request';
+import { IEmailExportRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
+
 import {Fhir} from 'fhir/fhir';
 import {IBundle} from '../../../../../libs/ersdlib/src/lib/bundle';
 import {AppService} from '../app.service';
 import S3 from 'aws-sdk/clients/s3';
-import path from "path";
-import * as fs from 'fs';
+import path, { join } from "path";
+import { validateEmail } from '../helper';
+import { createReadStream, writeFileSync, unlinkSync } from 'fs';
 
 @Controller('upload')
 export class UploadController {
@@ -30,7 +36,7 @@ export class UploadController {
     if (typeof Bucket === 'undefined' || Bucket === "") {
       this.logger.log(`Uploading RCTC excel to local storage`);
       const rctcExcelPath = path.resolve(this.appService.serverConfig.rctcExcelPath);
-      fs.writeFileSync(rctcExcelPath, buf);
+      writeFileSync(rctcExcelPath, buf);
       this.logger.log(`Updated RCTC excel file at path ${rctcExcelPath}.`);
     }
     else {
@@ -56,6 +62,93 @@ export class UploadController {
     }
 
 
+  }
+
+  async getEmails(exportTypeOrigin: string) {
+    const url = this.appService.buildFhirUrl(exportTypeOrigin, null);
+    let emails: string[] = []
+    const response = await this.httpService.request({
+      url,
+      headers: {
+        'cache-control': 'no-cache'
+      }}).toPromise()
+    // @ts-ignore
+    if (exportTypeOrigin === 'Subscription') {
+      response?.data?.entry?.forEach((i) => {
+        if (i?.resource?.status !== 'active' || i?.resource?.channel?.type !== 'email' || i?.resource?.channel?.payload === 'application/json') return;
+        const email = i?.resource?.channel?.endpoint?.split('mailto:')?.[1]
+        if (validateEmail(email)) {
+          emails.push(email)
+        } else {
+          this.logger.error(`Invalid email address ${email}`);
+        }
+      })
+      } else if (exportTypeOrigin === 'Person') {
+        response?.data?.entry?.forEach(i => {
+          const primaryEmail = i?.resource?.telecom?.find(j => j.system === 'email')?.value
+          const secondaryEmail = i?.resource?.contained?.find?.(c => c?.resourceType === 'Person')?.telecom?.find(j => j.system === 'email')?.value
+          const allPersonEmails = [primaryEmail, secondaryEmail].map(i => i && i.replaceAll('mailto:', '')).filter(i => i)
+          allPersonEmails.forEach(email => {
+            if (validateEmail(email)) {
+              emails.push(email)
+            } else {
+              this.logger.error(`Invalid email address ${email}`);
+            }
+          })
+        })
+      }
+      this.logger.log(`emails for csv: ${emails}`);
+    return emails
+  }
+
+   @Post('get-emails')
+   @UseGuards(AuthGuard())
+    async getEmaisl(@Body() { exportTypeOrigin }: { exportTypeOrigin: string }) {
+      const emails = await this.getEmails(exportTypeOrigin);
+      return emails;
+    }
+
+  @Post('export')
+  @Header('Content-Type', 'text/csv')
+  @Header('Content-Disposition', 'attachment; filename="emails.csv"')  
+  @UseGuards(AuthGuard())
+  async exportEmails(@Req() request: AuthRequest, @Res({ passthrough: true }) res: Response, @Body() body: IEmailExportRequest) {
+    this.appService.assertAdmin(request);
+    const exportTypeOrigin = body.exportTypeOrigin;
+    if (exportTypeOrigin !== 'Subscription' && exportTypeOrigin !== 'Person' && exportTypeOrigin !== 'Both') throw new BadRequestException('Invalid export type origin');
+    this.logger.log('Admin exporting email list from fhir resource:' + exportTypeOrigin);
+    this.logger.log('Getting all people registered in the FHIR server');
+    let emails: string[] = []
+    if (exportTypeOrigin === 'Both') {
+      const personEmails = await this.getEmails('Person');
+      const subscriptionEmails = await this.getEmails('Subscription');
+      emails = [...new Set([...personEmails, ...subscriptionEmails])] // get unique array of emails
+    } else {
+      emails = await this.getEmails(exportTypeOrigin);
+    }
+    this.logger.log('Found ' + emails.length + ' emails')
+    try {
+      this.logger.log('Converting emails to CSV');
+      const parser = new Parser({
+        formatters: {
+          string: stringFormatter({ quote: '' }),
+        }
+      });
+      const csv = parser.parse(emails.map(i => ({email: i})));
+      writeFileSync('tmp.csv', csv)
+
+      const stream = createReadStream(join(process.cwd(), 'tmp.csv'))
+      stream.on('end', () => {
+        try{
+          unlinkSync('tmp.csv');
+        } catch (error) {
+          this.logger.warn('An error occurred while removing tmp file.');
+        }
+      })
+      return new StreamableFile(stream);
+    } catch (err) {
+      this.logger.error('Error converting emails to CSV', err);
+    }
   }
 
   @Post('bundle')
@@ -106,7 +199,7 @@ export class UploadController {
       if (typeof Bucket === 'undefined' || Bucket === "") {
         this.logger.log(`Uploading bundle to local storage`);
         const bundlePath = path.resolve(this.appService.serverConfig.bundlePath);
-        fs.writeFileSync(bundlePath, xmlData);
+        writeFileSync(bundlePath, xmlData);
         this.logger.log(`Updated bundle file at path ${bundlePath}.`);
       }
       else {

@@ -1,184 +1,53 @@
 <div class="app-container">
-  <nav class="navbar navbar-expand-md navbar-dark bg-aims">
-    <a
-      class="navbar-brand"
-      href="#"
-      title="Electronic Reporting and Surveillance Distribution"
-    >
-      <img class="ersd-logo" src="/assets/ersd-logo.png" />
-    </a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-toggle="collapse"
-      data-target="#navbarCollapse"
-      aria-controls="navbarCollapse"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item" [class.active]="homeLink.isActive">
-          <a
-            class="nav-link"
-            routerLink="/home"
-            routerLinkActive
-            #homeLink="routerLinkActive"
-            >Home <span class="sr-only">(current)</span></a
-          >
-        </li>
-        <li
-          class="nav-item"
-          *ngIf="authService.loggedIn"
-          [class.active]="subscriptionLink.isActive"
-        >
-          <a
-            class="nav-link"
-            routerLink="/subscription"
-            routerLinkActive
-            #subscriptionLink="routerLinkActive"
-            >Notification</a
-          >
-        </li>
-        <li
-          class="nav-item"
-          *ngIf="authService.loggedIn"
-          [class.active]="apiKeysLink.isActive"
-        >
-          <a
-            class="nav-link"
-            routerLink="/api-keys"
-            routerLinkActive
-            #apiKeysLink="routerLinkActive"
-            >Polling</a
-          >
-        </li>
-        <li
-          class="nav-item"
-          *ngIf="authService.loggedIn"
-          [class.active]="contactInfoLink.isActive"
-        >
-          <a
-            class="nav-link"
-            routerLink="/contact-info"
-            routerLinkActive
-            #contactInfoLink="routerLinkActive"
-            >Contact Info</a
-          >
-        </li>
-        <li
-          class="nav-item"
-          *ngIf="authService.loggedIn && authService.isAdmin"
-          [class.active]="adminLink.isActive"
-        >
-          <a
-            class="nav-link"
-            routerLink="/admin"
-            routerLinkActive
-            #adminLink="routerLinkActive"
-            >Admin</a
-          >
-        </li>
-      </ul>
-    </div>
-    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item" *ngIf="authService.loggedIn">
-          <a class="nav-link" routerLink="/contact-info">
-            <i class="fas fa-user"></i> {{ authService.fullName }}
-          </a>
-        </li>
-        <li class="nav-item clickable" *ngIf="authService.loggedIn">
-          <a class="nav-link" (click)="authService.logout()">
-            <i class="fas fa-sign-out-alt"></i> Sign out
-          </a>
-        </li>
-        <li class="nav-item clickable" *ngIf="!authService.loggedIn">
-          <a class="nav-link" (click)="authService.login()">
-            <i class="fas fa-sign-in-alt"></i> Sign in
-          </a>
-        </li>
-        <li class="nav-item clickable" *ngIf="!authService.loggedIn">
-          <a class="nav-link" (click)="authService.register()">
-            <i class="fas fa-user-plus"></i> Register
-          </a>
-        </li>
-      </ul>
-    </div>
-  </nav>
-  <main role="main" class="container">
+  <navigation></navigation>
+  <main role="main" class="container w-85 pb-3">
     <div *ngIf="authService.person"><router-outlet></router-outlet></div>
-    <div class="home-grid-container" *ngIf="!authService.loggedIn">
-      <div
-        class="home-grid-item home-grid-item-1"
-        *ngIf="!authService.loggedIn"
-      >
-        <img src="../../assets/ersd-logo-full.png" />
+    <div *ngIf="!authService.loggedIn">
+      <div>
+        <img src="../../assets/ersd-logo-full.png" class="img-fluid mt-5" />
       </div>
-      <!-- <ersd-update-notice></ersd-update-notice> -->
-      <div class="page-info" *ngIf="!authService.loggedIn">
-        <p>
-          This site provides access to the eRSD specifications for electronic Case Reporting (eCR).
-          The eRSD is used to guide triggering and reporting of initial case reports within participating Electronic Health Records.
-          For more information, please visit
-          <a
-            class="home-page-info-email"
-            href="https://ecr.aimsplatform.org/ehr-implementers/triggering/"
-            >https://ecr.aimsplatform.org/ehr-implementers/triggering/</a
-          >. The site may also contain specifications for other public health reporting programs and pilots.
-        </p>
-        <p>
-          <span class="page-info-heading">Registration</span> – If this is your first time visiting the site, please register for an account.
-          Registration is needed so we have contact information to alert you for subsequent routine and emergent eRSD updates.
-        </p>
-
-        <p>
-          <span class="page-info-heading">Access to Content</span> - Once registered, you will receive notices of content updates.
-          You can choose to receive the content through manual download or automated polling of the eRSD server.
-          You will also be able to choose whether you receive the content in XML or JSON formats.
-        </p>
-      </div>
-      <div class="unauthenticated-message" *ngIf="!authService.loggedIn">
-        <!--
-          <h3>You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()">login</a> to continue.</h3>
-        -->
-        <h3 *ngIf="!authService.loggedIn">
-          You are not currently logged in. Please
-          <a href="javascript:void(0)" (click)="authService.login()"
-            ><i class="fas fa-sign-in-alt"></i>&nbsp;login</a
-          >
-          or
-          <a href="javascript:void(0)" (click)="authService.register()"
-            ><i class="fas fa-user-plus"></i>&nbsp;register</a
-          >
-          to continue.
-        </h3>
+      <div class="card bg-primary border-0 mb-4">
+        <div class="card-body p-4">
+          <div class="alert alert-primary border-0 shadow-sm" role="alert">
+            <span><i class="fas fa-info-circle me-2 fa-lg"></i></span>
+            <span>You are not currently logged in. Please <a href="javascript:void(0)" (click)="authService.login()"
+                class="alert-link">login</a> or <a href="javascript:void(0)" (click)="authService.register()"
+                class="alert-link">register</a> to continue.</span>
+          </div>
+          <p>
+            This site provides access to the electronic Reporting and Surveillance Distribution (eRSD) for electronic
+            Case Reporting (eCR). The eRSD is used to
+            guide triggering and reporting of electronic Initial Case Reports (eICRs) from participating Healthcare
+            Organizations and their Electronic Health Records. For
+            more information, please visit the <a class="link-primary"
+              href="https://ecr.aimsplatform.org/ehr-implementers/triggering/">EHR
+              triggering documentation for EHR implementers</a>.
+          </p>
+          <p>
+            <span class="fw-bold">Registration</span> - If this is your first time visiting the site, please register
+            for an account. Registration is
+            needed so we have contact information to alert you for subsequent routine and emergent eRSD updates.
+          </p>
+          <p>
+            <span class="fw-bold">Access to Content</span> - Once registered, you will receive notices of content
+            updates. You can choose to receive
+            the content through manual download or automated polling of the eRSD server. You will also be able to choose
+            whether you
+            receive the content in XML or JSON formats.
+          </p>
+        </div>
       </div>
     </div>
   </main>
-  <div class="ersd-footer">
-    <div>
-      <div class="footer-heading">Contact Us:</div>
-      <p>
-        For general eRSD inquiries please contact:
-        <a href="mailto:eCR-Info@aimsplatform.org?subject=eRSD Site Inquiry" class="footer-contact-email"
-        >eCR-Info@aimsplatform.org</a
-        >
-      </p>
-      <p>
-        For eRSD technical problems and support please contact the eRSD Services
-        Support Team at
-        <a
-          href="mailto:informatics.support@aphl.org?subject=eRSD Site Technical Support"
-          class="footer-contact-email"
-        >informatics.support@aphl.org</a
-        >, please include "eRSD Site Technical Support" in the subject line.
-      </p>
-    </div>
-    <div id="ersd-version-container">
-      {{versionText}}
-    </div>
-  </div>
+  <footer class="container w-85 text-center text-light mb-3">
+
+    <p class="fw-bold mb-0">Contact Us</p>
+    <p class="mb-0"> For general eRSD inquiries please contact: <a href="mailto:eCR-Info@aimsplatform.org?subject=eRSD Site Inquiry" class="fw-bold-email">eCR-Info@aimsplatform.org</a>
+    </p>
+    <p class="mb-0"> For eRSD technical problems and support please contact the eRSD Services Support Team at <a href="mailto:informatics.support@aphl.org?subject=eRSD Site Technical Support" class="fw-bold-email">informatics.support@aphl.org</a>, please include "eRSD Site Technical Support" in the subject
+      line.
+    </p>
+    <span>eRSD Version: 1.3.6</span>
+
+  </footer>
 </div>

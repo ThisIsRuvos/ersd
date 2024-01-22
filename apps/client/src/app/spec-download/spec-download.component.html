@@ -1,121 +1,95 @@
-<div ngbAccordion>
-  <div ngbAccordionItem [collapsed]="true">
-    <h6 ngbAccordionHeader class="px-4 py-3">
-      <button ngbAccordionButton>Select an eRSD version to download</button>
-    </h6>
-    <div ngbAccordionCollapse >
-      <div ngbAccordionBody>
-        <ng-template>
-          <div class="fieldset-container">
-            <fieldset>
-              <legend class='bolded-legend'>Select the eRSD version to use:</legend>
-              <p class='legend-subtext'>
-                If you do not know which eRSD version to use please contact your EHR vendor or for eCR 
-                Now App implementations read the “eRSD Configuration Instructions” file in your eCR Now
-                App download folder.
-              </p>
-              <form>
-                <!-- Legacy versions of eCR spec -->
-                <fieldset>
-                  <legend class="version-legend">For eCR Now App Release 2.X and Release 3.X and for many existing vendor
-                    developed implementations:</legend>
-                  <input type="radio" id="legacy-versions" name="drone" value="ecrv1" (change)="setVersion($event)" checked>
-                  <label for="legacy-versions">
-                    <div class="radio-text">
-                      <p class='input-title'>eRSD Version 1 - Specification Bundle</p>
-                      <p class='input-subtitle'>Provides trigger codes and a computable representation of the reporting
-                        workflow</p>
-                    </div>
-                  </label>
-                  <div>
-                    <button type="button" class="btn btn-primary excelDownload" (click)="downloadExcel($event)">Latest RCTC
-                      Spreadsheet & Change Log</button>
-                    <button class="release-notes-link" (click)="downloadReleaseNotes()">eRSD Release Description</button>
-                    </div>
-                </fieldset>
-                <!-- New versions of eCR spec -->
-                <div>
-                  <fieldset>
-                    <legend class="version-legend">For eCR Now App Release 3.X and greater and some recently vendor
-                      developed implementations:</legend>
-                    <div class='input-container v-2'>
-                      <input type="radio" id="legacy-versions" name="drone" value="ecrv2" (change)="setVersion($event)">
-                      <label for="legacy-versions">
-                        <div class="radio-text">
-                          <p class='input-title'>eRSD Version 2 - Specification Bundle</p>
-                          <p class='input-subtitle'>Provides trigger codes and a computable representation of the reporting
-                            workflow</p>
-                          <p>Support for distributed reportability determination using the eRSD Version 2 - Supplemental
-                            bundle is in progress</p>
-                        </div>
-                      </label>
-                      <button class="release-notes-link" (click)="downloadReleaseNotes()">eRSD Release Description</button>
-                      <!-- FUTURE RELEASE OF V2 SUPPLEMENTAL BUNDLE 
-                        // In order to implement the new specification bundle for eRSD Version 2, uncomment the following code. 
-    
-                        <input type="radio" id="v-2" name="drone" value="ecrv2" (change)="setVersion($event)">
-                      <label for="v-2">
-                        <div class="radio-text">
-                          <p class='input-title'>Version 2</p>
-                        </div>
-                      </label> -->
-                    </div>
-                    <!-- <div class='input-container check'>
-                      <input type="checkbox" id="v2-spec" name="drone" value="ecrv2spec" (change)="setBundle($event)" [disabled]="this.bundleType != 'ecr-v2-supp' && this.version != 'ecr-v2'">
-                      <label for="v2-spec">
-                        <div class="radio-text">
-                          <p>eRSD Version 2 Specification Bundle</p>
-                          <p class='input-subtitle'>Provides trigger codes and a computable representation of the reporting workflow</p>
-                        </div>
-                      </label>
-                    </div>
-                    <div class='marginTop input-container check'>
-                      <input type="checkbox" id="v2-supp" name="drone" value="ecrv2supp" (change)="setBundle($event)" [disabled]="this.bundleType != 'ecr-v2-spec' && this.version != 'ecr-v2'">
-                      <label for="v2-supp">
-                        <div class="radio-text">
-                          <p>eRSD Version 2 Supplemental Bundle</p>
-                          <p class='input-subtitle'>Provides computable representations of select reportability rules to optimize eICR transmission</p>
-                        </div>
-                      </label>
-                    </div> -->
-                  </fieldset>
-                </div>
-              </form>
-              <!-- Select XML or JSON download-->
-              <fieldset>
-                <legend class="version-legend">Select a download format: </legend>
-                <input class='check' type="radio" id="file-type" name="drone" value="json" (change)="setContentType($event)"
-                  checked>
-                <label for="file-type">
-                  <div class="radio-text">
-                    <p class='input-title'>JSON</p>
-                  </div>
-                </label>
-                <input class='check' type="radio" id="file-type" name="drone" value="xml" (change)="setContentType($event)">
-                <label for="file-type">
-                  <div class="radio-text">
-                    <p class='input-title'>XML</p>
-                  </div>
-                </label>
-              </fieldset>
-            </fieldset>
-
-            <div class="button-container pb-5">
-              <button *ngIf="loading" class="btn btn-primary" type="button" disabled>
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                Downloading...
-              </button>
-              <button *ngIf="!loading" type="button" class="btn btn-primary" (click)="handleSubmit()">Download</button>
-            </div>
-          </div>
-        </ng-template>
+<div>
+  <!-- Specification Bundle(s -->
+  <fieldset class="px-4">
+    <div class="fw-medium">Select Specification Bundle:</div>
+    <form>
+      <!-- Version 1 -->
+      <div class="form-check mb-4">
+        <input class="form-check-input" type="radio" name="ersdVersion" id="versions-1" value="ecrv1"
+          (change)="setVersion($event)" checked>
+        <div class="d-flex">
+          <label class="form-check-label" for="versions-1">
+            <span class="fw-bold">eRSD Version 1</span>
+          </label>
+          <a href="javascript:void(0)" (click)="downloadReleaseNotes('ersdv1')" class="ms-2 link-primary form-text">
+            eRSD VERSION 1 RELEASE DESCRIPTION
+          </a><i class="fas fa-external-link-alt superscript-icon"></i>
+        </div>
+        <div class="form-text fst-italic">
+          <p>eRSD Version 1 includes the queries necessary for producing CDA eICR R1.1 reports. For eCR Now App Release
+            2.X.</p>
+        </div>
       </div>
-    </div>
-  </div>
+      <!-- Version 2 -->
+      <div class="form-check mb-4">
+        <input class="form-check-input" type="radio" name="ersdVersion" id="versions-2" value="ecrv2"
+          (change)="setVersion($event)">
+        <div class="d-flex">
+          <label class="form-check-label" for="versions-2">
+            <span class="fw-bold">eRSD Version 2</span>
+          </label>
+          <a href="javascript:void(0)" (click)="downloadReleaseNotes('ersdv2')" class="ms-2 link-primary form-text">
+            eRSD VERSION 2 RELEASE DESCRIPTION
+          </a><i class="fas fa-external-link-alt superscript-icon"></i>
+        </div>
+        <div class="form-text fst-italic">
+          <p>eRSD Version 2 includes the queries necessary for producing CDA eICR R1.1 reports. It is for users of the
+            eCR Now FHIR App release 3.X and greater.</p>
+        </div>
+      </div>
+      <!-- Version 3 -->
+      <div *ngIf="configService.serveV3" class="form-check mb-4">
+        <input class="form-check-input" type="radio" name="ersdVersion" id="versions-3" value="ecrv3"
+          (change)="setVersion($event)">
+        <div class="d-flex">
+          <label class="form-check-label" for="versions-3">
+            <span class="fw-bold">eRSD Version 3</span>
+          </label>
+          <a href="javascript:void(0)" (click)="downloadReleaseNotes('ersdv3')" class="ms-2 link-primary form-text">
+            eRSD VERSION 3 RELEASE DESCRIPTION
+          </a><i class="fas fa-external-link-alt superscript-icon"></i>
+        </div>
+        <div class="form-text fst-italic">
+          <p>eRSD Version 3 includes the queries necessary for producing both CDA eICR R1.1 and CDA eICR R3.1 reports.
+            It is for users of the eCR Now FHIR App release 3.X and greater.
+          </p>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <span class="fw-medium me-2">Select Download Format:</span>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" id="file-type-1" name="content-type" value="json"
+            (change)="setContentType($event)" checked>
+          <label class="form-check-label" for="file-type-1">JSON</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" id="file-type-2" name="content-type" value="xml"
+            (change)="setContentType($event)">
+          <label class="form-check-label" for="file-type-2">XML</label>
+        </div>
+      </div>
+
+      <div class="text-center mb-4">
+        <!-- added below if needed [disabled]="isDisabled"  -->
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">          
+          <button class="btn btn-secondary me-md-2" type="submit" (click)="handleSubmit()" style="width: 225px">
+            <div class="d-flex justify-content-md-between align-items-center">
+              <ng-container *ngIf="!loading; else loadingSpinner">
+                <i class="fas fa-file-download mx-auto"></i>
+              </ng-container>
+              <ng-template #loadingSpinner>
+                <span class="spinner-border spinner-border-sm mx-auto" role="status" aria-hidden="true"></span>
+              </ng-template>
+              <span>Download eRSD Files</span>
+            </div>
+          </button>
+          <button class="btn btn-secondary" type="button" (click)="downloadRCTCReleaseSpreadsheet()">
+            <i class="fas fa-file-download me-2"></i>Download Latest RCTC Spreadsheet & Change Log
+          </button>
+        </div>
+      </div>
+    </form>
+  </fieldset>
+  <!-- End of Specification Bundle(s -->
 </div>
-
-
-
-
-
-

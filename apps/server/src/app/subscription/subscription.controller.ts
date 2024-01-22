@@ -2,7 +2,6 @@ import { Body, Controller, Get, Logger, Post, Req, UseGuards } from '@nestjs/com
 import { HttpService } from '@nestjs/axios';
 import {
   EmailSubscriptionInfo,
-  SmsSubscriptionInfo,
   UserSubscriptions
 } from '../../../../../libs/ersdlib/src/lib/user-subscriptions';
 import { UserController } from '../user/user.controller';
@@ -50,14 +49,13 @@ export class SubscriptionController {
       });
 
       const subscriptions = await Promise.all(promises);
-      const emailSubscription = subscriptions.find((subscription) => subscription.channel.type === 'email' && !subscription.isSms);
-      const smsSubscription = subscriptions.find((subscription) => subscription.isSms);
+      const emailSubscription = subscriptions.find((subscription) => subscription.channel.type === 'email');
 
-      return this.buildUserSubscriptions(emailSubscription, smsSubscription);
+      return this.buildUserSubscriptions(emailSubscription);
     }
   }
 
-  private buildUserSubscriptions(emailSubscription: Subscription, smsSubscription: Subscription): UserSubscriptions {
+  private buildUserSubscriptions(emailSubscription: Subscription): UserSubscriptions {
     const userSubscriptions = new UserSubscriptions();
 
     // email
@@ -78,14 +76,6 @@ export class SubscriptionController {
           userSubscriptions.emailSubscription.format = 'xml';
         }
       }
-    }
-
-    // sms
-    if (smsSubscription && smsSubscription.channel && smsSubscription.channel.endpoint) {
-      userSubscriptions.smsSubscription = {
-        carrier: smsSubscription.smsCarrier,
-        mobilePhone: smsSubscription.smsPhone
-      };
     }
 
     return userSubscriptions;
@@ -119,54 +109,6 @@ export class SubscriptionController {
         'mailto:' + updated.emailAddress;
 
       current.channel.payload = ';bodytext=' + Buffer.from(Constants.defaultEmailBody).toString('base64');
-
-      return this.httpService.request({
-        method: method,
-        url: this.appService.buildFhirUrl('Subscription', current ? current.id : null),
-        data: current
-      }).toPromise();
-    }
-
-    return Promise.resolve();
-  }
-
-  private updateSmsSubscription(current: Subscription, updated: SmsSubscriptionInfo): Promise<any> {
-    const method = current ? 'PUT' : 'POST';
-
-    if (current && !updated) {
-      const deleteUrl = this.appService.buildFhirUrl('Subscription', current.id);
-      return this.httpService.delete(deleteUrl).toPromise();
-    } else if (updated) {
-      if (!current) {
-        current = new Subscription();
-        current.channel.type = 'email';
-        current.criteria = this.appService.serverConfig.subscriptionCriteria;
-      }
-
-      this.enableSubscription(current);
-
-      const mobile = updated.mobilePhone.replace(/[^0-9]/g, '');
-      let email = `mailto:${mobile}`;
-
-      switch (updated.carrier) {
-        case 'tmobile':
-          email += Subscription.SMS_TMOBILE;
-          break;
-        case 'verizon':
-          email += Subscription.SMS_VERIZON;
-          break;
-        case 'at&t':
-          email += Subscription.SMS_ATT;
-          break;
-        case 'sprint':
-          email += Subscription.SMS_SPRINT;
-          break;
-        default:
-          throw new Error(`Unexpected carrier ${updated.carrier}`);
-      }
-
-      current.channel.endpoint = email;
-      current.channel.payload = 'application/json';   // This is required by HAPI to send an email notification
 
       return this.httpService.request({
         method: method,
@@ -220,26 +162,21 @@ export class SubscriptionController {
       });
 
       const currentSubscriptions = await Promise.all(promises);
-      const emailSubscription = currentSubscriptions.find((subscription) => subscription.channel.type === 'email' && !subscription.isSms);
-      const smsSubscription = currentSubscriptions.find((subscription) => subscription.isSms);
+      const emailSubscription = currentSubscriptions.find((subscription) => subscription.channel.type === 'email');
 
       const updatePromises = [
         this.updateEmailSubscription(emailSubscription, userSubscriptions.emailSubscription),
-        this.updateSmsSubscription(smsSubscription, userSubscriptions.smsSubscription)
       ];
 
       let updatedEmailSubscription: AxiosResponse<Subscription>;
-      let updatedSmsSubscription: AxiosResponse<Subscription>;
 
       return new Promise((resolve, reject) => {
         Promise.all(updatePromises)
           .then((updatedSubscriptions) => {
             updatedEmailSubscription = updatedSubscriptions[0];
-            updatedSmsSubscription = updatedSubscriptions[1];
 
             const updatedPerson =
-              this.ensureSubscription(person, emailSubscription, updatedEmailSubscription ? updatedEmailSubscription.data : undefined) ||
-              this.ensureSubscription(person, smsSubscription, updatedSmsSubscription ? updatedSmsSubscription.data : undefined);
+              this.ensureSubscription(person, emailSubscription, updatedEmailSubscription ? updatedEmailSubscription.data : undefined)
 
             if (updatedPerson) {
               const updatePersonUrl = this.appService.buildFhirUrl('Person', person.id);
@@ -248,8 +185,7 @@ export class SubscriptionController {
           })
           .then(() => {
             const updatedUserSubscriptions = this.buildUserSubscriptions(
-              updatedEmailSubscription ? updatedEmailSubscription.data : undefined,
-              updatedSmsSubscription ? updatedSmsSubscription.data : undefined);
+              updatedEmailSubscription ? updatedEmailSubscription.data : undefined)
             resolve(updatedUserSubscriptions);
           })
           .catch((err) => reject(err));
@@ -259,25 +195,12 @@ export class SubscriptionController {
 
 
   private removeAttachmentsFromBody(subscription): string {
-    // Since the subscriptions for SMS and Email are both tagged as emails, SMS Subscriptions must be a no-op
-    const mobileCarriers = [
-      Subscription.SMS_TMOBILE,
-      Subscription.SMS_VERIZON,
-      Subscription.SMS_ATT,
-      Subscription.SMS_SPRINT
-    ]; 
 
     const updatedSubscription: Subscription = subscription;
-    const subscriptionEndpoint = updatedSubscription.channel.endpoint;
     const payloadString = updatedSubscription.channel.payload;
 
-    // check if an SMS carrier is present in the subscription endpoint
-    if (mobileCarriers.some(carrier => subscriptionEndpoint.includes(carrier))) {
-      return 'SMS';
-    } else {
       const payloadBody = payloadString.split(';bodytext=').pop();
       return `;bodytext=${payloadBody}`;
-    }
   }
 
   private createPatchBundle(bundle) {

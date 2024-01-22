@@ -1,0 +1,60 @@
+/* repeated */
+.btn-secondary {
+    --bs-btn-color: var(--text-color-light); 
+    --bs-btn-bg: var(--secondary-color); 
+    --bs-btn-border-color: var(--secondary-color) !important;
+    
+    --bs-btn-hover-color: var(--text-color-light); 
+    --bs-btn-hover-bg: var(--secondary-alt-color); 
+    --bs-btn-hover-border-color: var(--secondary-alt-color);
+    
+    --bs-btn-focus-shadow-rgb: 130, 138, 145;
+    
+    --bs-btn-active-color: var(--text-color-light); 
+    --bs-btn-active-bg: var(--secondary-color);
+    --bs-btn-active-border-color: var(--secondary-color);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+    
+    /* --bs-btn-disabled-color: var(--text-color); 
+    --bs-btn-disabled-bg: #var(--primary-color); 
+    --bs-btn-disabled-border-color: var(--icon-color); */
+    }
+
+    .form-check-input:checked {
+        background-color: var(--tertiary-color);
+        border-color: var(--tertiary-color);
+        }
+        
+        .form-check-input:focus {
+        border-color: var( --tertiary-alt-color);
+        outline: 0;
+        box-shadow: 0 0 0 .25rem #4DAEB34D;
+        }
+
+        .nav-link {
+            display: block;
+            padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);
+            font-size: var(--bs-nav-link-font-size);
+            font-weight: var(--bs-nav-link-font-weight);
+            color: var(--font-color) !important;
+            text-decoration: none;
+            background: none;
+            border: 0;
+            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
+        }
+
+
+        .nav-tabs .nav-link {
+            margin-bottom: calc(-1 * var(--bs-nav-tabs-border-width));
+            border: var(--bs-nav-tabs-border-width) solid transparent;
+            border-top-left-radius: var(--bs-nav-tabs-border-radius);
+            border-top-right-radius: var(--bs-nav-tabs-border-radius);
+        }
+
+        .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+            color: var(--secondary-color) !important;
+            background-color: var(--bs-nav-tabs-link-active-bg);
+            border-color: var(--bs-nav-tabs-link-active-border-color);
+        }
+
+        .tab-pane-body { max-width: 80ch }

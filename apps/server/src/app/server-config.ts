@@ -38,7 +38,8 @@ export interface IServerConfig {
   restrictedResourceTypes: string[];
   contactInfo: IServerConfigContactInfo;
   exampleQuery?: string;
-  serveV2: boolean,
+  serveV3: boolean,
+  serveV2Supplemental: boolean,
   payload: {
     Bucket: string;
     Key: string;
@@ -48,8 +49,22 @@ export interface IServerConfig {
     ERSDV1_XML_KEY: string;
     ERSDV2_SUPPLEMENTAL_JSON_KEY: string;
     ERSDV2_SUPPLEMENTAL_XML_KEY: string;
+    ERSDV1_SPECIFICATION_JSON_KEY: string;
+    ERSDV1_SPECIFICATION_XML_KEY: string;
     ERSDV2_SPECIFICATION_JSON_KEY: string;
     ERSDV2_SPECIFICATION_XML_KEY: string;
-    ERSD_RELEASE_DESCRIPTION_KEY: string;
+    ERSDV3_SPECIFICATION_JSON_KEY: string
+    ERSDV3_SPECIFICATION_XML_KEY: string
+    ERSD_RELEASE_DESCRIPTION_V1_KEY: string;
+    ERSD_RELEASE_DESCRIPTION_V2_KEY: string
+    ERSD_RELEASE_DESCRIPTION_V3_KEY: string
+    ERSDV2_CHANGE_PREVIEW_JSON_KEY: string;
+    ERSDV2_CHANGE_PREVIEW_XML_KEY: string;
+    ERSDV3_CHANGE_PREVIEW_JSON_KEY: string;
+    ERSDV3_CHANGE_PREVIEW_XML_KEY: string;
+    ERSDV2_CHANGE_PREVIEW_SUMMARY_KEY: string;
+    ERSDV3_CHANGE_PREVIEW_SUMMARY_KEY: string;
+    RCTC_CHANGE_LOG_KEY: string;
+    RCTC_RELEASE_SPREADSHEET_KEY: string;
   };
 }

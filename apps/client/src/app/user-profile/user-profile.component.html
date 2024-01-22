@@ -1,0 +1,158 @@
+<div>
+  <main role="main" class="container vw-85 pb-5">
+    <div class="card bg-primary border-0">
+      <div class="card-body p-0">
+        <h4 class="card-title fw-bold p-4 mb-0 p-4">Profile</h4>
+
+        <div class="px-4 mb-4">
+
+          <div class="row px-3" style="min-height: 500px;">
+            <!-- Vertical Tab Navigation -->
+            <div class="col-md-3 sidebar-primary p-3 rounded shadow-sm">
+              <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="v-pills-tab1" data-bs-toggle="pill" href="#tab1" role="tab"
+                  aria-controls="tab1" aria-selected="true">
+                  <div class="row align-items-center">
+                    <div class="col-auto pe-0"><span><i class="fas fa-user"></i></span></div>
+                    <div class="col">
+                      User
+                    </div>
+                  </div>
+                </a>
+
+                <a class="nav-link" id="v-pills-tab2" data-bs-toggle="pill" href="#tab2" role="tab" aria-controls="tab2"
+                  aria-selected="true">
+                  <div class="row align-items-center">
+                    <div class="col-auto pe-0"><span><i class="fas fa-bell"></i></span></div>
+                    <div class="col">
+                      Notifications
+                    </div>
+                  </div>
+                </a>
+
+              </div>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="col-md-9 px-4">
+              <div class="tab-content" id="v-pills-tabContent">
+                <!-- User -->
+                <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="v-pills-tab1">
+                  <div class="bg-primary-heading mb-3 rounded shadow-sm">
+                    <h5 class="mb-0 px-4 fw-medium py-2">User</h5>
+                  </div>
+
+                  <div class="alert alert-primary border-0 shadow-sm" role="alert">
+                    <div class="row">
+                      <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
+                      <div class="col">
+                        <p class="m-0">
+                          Please provide your primary contact information in the form below. You can choose to create an
+                          organizational or individual account. This contact information will be used for general
+                          communications related to eRSD. Additionally, you may choose to add secondary contact
+                          information as needed.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <ersd-edit-person [person]="person" *ngIf="person" #editPerson></ersd-edit-person>
+
+                  <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                    <button id="saveContactBtn" type="button" class="btn btn-secondary" style="width: 150px"
+                    [disabled]="!isUserValid"   (click)="saveContact()">
+                      <span>
+                        <i class="fas fa-save me-1"></i>
+                        <span>Save</span>
+                      </span>
+                    </button>
+                  </div>
+
+
+
+
+                </div>
+                <!-- Notifications -->
+                <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="v-pills-tab2">
+                  <div class="bg-primary-heading mb-3 rounded shadow-sm">
+                    <h5 class="mb-0 px-4 fw-medium py-2">Notifications</h5>
+                  </div>
+
+                  <div class="alert alert-primary border-0 shadow-sm" role="alert">
+                    <div class="row">
+                      <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
+                      <div class="col">
+                        <p class="m-0">
+                          This contact information will be used for general communications related to eRSD.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div *ngIf="person">
+                    <div class="fw-bold">Contact Email(s)</div>
+                    <label for="emailPrimary" class="form-label">Primary Email</label>
+                    <div class="input-group mb-3">
+                      <input type="email" [(ngModel)]="person.email" class="form-control" id="emailPrimary" readonly>
+                      <span class="input-group-text">
+                        <i class="fas fa-lock"></i>
+                      </span>
+                    </div>
+                  </div>
+                    <div *ngIf="secondary">
+                      <label for="emailSecondary" class="form-label">Secondary Email</label>
+                      <div class="input-group mb-3">
+                        <input type="email" [(ngModel)]="secondary.email" class="form-control" id="emailSecondary"
+                          readonly>
+                        <span class="input-group-text">
+                          <i class="fas fa-lock"></i>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="alert alert-primary border-0 shadow-sm" role="alert">
+                      <div class="row">
+                        <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
+                        <div class="col">
+                          <p class="m-0">
+                            Email subscription is required. You will be contacted
+                            based on your preference with any important information related to eRSD, or with
+                            routine or emergent updates.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="fw-bold">eRSD Subscription</div>
+                    <div *ngIf="userSubscriptions.emailSubscription">
+
+                      <div class="mb-3">
+                        <label for="emailSubscriptionEmail" class="form-label">Subscription Email</label>
+                        <input id="emailSubscriptionEmail" type="text" class="form-control"
+                          placeholder="joe@somewhere.com" [(ngModel)]="userSubscriptions.emailSubscription.emailAddress"
+                          [class.is-invalid]="emailAddress.errors?.email || emailAddress.errors?.required" email="true"
+                          required="required" #emailAddress="ngModel" />
+                      </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                      <button id="saveBtn" type="button" class="btn btn-secondary" style="width: 150px"
+                      [disabled]="!isValid" (click)="saveSubscription()">
+                        <span>
+                          <i class="fas fa-save me-1"></i>
+                          <span>Save</span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

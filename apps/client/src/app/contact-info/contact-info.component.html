@@ -2,16 +2,15 @@
   <div class='heading-container'>
     <h2 class='section-heading'>Contact Information</h2>
   </div>
-  
   <div class='page-info contact-page-info'>
-    <p>Please provide your primary contact information in the form below.  You can choose to create an organizational or individual account.  This contact information will be used for general communications related to eRSD.  Additionally, you may choose to add secondary contact information as needed.</p>            
+    <p>Please provide your primary contact information in the form below. You can choose to create an organizational or
+      individual account. This contact information will be used for general communications related to eRSD.
+      Additionally, you may choose to add secondary contact information as needed.</p>
   </div>
-
-  <div class="alert" *ngIf="message" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError">{{message}}</div>
-
-<ersd-edit-person [person]="person" *ngIf="person"></ersd-edit-person>
-
-<p>
-  <button type="button" class="btn btn-light" (click)="save()">Save</button>
-  <button type="button" class="btn btn-danger" (click)="delete()">Delete This Account</button>
-</p>
+  <div class="alert" *ngIf="message" [class.alert-info]="!messageIsError" [class.alert-danger]="messageIsError">
+    {{message}}</div>
+  <ersd-edit-person [person]="person" *ngIf="person"></ersd-edit-person>
+  <p>
+    <button type="button" class="btn btn-light" (click)="save()">Save</button>
+    <button type="button" class="btn btn-danger" (click)="delete()">Delete This Account</button>
+  </p>
