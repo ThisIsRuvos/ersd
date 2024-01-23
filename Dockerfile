@@ -15,7 +15,7 @@ RUN npm ci
 RUN npm run build:server
 RUN npm run build:client
 
-FROM ubuntu:mantic
+FROM ubuntu:mantic-20231011
 
 RUN apt-get update && \
 	apt-get install curl -y
