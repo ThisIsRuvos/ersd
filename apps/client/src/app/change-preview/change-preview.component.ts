@@ -4,9 +4,6 @@ import { AuthService } from '../auth.service';
 import { firstValueFrom } from 'rxjs';
 import { ConfigService } from '../config.service';
 
-
-
-
 interface PayloadDownload {
   url: string;
 }
@@ -27,8 +24,8 @@ export class ChangePreviewComponent implements OnInit {
   draftVersion : string = '';
   isDisabled: boolean = true;
   checkboxChecked: boolean = false;
-
-
+  filesExist: boolean = false;
+  loading: boolean = true;
 
   constructor(
     private httpClient: HttpClient,
@@ -38,11 +35,6 @@ export class ChangePreviewComponent implements OnInit {
 
   ngOnInit() {
     this.fetchMarkdown();
-
-    // this.httpClient.get('/api/ersd/markdown', { responseType: 'text' }).subscribe((data) => {
-    //   this.markdownContent = data;
-    // });
-
   }  
 
   setVersion(e) { 
@@ -50,17 +42,29 @@ export class ChangePreviewComponent implements OnInit {
   } // eRSD (eCR) V1 or V2
 
 
-  fetchMarkdown() {
-    this.httpClient.get('/api/ersd/markdown')
-      .subscribe((data: any) => {
+  async fetchMarkdown() {
+    try {
+      const data: any = await firstValueFrom(this.httpClient.get('/api/ersd/markdown'));
+      const file1Exists = data.markdownFile1 !== null && data.markdownFile1 !== undefined;
+      const file2Exists = data.markdownFile2 !== null && data.markdownFile2 !== undefined;
+  
+      this.filesExist = file1Exists || file2Exists;
+  
+      if (file1Exists) {
         this.markdownContentV2 = data.markdownFile1;
+      }
+  
+      if (file2Exists) {
         this.markdownContentV3 = data.markdownFile2;
-      }, (error: any) => {
-        console.error('Error fetching Markdown:', error);
-        // Handle error if needed
-      });
+      }
+    } catch (error) {
+      console.error('Error fetching Markdown:', error);
+    }
+    finally {
+      this.loading = false;
+    }
   }
-
+  
   ngAfterViewInit() {
     this.modalAcknowledgement.nativeElement.addEventListener('hidden.bs.modal', () => {
       this.resetIsDisabled();
