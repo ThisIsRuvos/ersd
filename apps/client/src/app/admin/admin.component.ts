@@ -169,8 +169,6 @@ export class AdminComponent implements OnInit {
         observe: 'response', // Get the full response object
       }));
 
-      // console.log(response.body);
-
       let fileName = '';
       const contentDisposition = response.headers.get('Content-Disposition');
       if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
@@ -206,6 +204,14 @@ export class AdminComponent implements OnInit {
 
 
   async uploadExcel() {
+    if (!this.excelFile) {
+      return;
+    }
+
+    if (!confirm('Are you sure you want to upload the selected resource/file?')) {
+      return;
+    }
+
     this.uploading = true;
 
     const request: IUploadRequest = {
@@ -214,14 +220,14 @@ export class AdminComponent implements OnInit {
     };
     try {
       await firstValueFrom(this.httpClient.post('/api/upload/excel', request));
-      this.message = 'Successfully uploaded!';
-      this.messageIsError = false;
+      this.toastr.success("Successfully uploaded!");   
       this.excelUploadField.nativeElement.value = '';
       this.excelFile = null;
       this.excelFileContent = null;
     } catch (err) {
       this.message = getErrorString(err);
       this.messageIsError = true;
+      this.toastr.error("Failed to upload!");
     } finally {
       this.uploading = false;
     }
@@ -236,16 +242,6 @@ export class AdminComponent implements OnInit {
       return;
     }
 
-    this.message = null;
-    this.messageIsError = false;
-
-    if (!this.bundleFile.name.endsWith('.json') && !this.bundleFile.name.endsWith('.xml')) {
-      this.message = 'Unknown file type for uploaded file ' + this.bundleFile.name;
-      this.messageIsError = true;
-      window.scrollTo(0, 0);
-      return;
-    }
-
     this.uploading = true;
 
     const request: IUploadRequest = {
@@ -256,8 +252,6 @@ export class AdminComponent implements OnInit {
 
     try {
       await firstValueFrom(this.httpClient.post('/api/upload/bundle', request));
-      // this.message = 'Successfully uploaded!';
-      // this.messageIsError = false;
       this.toastr.success("Successfully uploaded!");   
       this.bundleUploadField.nativeElement.value = '';
       this.bundleUploadMessage = null;
