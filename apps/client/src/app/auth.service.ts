@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreatePersonComponent } from './create-person/create-person.component';
 import { formatHumanName } from '../../../../libs/ersdlib/src/lib/helper';
+import { Router } from '@angular/router';
 
 export interface KeycloakProfile extends Keycloak.KeycloakProfile {
   attributes: {
@@ -20,11 +21,13 @@ export class AuthService {
   public profile: KeycloakProfile;
   public roles: string[];
   public person: IPerson;
+  public logoutInProgress: boolean = false;
 
   constructor(
     private modalService: NgbModal,
     private httpClient: HttpClient,
-    private keycloakService: KeycloakService) {
+    private keycloakService: KeycloakService,
+    private router: Router) {
   }
 
   public get fullName(): string {
@@ -55,16 +58,24 @@ export class AuthService {
   }
 
   public logout() {
-    // noinspection JSIgnoredPromiseFromCall
-    this.keycloakService.logout();
-    this.loggedIn = false;
-    this.profile = null;
-    this.person = null;
-    this.roles = [];
-    localStorage.removeItem('kc.token');
-    localStorage.removeItem('kc.idToken');
-    localStorage.removeItem('kc.refreshToken');
+    // Check if logout is already in progress
+    if (this.logoutInProgress) {
+      return;
   }
+  this.logoutInProgress = true;
+
+  this.keycloakService.logout().then(() => { 
+      this.loggedIn = false;
+      this.profile = null;
+      this.person = null;
+      this.roles = [];
+      localStorage.removeItem('kc.token');
+      localStorage.removeItem('kc.idToken');
+      localStorage.removeItem('kc.refreshToken');
+      this.logoutInProgress = false;
+      this.router.navigate(['/']);
+  });
+}
 
   public checkSession() {
     const createUser = () => {
