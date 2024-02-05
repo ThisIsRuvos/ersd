@@ -61,34 +61,36 @@
                   </div>
                   <div class="card border-0">
                     <div class="card-body">
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Email</th>
-                            <th>&nbsp;</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr *ngFor="let user of users">
-                            <td class="align-middle">{{user.firstName}}</td>
-                            <td class="align-middle">{{user.lastName}}</td>
-                            <td class="align-middle">{{user.email}}</td>
-                            <td class="align-middle">
-                              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button class="btn btn-secondary rounded-circle me-md-1" type="button"
-                                  title="Edit this user's contact details" (click)="editUser(user)">
-                                  <i class="fas fa-pen fa-xs"></i></button>
-                                <button class="btn btn-tertiary rounded-circle" type="button"
-                                  title="Remove this user's contact information and their subscriptions"
-                                  (click)="deleteUser(user)">
-                                  <i class="fas fa-times"></i></button>
-                              </div>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th>First Name</th>
+                              <th>Last Name</th>
+                              <th>Email</th>
+                              <th>&nbsp;</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let user of users">
+                              <td class="align-middle">{{user.firstName}}</td>
+                              <td class="align-middle">{{user.lastName}}</td>
+                              <td class="align-middle">{{user.email}}</td>
+                              <td class="align-middle">
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                  <button class="btn btn-secondary rounded-circle me-md-1" type="button"
+                                    title="Edit this user's contact details" (click)="editUser(user)">
+                                    <i class="fas fa-pen fa-xs"></i></button>
+                                  <button class="btn btn-tertiary rounded-circle" type="button"
+                                    title="Remove this user's contact information and their subscriptions"
+                                    (click)="deleteUser(user)">
+                                    <i class="fas fa-times"></i></button>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -101,7 +103,7 @@
                   <div class="alert alert-primary border-0 shadow-sm" role="alert">
                     <div class="row">
                       <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
-                      <div class="col">                  
+                      <div class="col">
                         <p class="m-0">
                           The file uploaded here needs to be an XML file. It is meant to
                           contain an eRSD Version 1 FHIR bundle. This file gets
@@ -115,9 +117,8 @@
 
                   <div class="form-group">
                     <label class="form-label">Bundle XML File</label>
-                      <input type="file" class="form-control"
-                            (change)="handleBundleFileInput($any($event).target.files)" #bundleUploadFile
-                            [class.is-invalid]="!bundleFile" accept="application/json, application/xml" />
+                    <input type="file" class="form-control" (change)="handleBundleFileInput($any($event).target.files)"
+                      #bundleUploadFile [class.is-invalid]="!bundleFile" accept="application/json, application/xml" />
                   </div>
 
                   <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
@@ -157,8 +158,9 @@
                   <div class="form-group">
                     <label class="form-label">Zip File with 'RCTC_Release.xlsx' and 'RCTC_Change_Log.xlsx'
                       Spreadsheets</label>
-                   
-                      <input type="file" class="form-control" (change)="handleExcelFileInput($any($event).target.files)" #excelUploadFile [class.is-invalid]="!excelFile" accept=".zip" />
+
+                    <input type="file" class="form-control" (change)="handleExcelFileInput($any($event).target.files)"
+                      #excelUploadFile [class.is-invalid]="!excelFile" accept=".zip" />
 
                   </div>
 
@@ -224,7 +226,8 @@
                     </label>
                     <div class="form-text fst-italic">
                       <p class="m-0">
-                        A list of email addresses that have been configured by the user to receive eRSD-specific updates.
+                        A list of email addresses that have been configured by the user to receive eRSD-specific
+                        updates.
                         This
                         list is typically used to communicate information or announcements that are specific to
                         the
