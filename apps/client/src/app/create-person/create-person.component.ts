@@ -5,6 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { getErrorString } from '../../../../../libs/ersdlib/src/lib/get-error-string';
 import { KeycloakProfile } from '../auth.service';
 import { formatPhone } from '../../../../../libs/ersdlib/src/lib/helper';
+import { firstValueFrom } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   templateUrl: './create-person.component.html',
@@ -15,19 +17,27 @@ export class CreatePersonComponent implements OnInit {
   @Input() profile: KeycloakProfile;
 
   public message: string;
+  public loading: boolean = false;
 
   constructor(
     private httpClient: HttpClient,
-    public activeModal: NgbActiveModal) {
-  }
+    public activeModal: NgbActiveModal,
+    private toastr: ToastrService){ }
 
-  ok() {
-    this.httpClient.post<Person>('/api/user/me', this.person).toPromise()
-      .then((person) => {
-        this.activeModal.close(person);
-      })
-      .catch((err) => this.message = getErrorString(err));
+
+async ok() {
+  try {
+    this.loading = true; 
+    const person = await firstValueFrom(this.httpClient.post<Person>('/api/user/me', this.person));
+    this.loading = false;
+    this.toastr.success('User details updated successfully!' );    
+    this.activeModal.close(person);
+  } catch (err) {
+    this.message = getErrorString(err);
+    this.toastr.error('Failed to update user details!');
   }
+}
+
 
   private getProfileAttributes(...names: string[]) {
     if (names) {
