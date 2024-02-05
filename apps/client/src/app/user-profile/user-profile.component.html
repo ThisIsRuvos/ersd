@@ -56,19 +56,21 @@
                     </div>
                   </div>
 
-                  <ersd-edit-person [person]="person" *ngIf="person" #editPerson></ersd-edit-person>
+                  <form #userForm="ngForm">
+                    <ersd-edit-person [person]="person" *ngIf="person" #editPerson></ersd-edit-person>
 
-                  <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
-                    <button id="saveBtn" type="button" class="btn btn-secondary" style="width: 150px" [disabled]="!isUserValid" (click)="saveContact()">
-                      <ng-container *ngIf="!loading; else loadingSpinner">
-                        <i class="fas fa-save me-1"></i>
-                      </ng-container>
-                      <ng-template #loadingSpinner>
-                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                      </ng-template>
-                      <span>Save</span>
-                    </button>
-                  </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                      <button id="saveBtn" type="button" class="btn btn-secondary" style="width: 150px" [disabled]="!isUserValid  || !editPersonField.isFormDirty()" (click)="saveContact()">
+                        <ng-container *ngIf="!loading; else loadingSpinner">
+                          <i class="fas fa-save me-1"></i>
+                        </ng-container>
+                        <ng-template #loadingSpinner>
+                          <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                        </ng-template>
+                        <span>Save</span>
+                      </button>
+                    </div>
+                  </form>
 
                 </div>
                 <!-- Notifications -->
@@ -125,29 +127,31 @@
 
 
                     <div class="fw-bold">eRSD Subscription</div>
-                    <div *ngIf="userSubscriptions.emailSubscription">
+                    <form #subscriptionForm="ngForm">
+                      <div *ngIf="userSubscriptions.emailSubscription">
 
-                      <div class="mb-3">
-                        <label for="emailSubscriptionEmail" class="form-label">Subscription Email</label>
-                        <input id="emailSubscriptionEmail" type="text" class="form-control"
-                          placeholder="joe@somewhere.com" [(ngModel)]="userSubscriptions.emailSubscription.emailAddress"
-                          [class.is-invalid]="emailAddress.errors?.email || emailAddress.errors?.required" email="true"
-                          required="required" #emailAddress="ngModel" />
+                        <div class="mb-3">
+                          <label for="emailSubscriptionEmail" class="form-label">Subscription Email</label>
+                          <input id="emailSubscriptionEmail" type="text" class="form-control"
+                            placeholder="joe@somewhere.com" [(ngModel)]="userSubscriptions.emailSubscription.emailAddress"
+                            [class.is-invalid]="emailAddress.errors?.email || emailAddress.errors?.required" email="true"
+                            required="required" #emailAddress="ngModel" />
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
-                      <button id="saveBtn" type="button" class="btn btn-secondary" style="width: 150px" [disabled]="!isValid" (click)="saveSubscription()">
-                        <ng-container *ngIf="!loading; else loadingSpinner">
-                          <i class="fas fa-save me-1"></i>
-                        </ng-container>
-                        <ng-template #loadingSpinner>
-                          <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                        </ng-template>
-                        <span>Save</span>
-                      </button>
+                      <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                        <button id="saveBtn" type="button" class="btn btn-secondary" style="width: 150px" [disabled]="!isValid || !subscriptionForm.dirty" (click)="saveSubscription()">
+                          <ng-container *ngIf="!loading; else loadingSpinner">
+                            <i class="fas fa-save me-1"></i>
+                          </ng-container>
+                          <ng-template #loadingSpinner>
+                            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                          </ng-template>
+                          <span>Save</span>
+                        </button>
 
-                    </div>
+                      </div>
+                    </form>
                   </div>
                 </div>
               </div>

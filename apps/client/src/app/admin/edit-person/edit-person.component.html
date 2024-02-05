@@ -11,7 +11,7 @@
   </div>
   <div class="modal-footer">
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-      <button id="saveBtn" type="button" class="btn btn-secondary" style="width: 150px" [disabled]="!isValid" (click)="save()">
+      <button id="saveBtn" type="button" class="btn btn-secondary" style="width: 150px" [disabled]="!isValid || !editPersonField.isFormDirty()" (click)="save()">
         <ng-container *ngIf="!loading; else loadingSpinner">
           <i class="fas fa-save me-1"></i>
         </ng-container>

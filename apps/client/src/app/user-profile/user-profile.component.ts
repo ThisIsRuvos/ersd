@@ -25,7 +25,6 @@ export class UserProfileComponent implements OnInit {
   public generateKey = generateKey;
   
   @ViewChild('editPerson') editPersonField: EditPersonComponent;
-
   @ViewChild('emailAddress') emailAddressField: NgModel;
   @ViewChild('restEndpoint') endpointField: NgModel;
   loading: boolean = false;
@@ -137,4 +136,5 @@ export class UserProfileComponent implements OnInit {
         this.authService.logout();
       });
   }
+
 }
