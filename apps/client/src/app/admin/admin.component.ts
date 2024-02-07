@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IPerson, Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
 import { getErrorString } from '../../../../../libs/ersdlib/src/lib/get-error-string';
@@ -32,7 +32,6 @@ export class AdminComponent implements OnInit {
   public active = 1
   public uploading: boolean = false;
 
-
   @ViewChild('bundleUploadFile') bundleUploadField: ElementRef;
   @ViewChild('excelUploadFile') excelUploadField: ElementRef;
   @ViewChild('emailType1') emailType1!: ElementRef<HTMLInputElement>;
@@ -43,11 +42,9 @@ export class AdminComponent implements OnInit {
   isDisabled = true;
   downloading = false
 
-
   constructor(private httpClient: HttpClient,
     private modalService: NgbModal,
-    private authService: AuthService,
-    private cdRef: ChangeDetectorRef,
+    public authService: AuthService,
     private toastr: ToastrService) { }
 
   setEmailType() {
@@ -65,7 +62,6 @@ export class AdminComponent implements OnInit {
     }
     this.isDisabled = this.emailType.exportTypeOrigin.length === 0;
   }
-
 
   async sendEmail() {
     if (!this.emailRequest.subject || !this.emailRequest.message) {
@@ -297,7 +293,7 @@ export class AdminComponent implements OnInit {
   async removeEmailAttachments() {
     try {
       await firstValueFrom(this.httpClient.get('/api/subscription/remove_artifacts'));
-      this.message = 'Attachements Successfully Removed!';
+      this.message = 'Attachments Successfully Removed!';
       this.messageIsError = false;
     } catch (err) {
       this.message = getErrorString(err);

@@ -26,6 +26,6 @@ import { eRSDController } from './ersd/ersd.controller';
     UploadController,
     DownloadController
   ],
-  providers: [AppService]
+  providers: [AppService],
 })
 export class AppModule {}

@@ -25,6 +25,7 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { MarkdownModule } from 'ngx-markdown';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ErrorComponent } from './error/error.component';
 
 const appRoutes: Routes = [
   { path: 'admin', component: AdminComponent },
@@ -33,8 +34,7 @@ const appRoutes: Routes = [
   { path: 'contact-info', component: ContactInfoComponent },
   { path: 'change-preview',component: ChangePreviewComponent },
   { path: 'home', component: HomeComponent },
-  { path: '', redirectTo: '/home', pathMatch: 'full'
-  }
+  { path: '', redirectTo: '/home', pathMatch: 'full'},
 ];
 
 export function initializer(keycloak: KeycloakService, httpClient: HttpClient, configService: ConfigService): () => Promise<any> {
@@ -81,7 +81,8 @@ export function initializer(keycloak: KeycloakService, httpClient: HttpClient, c
     UpdateNoticeComponent,
     SpecDownloadComponent,
     NavigationComponent,
-    ChangePreviewComponent
+    ChangePreviewComponent,
+    ErrorComponent,
   ],
   imports: [
     BrowserModule,
