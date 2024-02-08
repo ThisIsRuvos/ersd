@@ -67,8 +67,10 @@ export class UploadController {
   async getEmails(exportTypeOrigin: string) {
     const url = this.appService.buildFhirUrl(exportTypeOrigin, null);
     let emails: string[] = []
+
     const response = await this.httpService.request({
-      url,
+      // TODO: we need to be more careful here and not just get all the data
+      url: url + '?_count=20000&_elements=channel,endpoint,telecom,contained,status&_format=json',
       headers: {
         'cache-control': 'no-cache'
       }}).toPromise()
@@ -97,7 +99,6 @@ export class UploadController {
           })
         })
       }
-      this.logger.log(`emails for csv: ${emails}`);
     return emails
   }
 
