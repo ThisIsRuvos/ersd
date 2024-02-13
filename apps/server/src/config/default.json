@@ -1,7 +1,7 @@
 {
   "server": {
     "serveV2Supplemental": false,
-    "serveV3": true,
+    "serveV3": false,
     "payload": {
       "Key": "",
       "Bucket": "ersd-dev",
@@ -29,7 +29,7 @@
       "RCTC_RELEASE_SPREADSHEET_KEY": "RCTC_Release.xlsx"
     },
     "port": 3333,
-    "authCertificate": "-----BEGIN CERTIFICATE-----\nMIIClzCCAX8CBgGLOgvDPzANBgkqhkiG9w0BAQsFADAPMQ0wCwYDVQQDDARlcnNkMB4XDTIzMTAxNjE5NTAzMVoXDTMzMTAxNjE5NTIxMVowDzENMAsGA1UEAwwEZXJzZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL/Hyhb4gqr7GwpbFlfc6lErenQxZGIGLhohYh0a/96hAHfLk8Srp47HiRnpKXGEHfd5xH35XJVW8EVXqOBp5RGMG6bgNk1mm3FOWMhd8Tf5ZXSlYInCQTisXBujO3d0/fj/RsfjUvGe9U/DFU9/rOFH8OCkwVWFofMoAie9QySG6oy1p+dwo8yjqCXFzyUYI4mfZOmd+QAe8zNnNRCsTLv8TxCZ52YJjoC8XfNaT2rUuqdNU6qljIR83QkBkHwtJjJqtKWfzCFFw9CSbkzAh01AsGs84VVJU+lzmbYtJlpAXPCqTgkKoPW8POInzvRgutvf2DVWyERy+2qZK5cfFZECAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAUkXNgaIBYuccH9zWe03kwblIdBckCV2bu+pT/cpmbStG3tZCDTYwihiQk2LgOd/2k57BV+gVhQKcZms4gYZQUBmF2rHNciW0D4ht3dlFS6hP7o6/BhV5ON90chu5h5p24Vmr0l2ev+5IY0ePQnZpBMK/HIK17Y3CzNB0+fL+9W1BA40njA8M77OqYacTnz4ihrLikyUwG7DfTl0EcSwa3Fe/2HM3gkEcKkZvvwevvq6MC6KxUAkHwxIynUIWoew+U7dyFgMcv7VOJZIEShF5tYI+lQBLFDcGuRCE5Luks6ot2+8qkVI++na1mVrcbtXqLATi9SLOufPCPtHYgZ0tng==\n-----END CERTIFICATE-----",
+    "authCertificate": "",
     "fhirServerBase": "http://ersd-hapi-fhir:8080/hapi-fhir-jpaserver/fhir",
     "rctcExcelPath": "assets/rctc.xlsx",
     "bundlePath": "assets/bundle.xml",
