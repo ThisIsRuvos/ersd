@@ -17,7 +17,7 @@ export class AdminEditPersonComponent implements OnInit {
   @Input() id: string;
   public person: Person;
   public message: string;
-isError = false;
+  isError = false;
 
   @ViewChild('editPerson') editPersonField: EditPersonComponent;
   loading: boolean = false;
@@ -29,7 +29,7 @@ isError = false;
   get isValid() {
     return this.editPersonField && this.editPersonField.isValid;
   }
-
+  
   async save() {
     try {
 

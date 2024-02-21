@@ -76,6 +76,11 @@ export class EditPersonComponent implements OnInit {
     return this.editPersonForm.dirty;
   }
 
+
+  resetFormDirty() {
+    this.editPersonForm.form.markAsPristine();
+  }
+  
   ngOnInit() {
 
   }
