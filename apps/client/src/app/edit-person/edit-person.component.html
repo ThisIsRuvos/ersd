@@ -129,17 +129,21 @@
     <div class="fw-bold">Secondary Contact</div>
     <div class="row g-3">
       <div class="col-md-6">
-        <label for="secondaryFirstName" class="form-label">First Name</label>
-        <input name="secondaryFirstName" id="secondaryFirstName" type="text" class="form-control" [(ngModel)]="secondary.firstName" />
+        <label for="secondaryFirstName" class="form-label">First Name *</label>
+        <input name="secondaryFirstName" id="secondaryFirstName" type="text" class="form-control" [(ngModel)]="secondary.firstName" 
+        #secondaryFirstName="ngModel" [class.is-invalid]="secondaryFirstName.errors?.required"
+        [required]="secondary"/>
       </div>
       <div class="col-md-6">
-        <label for="secondaryLastName" class="form-label">Last Name</label>
-        <input name="secondaryLastName" id="secondaryLastName" type="text" class="form-control" [(ngModel)]="secondary.lastName" />
+        <label for="secondaryLastName" class="form-label">Last Name *</label>
+        <input name="secondaryLastName" id="secondaryLastName" type="text" class="form-control" [(ngModel)]="secondary.lastName" 
+        #secondaryLastName="ngModel" [class.is-invalid]="secondaryLastName.errors?.required"
+        [required]="secondary"/>
       </div>
       <div class="col-md-6">
-        <label for="secondaryEmail" class="form-label">Email</label>
+        <label for="secondaryEmail" class="form-label">Email *</label>
         <input name="secondaryEmail" id="secondaryEmail" type="text" class="form-control" [(ngModel)]="secondary.email" email="true"
-          placeholder="joe@somewhere.com" #secondaryEmail="ngModel" [class.is-invalid]="secondaryEmail.errors?.email" />
+          placeholder="joe@somewhere.com" #secondaryEmail="ngModel" [class.is-invalid]="secondaryEmail.errors?.email || secondaryEmail.errors?.required" [required]="secondary"/>
       </div>
       <div class="col-md-6">
         <label for="secondaryMobile" class="form-label">Mobile Phone</label>
