@@ -42,44 +42,4 @@ export class Subscription implements ISubscription {
       Object.assign(this, obj);
     }
   }
-
-  // get isSms(): boolean {
-  //   if (!this.channel || this.channel.type !== 'email') {
-  //     return false;
-  //   }
-
-  //   return !!this.smsCarrier;
-  // }
-
-  // get smsCarrier(): 'tmobile'|'verizon'|'at&t'|'sprint' {
-  //   if (!this.channel || !this.channel.endpoint) {
-  //     return;
-  //   }
-
-  //   if (this.channel.endpoint.endsWith(Subscription.SMS_TMOBILE)) {
-  //     return 'tmobile';
-  //   } else if (this.channel.endpoint.endsWith(Subscription.SMS_VERIZON)) {
-  //     return 'verizon';
-  //   } else if (this.channel.endpoint.endsWith(Subscription.SMS_ATT)) {
-  //     return 'at&t';
-  //   } else if (this.channel.endpoint.endsWith(Subscription.SMS_SPRINT)) {
-  //     return 'sprint';
-  //   }
-  // }
-
-  // get smsPhone(): string {
-  //   if (!this.channel || !this.channel.endpoint) {
-  //     return;
-  //   }
-
-  //   const starting = this.channel.endpoint.startsWith('mailto:') ? 'mailto:'.length : 0;
-  //   const ending = this.channel.endpoint.indexOf('@');
-  //   const mobile = this.channel.endpoint.substring(starting, ending);
-
-  //   if (mobile.length === 10) {
-  //     return mobile.substring(0, 3) + '-' + mobile.substring(3, 6) + '-' + mobile.substring(6, 10);
-  //   }
-
-  //   return mobile;
-  // }
 }

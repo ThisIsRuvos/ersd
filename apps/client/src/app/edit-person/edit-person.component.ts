@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Person } from '../../../../../libs/ersdlib/src/lib/person';
-import { NgModel } from '@angular/forms';
+import { NgForm, NgModel } from '@angular/forms';
 import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
 
 @Component({
@@ -10,9 +10,8 @@ import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
 })
 export class EditPersonComponent implements OnInit {
   @Input() person: Person;
-
+  @ViewChild('editPersonForm') editPersonForm: NgForm;
   
-
   @ViewChild('firstName') firstNameField: NgModel;
   @ViewChild('lastName') lastNameField: NgModel;
   @ViewChild('email') emailField: NgModel;
@@ -73,6 +72,15 @@ export class EditPersonComponent implements OnInit {
       (!this.secondaryOfficeField || this.secondaryOfficeField.valid);
   }
 
+  isFormDirty(): boolean {
+    return this.editPersonForm.dirty;
+  }
+
+
+  resetFormDirty() {
+    this.editPersonForm.form.markAsPristine();
+  }
+  
   ngOnInit() {
 
   }

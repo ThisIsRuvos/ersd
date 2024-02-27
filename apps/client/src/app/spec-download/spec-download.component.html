@@ -75,17 +75,25 @@
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">          
           <button class="btn btn-secondary me-md-2" type="submit" (click)="handleSubmit()" style="width: 225px">
             <div class="d-flex justify-content-md-between align-items-center">
-              <ng-container *ngIf="!loading; else loadingSpinner">
+              <ng-container *ngIf="!loadingDownloadFiles; else loadingSpinnerFiles">
                 <i class="fas fa-file-download mx-auto"></i>
               </ng-container>
-              <ng-template #loadingSpinner>
+              <ng-template #loadingSpinnerFiles>
                 <span class="spinner-border spinner-border-sm mx-auto" role="status" aria-hidden="true"></span>
               </ng-template>
               <span>Download eRSD Files</span>
             </div>
           </button>
           <button class="btn btn-secondary" type="button" (click)="downloadRCTCReleaseSpreadsheet()">
-            <i class="fas fa-file-download me-2"></i>Download Latest RCTC Spreadsheet & Change Log
+            <div class="d-flex justify-content-md-between align-items-center">
+            <ng-container *ngIf="!loadingDownloadSpreadsheet; else loadingSpinnerSpreadsheet">
+            <i class="fas fa-file-download me-2"></i>
+          </ng-container>
+          <ng-template #loadingSpinnerSpreadsheet>
+            <span class="spinner-border spinner-border-sm mx-auto" role="status" aria-hidden="true"></span>
+          </ng-template>
+            <span>Download Latest RCTC Spreadsheet & Change Log</span>
+</div>
           </button>
         </div>
       </div>
