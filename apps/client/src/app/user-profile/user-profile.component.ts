@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UserSubscriptions } from '../../../../../libs/ersdlib/src/lib/user-subscriptions';
-import { NgModel } from '@angular/forms';
+import { NgForm, NgModel } from '@angular/forms';
 // import { getErrorString } from '../../../../../libs/ersdlib/src/lib/get-error-string';
 import { generateKey } from '../../../../../libs/ersdlib/src/lib/generate-key';
 import { AuthService } from '../auth.service';
@@ -10,6 +10,7 @@ import { IPerson, Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { Constants } from 'libs/ersdlib/src/lib/constants';
 import { ToastrService } from 'ngx-toastr';
 import { EditPersonComponent } from '../edit-person/edit-person.component';
+import { firstValueFrom } from 'rxjs';
 
 
 @Component({
@@ -24,9 +25,10 @@ export class UserProfileComponent implements OnInit {
   public generateKey = generateKey;
   
   @ViewChild('editPerson') editPersonField: EditPersonComponent;
-
   @ViewChild('emailAddress') emailAddressField: NgModel;
   @ViewChild('restEndpoint') endpointField: NgModel;
+  @ViewChild('subscriptionForm') subscriptionForm!: NgForm;
+  loading: boolean = false;
 
   constructor(private httpClient: HttpClient, private authService: AuthService, private toastr: ToastrService) { }
 
@@ -43,47 +45,37 @@ export class UserProfileComponent implements OnInit {
       (!this.endpointField || this.endpointField.valid);
   }
 
-
-  saveContact() {
-    // this.message = null;
-    // this.messageIsError = false;
-
-    this.httpClient.post<Person>('/api/user/me', this.person).toPromise()
-      .then((person) => {
-        this.person = new Person(person);
-          this.toastr.success('User details updated successfully!' );
-        // this.message = 'Saved contact information!';
-        // this.messageIsError = false;
-        this.authService.checkSession();
-        window.scrollTo(0, 0);
-      })
-      .catch((err) => {
-        this.toastr.error('Failed to update user details!');
-        // this.message = getErrorString(err);
-        // this.messageIsError = true;
-        window.scrollTo(0, 0);
-      });
+  async saveContact() {
+    try { 
+      this.loading = true; 
+      const person = await firstValueFrom(this.httpClient.post<Person>('/api/user/me', this.person));
+      this.loading = false; 
+      this.person = new Person(person);
+      this.toastr.success('User details updated successfully!');
+      this.authService.checkSession();
+      this.editPersonField.resetFormDirty()
+      window.scrollTo(0, 0);
+    } catch (err) {
+      this.toastr.error('Failed to update user details!');      
+      window.scrollTo(0, 0);
+    }
   }
 
-  // sms functionality removed
-  saveSubscription() {
-    // this.message = null;
-    // this.messageIsError = false;
-
-    this.httpClient.post('/api/subscription', this.userSubscriptions).toPromise()
-      .then(() => {
-        this.toastr.success('Notification details updated successfully!');
-        // this.message = 'Saved/updated subscriptions!';
-        // this.messageIsError = false;
-        window.scrollTo(0, 0);
-      })
-      .catch((err) => {
-        this.toastr.error('Failed to update notification details!');
-        // this.message = getErrorString(err);
-        // this.messageIsError = true;
-        window.scrollTo(0, 0);
-      });
+    // sms functionality removed
+  async saveSubscription() {
+    try { 
+      this.loading = true; 
+      await firstValueFrom(this.httpClient.post('/api/subscription', this.userSubscriptions));
+      this.loading = false; 
+      this.toastr.success('Notification details updated successfully!');
+      this.subscriptionForm.form.markAsPristine();
+      window.scrollTo(0, 0);
+    } catch (err) {
+      this.toastr.error('Failed to update notification details!');
+      window.scrollTo(0, 0);
+    }
   }
+
 
   public get secondary(): Person | undefined {
     const extension = this.person?.extension?.find(extension => extension.url === Constants.extensions.secondaryContact);
@@ -147,4 +139,5 @@ export class UserProfileComponent implements OnInit {
         this.authService.logout();
       });
   }
+
 }

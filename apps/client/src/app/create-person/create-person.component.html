@@ -10,11 +10,14 @@
   </div>
   <div class="modal-footer">
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-      <button id="saveBtn" type="button" class="btn btn-secondary" style="width: 150px" [disabled]="!editPerson.isValid" (click)="ok()">
-        <span>
+      <button id="saveBtn" type="button" class="btn btn-secondary" style="width: 150px" [disabled]="!editPerson.isValid || loading" (click)="ok()">
+        <ng-container *ngIf="!loading; else loadingSpinner">
           <i class="fas fa-save me-1"></i>
-          <span>Save</span>
-        </span>
+        </ng-container>
+        <ng-template #loadingSpinner>
+          <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+        </ng-template>
+        <span>Save</span>
       </button>
     </div>
   </div>

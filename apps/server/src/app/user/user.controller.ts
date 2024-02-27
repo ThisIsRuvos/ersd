@@ -168,7 +168,7 @@ export class UserController {
 
     if (peopleBundle) {
       if (peopleBundle.total === 1) {
-        this.logger.log(`Found a single person with identifier ${identifierQuery}`);
+        this.logger.log(`Found a single person with identifier ${identifierQuery}`);// update message
         return <Person>peopleBundle.entry[0].resource;
       } else if (peopleBundle.total === 0) {
         throw new NotFoundException();

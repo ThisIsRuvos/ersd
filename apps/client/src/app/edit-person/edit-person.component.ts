@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Person } from '../../../../../libs/ersdlib/src/lib/person';
-import { NgModel } from '@angular/forms';
+import { NgForm, NgModel } from '@angular/forms';
 import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
 
 @Component({
@@ -10,14 +10,15 @@ import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
 })
 export class EditPersonComponent implements OnInit {
   @Input() person: Person;
-
+  @ViewChild('editPersonForm') editPersonForm: NgForm;
   
-
   @ViewChild('firstName') firstNameField: NgModel;
   @ViewChild('lastName') lastNameField: NgModel;
   @ViewChild('email') emailField: NgModel;
   @ViewChild('primaryMobile') primaryMobileField: NgModel;
   @ViewChild('office') officeField: NgModel;
+  @ViewChild('secondaryFirstName') secondaryFirstNameField: NgModel;
+  @ViewChild('secondaryLastName') secondaryLastNameField: NgModel;
   @ViewChild('secondaryEmail') secondaryEmailField: NgModel;
   @ViewChild('secondaryMobile') secondaryMobileField: NgModel;
   @ViewChild('secondaryOffice') secondaryOfficeField: NgModel;
@@ -68,11 +69,22 @@ export class EditPersonComponent implements OnInit {
       (!this.emailField || this.emailField.valid) &&
       (!this.primaryMobileField || this.primaryMobileField.valid) &&
       (!this.officeField || this.officeField.valid) &&
+      (!this.secondaryFirstNameField || this.secondaryFirstNameField.valid) &&
+      (!this.secondaryLastNameField || this.secondaryLastNameField.valid) &&
       (!this.secondaryEmailField || this.secondaryEmailField.valid) &&
       (!this.secondaryMobileField || this.secondaryMobileField.valid) &&
       (!this.secondaryOfficeField || this.secondaryOfficeField.valid);
   }
 
+  isFormDirty(): boolean {
+    return this.editPersonForm.dirty;
+  }
+
+
+  resetFormDirty() {
+    this.editPersonForm.form.markAsPristine();
+  }
+  
   ngOnInit() {
 
   }

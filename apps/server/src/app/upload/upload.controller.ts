@@ -60,25 +60,52 @@ export class UploadController {
         throw e;
       }
     }
-
-
   }
 
   async getEmails(exportTypeOrigin: string) {
-    const url = this.appService.buildFhirUrl(exportTypeOrigin, null);
+    let resource = [];
+    const getNext = (url?: string): Promise<void> => {
+      if (!url) {
+        url = this.appService.buildFhirUrl(exportTypeOrigin, null, { _summary: true });
+      }
+
+      return new Promise((resolve, reject) => {
+        this.httpService.get<IBundle>(url).toPromise()
+          .then((results) => {
+            const bundle = results.data;
+
+            if (bundle.entry) {
+              const resources = bundle.entry.map((entry) => entry.resource);
+              resource = resource.concat(resources);
+            }
+
+            if (bundle.link) {
+              const foundNext = bundle.link.find((link) => link.relation === 'next');
+
+              if (foundNext) {
+                const nextParams = foundNext.url.substring(foundNext.url.indexOf('?'));
+                const nextUrl = this.appService.serverConfig.fhirServerBase + nextParams;
+
+                getNext(nextUrl)
+                  .then(() => resolve())
+                  .catch((err) => reject(err));
+              } else {
+                resolve();
+              }
+            }
+          });
+      });
+    };
+
+    await getNext();    // get all people
+
     let emails: string[] = []
 
-    const response = await this.httpService.request({
-      // TODO: we need to be more careful here and not just get all the data
-      url: url + '?_count=20000&_elements=channel,endpoint,telecom,contained,status&_format=json',
-      headers: {
-        'cache-control': 'no-cache'
-      }}).toPromise()
     // @ts-ignore
     if (exportTypeOrigin === 'Subscription') {
-      response?.data?.entry?.forEach((i) => {
-        if (i?.resource?.status !== 'active' || i?.resource?.channel?.type !== 'email' || i?.resource?.channel?.payload === 'application/json') return;
-        const email = i?.resource?.channel?.endpoint?.split('mailto:')?.[1]
+      resource.forEach((i) => {
+        if (i?.status !== 'active' || i?.channel?.type !== 'email' || i?.channel?.payload === 'application/json') return;
+        const email = i?.channel?.endpoint?.split('mailto:')?.[1]
         if (validateEmail(email)) {
           emails.push(email)
         } else {
@@ -86,9 +113,9 @@ export class UploadController {
         }
       })
       } else if (exportTypeOrigin === 'Person') {
-        response?.data?.entry?.forEach(i => {
-          const primaryEmail = i?.resource?.telecom?.find(j => j.system === 'email')?.value
-          const secondaryEmail = i?.resource?.contained?.find?.(c => c?.resourceType === 'Person')?.telecom?.find(j => j.system === 'email')?.value
+        resource?.forEach(i => {
+          const primaryEmail = i?.telecom?.find(j => j.system === 'email')?.value
+          const secondaryEmail = i?.contained?.find?.(c => c?.resourceType === 'Person')?.telecom?.find(j => j.system === 'email')?.value
           const allPersonEmails = [primaryEmail, secondaryEmail].map(i => i && i.replaceAll('mailto:', '')).filter(i => i)
           allPersonEmails.forEach(email => {
             if (validateEmail(email)) {

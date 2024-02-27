@@ -4,6 +4,7 @@ import { IPerson, Person } from '../../../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
 import { getErrorString } from '../../../../../../libs/ersdlib/src/lib/get-error-string';
 import { EditPersonComponent } from '../../edit-person/edit-person.component';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   templateUrl: './edit-person.component.html',
@@ -16,9 +17,10 @@ export class AdminEditPersonComponent implements OnInit {
   @Input() id: string;
   public person: Person;
   public message: string;
-isError = false;
+  isError = false;
 
   @ViewChild('editPerson') editPersonField: EditPersonComponent;
+  loading: boolean = false;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -27,22 +29,22 @@ isError = false;
   get isValid() {
     return this.editPersonField && this.editPersonField.isValid;
   }
+  
+  async save() {
+    try {
 
-  save() {
-    this.message = null;
-    this.isError = false;
-
-    this.httpClient.put<IPerson>('/api/user/' + this.id, this.person).toPromise()
-      .then((results) => {
-        this.activeModal.close(results);
-        this.updatedUser.emit(results); 
-        this.messageIsSuccess.emit(true)
-        
-      })
-      .catch((err) => {
-        this.message = getErrorString(err); // <-- TODO - if this is not being used, it could be removed in the future.
-        this.messageIsSuccess.emit(false)
-      });
+      this.message = null;
+      this.isError = false;
+      this.loading = true;
+      const results = await firstValueFrom(this.httpClient.put<IPerson>('/api/user/' + this.id, this.person));
+      this.loading = false;
+      this.activeModal.close(results);
+      this.updatedUser.emit(results); 
+      this.messageIsSuccess.emit(true);
+    } catch (err) {
+      this.message = getErrorString(err);// <-- TODO - if this is not being used, it could be removed in the future.
+      this.messageIsSuccess.emit(false);
+    }
   }
 
   ngOnInit() {
