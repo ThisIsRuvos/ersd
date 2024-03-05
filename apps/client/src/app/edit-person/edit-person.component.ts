@@ -17,6 +17,8 @@ export class EditPersonComponent implements OnInit {
   @ViewChild('email') emailField: NgModel;
   @ViewChild('primaryMobile') primaryMobileField: NgModel;
   @ViewChild('office') officeField: NgModel;
+  @ViewChild('secondaryFirstName') secondaryFirstNameField: NgModel;
+  @ViewChild('secondaryLastName') secondaryLastNameField: NgModel
   @ViewChild('secondaryEmail') secondaryEmailField: NgModel;
   @ViewChild('secondaryMobile') secondaryMobileField: NgModel;
   @ViewChild('secondaryOffice') secondaryOfficeField: NgModel;
@@ -67,6 +69,8 @@ export class EditPersonComponent implements OnInit {
       (!this.emailField || this.emailField.valid) &&
       (!this.primaryMobileField || this.primaryMobileField.valid) &&
       (!this.officeField || this.officeField.valid) &&
+      (!this.secondaryFirstNameField || this.secondaryFirstNameField.valid) &&
+      (!this.secondaryLastNameField || this.secondaryLastNameField.valid) &&
       (!this.secondaryEmailField || this.secondaryEmailField.valid) &&
       (!this.secondaryMobileField || this.secondaryMobileField.valid) &&
       (!this.secondaryOfficeField || this.secondaryOfficeField.valid);

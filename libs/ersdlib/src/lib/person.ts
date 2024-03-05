@@ -152,40 +152,51 @@ export class Person implements IPerson {
     foundMobile.value = value;
   }
 
-  private static getOrganization(mainResource: IDomainResource, person: IPerson, shouldCreate = false): IOrganization {
+  private static getOrganization(mainResource: IDomainResource, person: IPerson, shouldCreate = false): IOrganization | undefined {
     if (person.managingOrganization && person.managingOrganization.reference && person.managingOrganization.reference.startsWith('#') && person.contained) {
-      const foundOrganization = <IOrganization> mainResource.contained.find((contained) => contained.id === person.managingOrganization.reference.substring(1));
-
+      const foundOrganization = <IOrganization>mainResource.contained.find((contained) => contained.id === person.managingOrganization.reference.substring(1));
+  
       if (foundOrganization) {
         return foundOrganization;
       }
     }
-
+  
     if (shouldCreate) {
       mainResource.contained = mainResource.contained || [];
-
+  
       const newOrganization = new Organization();
       newOrganization.id = Math.random().toString(36).substring(2, 9);
       newOrganization.name = '';
       mainResource.contained.push(newOrganization);
-
+  
       person.managingOrganization = {
         reference: '#' + newOrganization.id
       };
+      // Return the newly created organization
+      return newOrganization; 
     }
+    // Return undefined if no organization is found and shouldCreate is false
+    return undefined;
   }
 
-  static getOrganizationName(mainResource: IDomainResource, person: IPerson): string {
-    const organization = Person.getOrganization(mainResource, person);
 
+  static getOrganizationName(mainResource: IDomainResource, person: IPerson): string | null {
+    const organization = Person.getOrganization(mainResource, person);
+  
     if (organization) {
       return organization.name;
+    } else {
+      return null; // or return an empty string: return '';
     }
   }
 
   static setOrganizationName(mainResource: IDomainResource, person: IPerson, value: string) {
     const organization = Person.getOrganization(mainResource, person, true);
-    organization.name = value;
+    if (organization) {
+      organization.name = value;
+    } else {
+      console.error("Organization is undefined");
+    }
   }
 
   public get organizationTitle(): string {
