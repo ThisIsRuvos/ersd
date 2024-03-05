@@ -178,8 +178,7 @@ export class Person implements IPerson {
     // Return undefined if no organization is found and shouldCreate is false
     return undefined;
   }
-
-
+  
   static getOrganizationName(mainResource: IDomainResource, person: IPerson): string | null {
     const organization = Person.getOrganization(mainResource, person);
   
@@ -189,6 +188,7 @@ export class Person implements IPerson {
       return null; // or return an empty string: return '';
     }
   }
+  
 
   static setOrganizationName(mainResource: IDomainResource, person: IPerson, value: string) {
     const organization = Person.getOrganization(mainResource, person, true);
