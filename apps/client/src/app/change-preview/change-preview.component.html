@@ -24,14 +24,8 @@
             <div class="card-body m-3">
               <div *ngIf="!loading">
               <div  *ngIf="!filesExist; else filesExistBlock" class="row">
-                <div class="col-md-4 col-12">
-                  <img class="img-fluid"
-                  src="/assets/no-preview.svg"
-                  alt="no-preview"
-                  />
-                </div>
-                <div class="col-md-8 col-12 flex-column d-flex fw-light justify-content-center align-items-center">
-                  <div class="fs-5">Oops! No previews are available now.</div>
+                <div class="col-12 flex-column d-flex fw-light justify-content-center align-items-center">
+                  <div class="fs-5">No previews available at this time.</div>
                   <div>Let's go back <a class="link-secondary text-decoration-none" routerLink="/home">home</a>.</div>
                 </div>
               </div>

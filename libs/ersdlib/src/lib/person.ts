@@ -179,7 +179,6 @@ export class Person implements IPerson {
     return undefined;
   }
   
-
   static getOrganizationName(mainResource: IDomainResource, person: IPerson): string | null {
     const organization = Person.getOrganization(mainResource, person);
   

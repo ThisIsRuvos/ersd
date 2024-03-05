@@ -18,7 +18,7 @@ export class EditPersonComponent implements OnInit {
   @ViewChild('primaryMobile') primaryMobileField: NgModel;
   @ViewChild('office') officeField: NgModel;
   @ViewChild('secondaryFirstName') secondaryFirstNameField: NgModel;
-  @ViewChild('secondaryLastName') secondaryLastNameField: NgModel;
+  @ViewChild('secondaryLastName') secondaryLastNameField: NgModel
   @ViewChild('secondaryEmail') secondaryEmailField: NgModel;
   @ViewChild('secondaryMobile') secondaryMobileField: NgModel;
   @ViewChild('secondaryOffice') secondaryOfficeField: NgModel;
