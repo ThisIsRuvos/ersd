@@ -1,5 +1,4 @@
 # Change Log: eRSD Release 1.4.0 
-## Version 1.0.0 (03-05-2024)
 
 ### Registration/Create User Form
 - Interface Update:
