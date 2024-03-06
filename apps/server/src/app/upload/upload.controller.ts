@@ -105,7 +105,7 @@ export class UploadController {
     if (exportTypeOrigin === 'Subscription') {
       resource.forEach((i) => {
         if (i?.status !== 'active' || i?.channel?.type !== 'email' || i?.channel?.payload === 'application/json') return;
-        const email = i?.channel?.endpoint?.split('mailto:')?.[1]
+        const email = i?.channel?.endpoint?.replaceAll('mailto:', '')
         if (validateEmail(email)) {
           emails.push(email)
         } else {

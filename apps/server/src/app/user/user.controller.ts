@@ -256,7 +256,7 @@ export class UserController {
       newSubscription.channel.endpoint = 'mailto:' + updatePerson.email;
       // include artifacts to new user subscriptions by pre-pending "application/[json or xml]" before ";bodytext" 
       newSubscription.channel.payload = ';bodytext=' + Buffer.from(Constants.defaultEmailBody).toString('base64'); 
-      newSubscription.status = this.appService.serverConfig.enableSubscriptions ? 'requested' : 'off';
+      newSubscription.status = this.appService.serverConfig.enableSubscriptions ? 'active' : 'off'; // In the new hapi fhir we are using 'active' instead of 'requested'
 
       this.logger.log(`Person does not already exist. Creating default subscriptions for new person via url: ${newSubscriptionUrl}`);
 
