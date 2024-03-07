@@ -162,18 +162,7 @@ export class UploadController {
           string: stringFormatter({ quote: '' }),
         }
       });
-      const csv = parser.parse(emails.map(i => ({email: i})));
-      writeFileSync('tmp.csv', csv)
-
-      const stream = createReadStream(join(process.cwd(), 'tmp.csv'))
-      stream.on('end', () => {
-        try{
-          unlinkSync('tmp.csv');
-        } catch (error) {
-          this.logger.warn('An error occurred while removing tmp file.');
-        }
-      })
-      return new StreamableFile(stream);
+      return parser.parse(emails.map(i => ({email: i})));
     } catch (err) {
       this.logger.error('Error converting emails to CSV', err);
     }
