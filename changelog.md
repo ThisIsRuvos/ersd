@@ -1,5 +1,13 @@
 # Change Log: eRSD Release 1.4.0
 
+### Database Migration
+- Architectural Update:
+  - Database migrated from MySQL to Postgres
+
+### HAPI
+- Architectural Update:
+  - Project updated to use the most recent HAPI release.
+  
 ### Registration/Create User Form
 
 - Interface Update:
@@ -9,6 +17,12 @@
 
 - Interface Update:
   - The image, when no Change Preview information is available, has been removed. The notification messages has been revised.
+
+### Administrator Page
+- Functionality Update:
+  - Unauthorized users are unable to access admin functions.
+- Interface Update:
+  - Notified that they don't not have access to admin functions, and have the option to return to the home page.
 
 ### Administrator - Edit User
 
