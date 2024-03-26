@@ -14,6 +14,8 @@
   --primary-alert-alt-color: #3aa5ab4d;
   --font-color: #010b0c;
 }
+@import "/node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
+
 
 body {
   color: var(--font-color);
@@ -276,4 +278,26 @@ div.footer {
   margin: 0 auto;
   padding: 20px 50px;
   border-radius: 5px;
+}
+
+
+.table-scroll-container {
+  overflow-x: auto;
+}
+
+.mat-column-givenName,
+.mat-column-familyName {
+  min-width: 150px;
+}
+
+.mat-column-email {
+  min-width: 375px;
+}
+
+.mat-column-actions {
+  min-width: 100px;
+}
+
+.mat-mdc-progress-spinner .mdc-circular-progress__indeterminate-circle-graphic {
+  stroke: var(--secondary-color) !important;
 }

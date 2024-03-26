@@ -25,6 +25,10 @@ import { MarkdownModule } from 'ngx-markdown';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ErrorComponent } from './error/error.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const appRoutes: Routes = [
   { path: 'admin', component: AdminComponent },
@@ -92,6 +96,10 @@ export function initializer(keycloak: KeycloakService, httpClient: HttpClient, c
     MarkdownModule.forRoot(),
     BrowserAnimationsModule, // required animations module
     ToastrModule.forRoot({positionClass: 'toast-bottom-right',}),
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     AuthService,
