@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { IPerson, Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
 import { getErrorString } from '../../../../../libs/ersdlib/src/lib/get-error-string';
@@ -9,15 +9,19 @@ import { IUploadRequest } from '../../../../../libs/ersdlib/src/lib/upload-reque
 import { IEmailRequest, IEmailExportRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
 import { firstValueFrom } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
 
-export class AdminComponent implements OnInit {
+export class AdminComponent implements AfterViewInit {
   public users: Person[] = [];
+  public dataSource = new MatTableDataSource([]);
+  public isLoadingResults = true; // Loading indicator flag
   public message: string;
   public messageIsError: boolean;
   public bundleFile: File;
@@ -31,7 +35,10 @@ export class AdminComponent implements OnInit {
   public excelFileContent: string;
   public active = 1
   public uploading: boolean = false;
+  displayedColumns: string[] = ['givenName', 'familyName', 'email', 'actions'];
 
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   @ViewChild('bundleUploadFile') bundleUploadField: ElementRef;
   @ViewChild('excelUploadFile') excelUploadField: ElementRef;
   @ViewChild('emailType1') emailType1!: ElementRef<HTMLInputElement>;
@@ -63,26 +70,35 @@ export class AdminComponent implements OnInit {
     this.isDisabled = this.emailType.exportTypeOrigin.length === 0;
   }
 
-  async sendEmail() {
-    if (!this.emailRequest.subject || !this.emailRequest.message) {
-      return;
-    }
+  async ngAfterViewInit() {
+    await this.fetchUserData();
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
 
-    if (!confirm('Are you sure you want to send this email to all users?')) {
-      return;
-    }
-
-    this.message = null;
-    this.messageIsError = false;
-
+  async fetchUserData() {
+    this.isLoadingResults = true; // Start loading
     try {
-      await firstValueFrom(this.httpClient.post('/api/user/email', this.emailRequest));
-      this.message = 'Successfully sent email to all users';
-      window.scrollTo(0, 0);
+      const users = await firstValueFrom(this.httpClient.get<IPerson[]>('/api/user'));
+  
+      this.users = users.map(user => new Person(user));
+  
+      let peopleArray = users.map(resource => ({
+        id: resource.id,
+        givenName: resource.name?.[0]?.given?.[0],
+        familyName: resource.name?.[0]?.family,
+        email: resource.telecom
+                     .find(contact => contact.system === 'email')?.value
+                     .replace('mailto:', '') // Remove "mailto:" from the email
+      }));
+  
+      this.dataSource.data = peopleArray;
+      
     } catch (err) {
-      this.message = getErrorString(err);
-      this.messageIsError = true;
-      window.scrollTo(0, 0);
+      console.error("Failed to fetch user data:", err);
+      // Further error handling here
+    } finally {
+      this.isLoadingResults = false; // End loading
     }
   }
 
@@ -105,8 +121,6 @@ export class AdminComponent implements OnInit {
         this.toastr.error('Failed to update user details!');
       }
     });
-
-
   }
 
   handleBundleFileInput(files: FileList) {
@@ -140,20 +154,6 @@ export class AdminComponent implements OnInit {
     fileReader.readAsDataURL(this.excelFile);
   }
 
-  // decommissioned atm
-  // async getEmail() {
-  //   const request = this.emailType
-  //   // get emailtype from checkboc and assign it to exportTypeOrigin
-
-  //   try {
-  //     const response = await firstValueFrom(this.httpClient.post('/api/upload/get-emails', request))
-  //     this.sendEmailsFromClient(response)
-  //   } catch (error) {
-  //      // Handle error if the request fails
-  //      console.error('Error:', error);
-  //   }
-  // }
-
 
   async getEmailCSV() {
     const request = this.emailType
@@ -186,18 +186,6 @@ export class AdminComponent implements OnInit {
       this.downloading = false;
     }
   }
-
-  // not currently used
-  sendEmailsFromClient(emailList) {
-    const emailString = emailList.join(',');
-    // console.log("emailString",emailString);
-    // Construct the mailto link with the list of email addresses
-    const mailtoLink = `mailto:${emailString}`;
-    // Open the default mail client using Angular's Router service
-    // this.router.navigateByUrl(mailtoLink);
-    window.location.href = mailtoLink;
-  }
-
 
   async uploadExcel() {
     if (!this.excelFile) {
@@ -301,18 +289,7 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  async ngOnInit() {
-    await this.fetchUserData(); // Initial data fetch when component initializes
-  }
 
-  async fetchUserData() {
-    try {
-      const users = await firstValueFrom(this.httpClient.get<IPerson[]>('/api/user'));
-      this.users = users.map((user) => new Person(user));
-    } catch (err) {
-      // Handle errors if any
-    }
-  }
 
   ngOnDestroy() {
     // if (this.updatedUserSubscription) {
