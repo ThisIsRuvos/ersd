@@ -35,7 +35,7 @@ export class AdminComponent implements AfterViewInit {
   public excelFileContent: string;
   public active = 1
   public uploading: boolean = false;
-  displayedColumns: string[] = ['givenName', 'familyName', 'email', 'actions'];
+  displayedColumns: string[] = ['firstName', 'lastName', 'email', 'actions'];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -52,7 +52,7 @@ export class AdminComponent implements AfterViewInit {
   constructor(private httpClient: HttpClient,
     private modalService: NgbModal,
     public authService: AuthService,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService) {}
 
   setEmailType() {
     const person = this.emailType1.nativeElement.checked;
@@ -70,35 +70,30 @@ export class AdminComponent implements AfterViewInit {
     this.isDisabled = this.emailType.exportTypeOrigin.length === 0;
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+  
   async ngAfterViewInit() {
+    this.dataSource.filterPredicate = (data, filter) => {
+      const accumulator = data.firstName + ' ' + data.lastName + ' ' + data.email;
+      return accumulator.toLowerCase().includes(filter);
+    };    
     await this.fetchUserData();
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
   }
 
   async fetchUserData() {
-    this.isLoadingResults = true; // Start loading
+    this.isLoadingResults = true;
     try {
       const users = await firstValueFrom(this.httpClient.get<IPerson[]>('/api/user'));
-  
       this.users = users.map(user => new Person(user));
-  
-      let peopleArray = users.map(resource => ({
-        id: resource.id,
-        givenName: resource.name?.[0]?.given?.[0],
-        familyName: resource.name?.[0]?.family,
-        email: resource.telecom
-                     .find(contact => contact.system === 'email')?.value
-                     .replace('mailto:', '') // Remove "mailto:" from the email
-      }));
-  
-      this.dataSource.data = peopleArray;
-      
+      this.updateTableDataSource(users); // Transform and update in one step
     } catch (err) {
-      console.error("Failed to fetch user data:", err);
-      // Further error handling here
+      this.handleError(err);
     } finally {
-      this.isLoadingResults = false; // End loading
+      this.isLoadingResults = false;
+      this.initializeTableFeatures();
     }
   }
 
@@ -123,6 +118,24 @@ export class AdminComponent implements AfterViewInit {
     });
   }
 
+  
+
+  async deleteUser(user: Person) {
+    if (this.isCurrentUserService(user)) return;
+    if (!confirm(`Are you sure you want to delete the user with email ${user.email}?`)) return;
+
+    try {
+      await firstValueFrom(this.httpClient.delete(`/api/user/${user.id}`));
+      this.users = this.users.filter(u => u.id !== user.id);
+      this.updateTableDataSource([...this.users]); // Update table with current users
+      window.scrollTo(0, 0);
+      this.toastr.success(`${user.firstName} ${user.lastName} has been deleted!`);
+    } catch (err) {
+      window.scrollTo(0, 0);
+      this.handleError(err);
+    }
+  }
+  
   handleBundleFileInput(files: FileList) {
     if (files.length !== 1) {
       this.bundleFile = null;
@@ -250,33 +263,35 @@ export class AdminComponent implements AfterViewInit {
     }
   }
 
-  async deleteUser(user: Person) {
-    const currentUserPersonId = this.authService.person ? this.authService.person.id : null;
+  updateTableDataSource(users: IPerson[]) {
+    this.dataSource.data = users.map(({ id, name, telecom }) => ({
+      id,
+      firstName: name?.[0]?.given?.[0],
+      lastName: name?.[0]?.family,
+      email: telecom.find(contact => contact.system === 'email')?.value.replace('mailto:', '')
+    }));
 
-    if (currentUserPersonId === user.id) {
-      this.toastr.error('You cannot delete your user details!');      
-      window.scrollTo(0, 0);
-      return;
-    }
-
-    if (!confirm(`Are you sure you want to delete the user with email ${user.email}?`)) {
-      return;
-    }
-
-    try {
-      await firstValueFrom(this.httpClient.delete('/api/user/' + user.id));
-      const index = this.users.indexOf(user);
-      if (index >= 0) {
-        this.users.splice(index, 1);
-      }
-      this.toastr.success(`${user.firstName} ${user.lastName} has been deleted!`);    
-    } catch (err) {
-      // 
-      this.message = getErrorString(err);
-      this.messageIsError = true;
-    }
+    this.dataSource.filter = this.dataSource.filter; // Re-trigger filtering
   }
 
+  initializeTableFeatures() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
+  isCurrentUserService(user: Person): boolean {
+    const currentUserPersonId = this.authService.person?.id;
+    if (currentUserPersonId === user.id) {
+      this.toastr.error('You cannot delete your user details!');
+      return true;
+    }
+    return false;
+  }
+
+  handleError(err: any) {
+    console.error("Failed to fetch user data:", err);
+    this.toastr.error('An error occurred. Please try again.');
+  }
 
   async removeEmailAttachments() {
     try {
@@ -288,8 +303,6 @@ export class AdminComponent implements AfterViewInit {
       this.messageIsError = true;
     }
   }
-
-
 
   ngOnDestroy() {
     // if (this.updatedUserSubscription) {
