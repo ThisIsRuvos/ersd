@@ -52,24 +52,56 @@ body {
     }
  
 
+    .form-check-input:checked {
+      background-color: var(--tertiary-color);
+      border-color: var(--tertiary-color);
+      }
+      
+      .form-check-input:focus, .form-control:focus {
+      border-color: var( --tertiary-alt-color);
+      outline: 0;
+      box-shadow: 0 0 0 .25rem #4DAEB34D;
+      }
+
+      .table-scroll-container {
+        overflow-x: auto;
+      }
+      
+      .mat-column-givenName,
+      .mat-column-familyName {
+        min-width: 150px;
+      }
+      
+      .mat-column-email {
+        min-width: 375px;
+      }
+      
+      .mat-column-actions {
+        min-width: 100px;
+      }
+      
+      .mat-mdc-progress-spinner .mdc-circular-progress__indeterminate-circle-graphic {
+        stroke: var(--secondary-color) !important;
+      }
+
 /* Old styles below */
-nav li {
+/* nav li {
   white-space: pre;
-}
+} */
 
 div.footer {
   /* position: fixed;
   bottom: 0px;
   left: 0px; */
-  height: 47px;
+  /* height: 47px;
   width: 100%;
   background-color: transparent;
-  padding: 5px;
+  padding: 5px; */
 }
 
-.clickable {
+/* .clickable {
   cursor: pointer;
-}
+} */
 
 /* .card {
   margin-bottom: 10px;
@@ -100,40 +132,40 @@ div.footer {
   border-color: #b12c36 ;
 } */
 
-.custom-class {
+/* .custom-class {
   background-color:red;
-}
+} */
 
-.tab-pane.active > div.card:first-child {
+/* .tab-pane.active > div.card:first-child {
   margin-top: 10px;
-}
+} */
 
 /*noinspection ALL*/
-.tab-pane {
+/* .tab-pane {
   padding-top: 10px;
-}
+} */
 
-.bg-aims {
+/* .bg-aims {
   background-color: #30B1BD !important;
-}
+} */
 
-.jumbotron {
+/* .jumbotron {
   background-color: #F8F9F9 !important;
   text-align: center;
   margin: 0 auto;
-}
+} */
 
 /* .modal-dialog {
   height: 100%;
   margin: 0 auto;
 } */
 
-.register-button {
+/* .register-button {
   background-color: #b12c36 !important;
   color: white !important;
-}
+} */
 
-.register-button:hover {
+/* .register-button:hover {
   background-color: #87111A !important;
   color: white !important;
 }
@@ -280,24 +312,4 @@ div.footer {
   border-radius: 5px;
 }
 
-
-.table-scroll-container {
-  overflow-x: auto;
-}
-
-.mat-column-givenName,
-.mat-column-familyName {
-  min-width: 150px;
-}
-
-.mat-column-email {
-  min-width: 375px;
-}
-
-.mat-column-actions {
-  min-width: 100px;
-}
-
-.mat-mdc-progress-spinner .mdc-circular-progress__indeterminate-circle-graphic {
-  stroke: var(--secondary-color) !important;
-}
+ */

@@ -68,7 +68,14 @@
                     <div class="card border-0">
                       <div class="card-body">
 
-                        <div class="table-scroll-container">                         
+                        <div class="table-scroll-container">    
+                          <div class="mb-3 px-1">
+                            <label for="tableFilter" class="form-label">Filter</label>
+                            <div class="">
+                              <input matInput (keyup)="applyFilter($event)" type="text" class="form-control" id="tableFilter" placeholder=" Ex. John" #input>
+                            </div>
+                          </div>
+
                           <div *ngIf="isLoadingResults" class="d-flex justify-content-center align-items-center p-5">
                             <mat-spinner></mat-spinner>
                           </div>
@@ -76,14 +83,14 @@
                           
                           <mat-table [dataSource]="dataSource" matSort >
                       
-                            <ng-container matColumnDef="givenName">
+                            <ng-container matColumnDef="firstName">
                               <mat-header-cell *matHeaderCellDef mat-sort-header> First Name </mat-header-cell>
-                              <mat-cell *matCellDef="let user"> {{user.givenName}} </mat-cell>
+                              <mat-cell *matCellDef="let user"> {{user.firstName}} </mat-cell>
                             </ng-container>
                           
-                            <ng-container matColumnDef="familyName">
+                            <ng-container matColumnDef="lastName">
                               <mat-header-cell *matHeaderCellDef mat-sort-header> Last Name </mat-header-cell>
-                              <mat-cell *matCellDef="let user"> {{user.familyName}} </mat-cell>
+                              <mat-cell *matCellDef="let user"> {{user.lastName}} </mat-cell>
                             </ng-container>
 
                             <ng-container matColumnDef="email">
@@ -110,9 +117,16 @@
 
                             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                             <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+                            <ng-container *ngIf="!isLoadingResults">
+                              <tr class="mat-row" *matNoDataRow>
+                                <td class="mat-cell" colspan="4" class="px-1">No users matching the filter "{{input.value}}"</td>
+                                </tr>
+                            </ng-container>
+                            
                           </mat-table>
                           <div class="mt-3">
-                            <mat-paginator [pageSize]="25" [pageSizeOptions]="[ 25, 50, 100]" showFirstLastButtons></mat-paginator>
+                            <mat-paginator [pageSize]="50" showFirstLastButtons></mat-paginator>
                           </div>
                           </ng-container>
                         </div>

@@ -22,7 +22,7 @@ This project was generated using [Nx](https://nx.dev).
 
 The following environment variables are required to run the application:
   - S3 Credentials to be populated in `docker-compose.yml` and within `apps/server/confg/default.json` under payload bucket and key
-  - SMTP details if you want to send emails to users. These can be populated in `apps/server/config/default.json` under email
+  <!-- - SMTP details if you want to send emails to users. These can be populated in `apps/server/config/default.json` under email -->
 
 To get started quickly, you can use the docker-compose.yml file in the root of the project. This will start a FHIR server, a KeyCloak server, and the ERSD server. The FHIR server and KeyCloak server will be pre-configured with the necessary data to run the ERSD server, however an additional step is needed to configure the KeyCloak with the ERSD client.
 
@@ -107,25 +107,8 @@ The overriding config file can be a complete copy of the default.json file with 
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expiration | Represents how long a user's contact information is valid for. |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value | A numeric value |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unit | The unit of measurement for the numeric value. Valid values are: 'month','months','m','year','years','y','day','days','d' |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;notificationInterval | How often emails should be sent to notify the user that their contact information is about to (or has) expired. The first expiration starts one interval prior to the actual expiration of the user's contact information. |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value | A numeric value |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unit | The unit of measurement for the numeric value. Valid values are: 'month','months','m','year','years','y','day','days','d' | 
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;templates | Templates for the emails that should be sent for contact information expiration. |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expiring | The information that is used to send the email notifying the user that their contact information is **about to expire**. |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subject | The subject of the email |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;html | The HTML template to use for the email |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text | The TEXT template to use for the email |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expired | The information that is used to send emails notifying the user that their contact information **has expired**. |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subject | The subject of the email |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;html | The HTML template to use for the email |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text | The TEXT template to use for the email |
-| email | Configuration that allows administrators to send emails to all users |
-| &nbsp;&nbsp;&nbsp;from | The from address that emails are sent from. Should be in the format "joe@somewhere.com" |
-| &nbsp;&nbsp;&nbsp;host | The host address of the SMTP server |
-| &nbsp;&nbsp;&nbsp;port | The port for the SMTP server |
-| &nbsp;&nbsp;&nbsp;tls | Whether to require TLS |
-| &nbsp;&nbsp;&nbsp;username | Optional. The username to authenticate with the SMTP server. Both username and password must be provided to authenticate with basic credentials. |
-| &nbsp;&nbsp;&nbsp;password | Optional. The password to authenticate with the SMTP server. Both username and password must be provided to authenticate with basic credentials. |
 | client | Anything in the section is sent to the client/browser application when the client/browser application launches |
 | &nbsp;&nbsp;&nbsp;keycloak | Information about the keycloak installation, so that the browser knows where to send the user when they ask to login |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url | The URL of the keycloak server. Ex: https://keycloak.somedomain.com/auth |
@@ -157,6 +140,19 @@ The templates used to email may contain the following parameters:
 | {last_name} | The last name of the user |
 | {expiration_date} | The date that the user's contact information expires |
 | {portal_link} | An http:// value/link to the ERSD portal |
+
+#### Hapi Server
+The NEW Hapi Server will need environment settings 
+
+| Parameter | Description |
+| --------- | ----------- |
+| spring.datasource.url | <Fill this in, example: jdbc:postgresql://hapi-db:5432/hapi_db>
+| spring.datasource.driverClassName | org.postgresql.Driver
+| spring.datasource.username | <Fill this in, example: smith>
+| spring.datasource.password | <Fill this in, example: password>
+| spring.jpa.properties.hibernate.dialect | ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgres94Dialect
+| hapi.fhir.fhir_version | R4
+| hapi.fhir.client_id_strategy | ANY
 
 ## HAPI Notes
 
