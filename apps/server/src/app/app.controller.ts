@@ -1,13 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
 import * as config from 'config';
-import { IClientConfig } from '../../../../libs/ersdlib/src/lib/client-config';
+import type { IClientConfig } from '../../../../libs/ersdlib/src/lib/client-config';
 import path from "path";
 import * as fs from 'fs';
 import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private appService: AppService) {}
+  constructor(private appService: AppService) { }
 
   @Get('config')
   getClientConfig(): IClientConfig {

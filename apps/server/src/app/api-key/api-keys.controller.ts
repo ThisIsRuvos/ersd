@@ -1,16 +1,16 @@
-import {Body, Controller, Get, Post, Req, UseGuards} from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import {UserController} from '../user/user.controller';
-import {AuthGuard} from '@nestjs/passport';
+import { UserController } from '../user/user.controller';
+import { AuthGuard } from '@nestjs/passport';
 import type { AuthRequest } from '../auth-module/auth-request';
-import {Constants} from '../../../../../libs/ersdlib/src/lib/constants';
-import {IUserApiKeys} from '../../../../../libs/ersdlib/src/lib/user-api-keys';
-import {ICoding} from '../../../../../libs/ersdlib/src/lib/coding';
-import {AppService} from '../app.service';
+import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
+import type { IUserApiKeys } from '../../../../../libs/ersdlib/src/lib/user-api-keys';
+import { ICoding } from '../../../../../libs/ersdlib/src/lib/coding';
+import { AppService } from '../app.service';
 import * as config from 'config';
 import { IServerConfig } from '../server-config';
 
-const serverConfig = <IServerConfig> config.server;
+const serverConfig = <IServerConfig>config.server;
 
 @Controller('api-keys')
 export class ApiKeysController {
