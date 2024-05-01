@@ -132,7 +132,7 @@
 
                         <div class="mb-3">
                           <label for="emailSubscriptionEmail" class="form-label">Subscription Email</label>
-                          <input id="emailSubscriptionEmail" type="text" class="form-control"
+                          <input id="emailSubscriptionEmail" type="email" class="form-control"
                             placeholder="joe@somewhere.com" [(ngModel)]="userSubscriptions.emailSubscription.emailAddress"
                             [class.is-invalid]="emailAddress.errors?.email || emailAddress.errors?.required" email="true"
                             required="required" #emailAddress="ngModel" />
