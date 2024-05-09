@@ -135,7 +135,7 @@
                           <input id="emailSubscriptionEmail" type="email" class="form-control"
                             placeholder="joe@somewhere.com" [(ngModel)]="userSubscriptions.emailSubscription.emailAddress"
                             [class.is-invalid]="emailAddress.errors?.email || emailAddress.errors?.required || emailAddress.errors?.pattern" email="true" 
-                            required="required" #emailAddress="ngModel" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"/>
+                            required="required" #emailAddress="ngModel" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" />
                         </div>
                       </div>
 
