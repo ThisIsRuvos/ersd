@@ -84,15 +84,20 @@ export class UserController {
     const identifierQuery = Constants.keycloakSystem + '|' + request.user.sub;
 
     this.logger.log(`Searching for existing person with identifier ${identifierQuery}`);
+    let results
+    try {
+      results = await this.httpService.request<IBundle>({
+        url: this.appService.buildFhirUrl('Person', null, { identifier: identifierQuery }),
+        headers: {
+          'cache-control': 'no-cache'
+        }
+      }).toPromise();
+    } catch (e) {
+      this.logger.log(`User ${identifierQuery} was not found`)
+      throw new NotFoundException();
+    }
 
-    const results = await this.httpService.request<IBundle>({
-      url: this.appService.buildFhirUrl('Person', null, { identifier: identifierQuery }),
-      headers: {
-        'cache-control': 'no-cache'
-      }
-    }).toPromise();
-
-    const peopleBundle = results.data;
+    const peopleBundle = results?.data || {};
 
     if (peopleBundle) {
       if (peopleBundle.total === 1) {
@@ -100,6 +105,9 @@ export class UserController {
         return <Person>peopleBundle.entry[0].resource;
       } else if (peopleBundle.total === 0) {
         throw new NotFoundException();
+      } else if (peopleBundle.total > 1) {
+        // TODO: Not sure how we get into this use case but we need to figure out how to handle in future if such exists
+        this.logger.error(`Found multiple people with identifier ${identifierQuery}`);
       }
     }
 
@@ -236,7 +244,10 @@ export class UserController {
     this.appService.assertAdmin(request);
 
     const url = this.appService.buildFhirUrl('Person', id);
-    const results = await this.httpService.get<Person>(url).toPromise();
+    const results = await this.httpService.get<Person>(url).toPromise().catch((err) => {
+      this.logger.error(`Error retrieving person ${id}: ${err.message}`);
+      throw new InternalServerErrorException('Error retrieving person ' + err.message);
+    });
     return results.data;
   }
 
@@ -245,12 +256,12 @@ export class UserController {
     this.appService.assertAdmin(request);
 
     const url = this.appService.buildFhirUrl('Person', id);
-    // await this.httpService.put<IPerson>(url, body).toPromise();
-    const results = await this.httpService.put<IPerson>(url, body).toPromise();
+    const results = await this.httpService.put<IPerson>(url, body).toPromise().catch((err) => {
+      this.logger.error(`Error updating person ${id}: ${err.message}`);
+      throw new InternalServerErrorException(err.message);
+    });
 
     return results.data; // Return the data from the response to the client
- 
-
   }
 
   private async deleteUserById(id: string) {
@@ -258,7 +269,10 @@ export class UserController {
 
     const url = this.appService.buildFhirUrl('Person', id);
 
-    const getResults = await this.httpService.get<Person>(url).toPromise();
+    const getResults = await this.httpService.get<Person>(url).toPromise().catch((err) => {
+      this.logger.error(`Error retrieving person ${id}: ${err.message}`);
+      throw new NotFoundException('Person not found');
+    });
     const person = getResults.data;
 
     const subscriptionExtensions = (person.extension || [])
@@ -279,7 +293,9 @@ export class UserController {
           this.logger.log(`Deleting subscription ${split[1]} associated with person ${person.id}`);
 
           const subscriptionUrl = this.appService.buildFhirUrl('Subscription', split[1]);
-          return this.httpService.delete(subscriptionUrl).toPromise();
+          return this.httpService.delete(subscriptionUrl).toPromise().catch((err) => {
+            this.logger.error(`Error deleting subscription ${split[1]} associated with person ${person.id}: ${err.message}`);
+          });
         });
 
       await Promise.all(deletePromises);
@@ -291,7 +307,9 @@ export class UserController {
 
     this.logger.log(`Deleting person ${person.id}`);
 
-    await this.httpService.delete(url).toPromise();
+    await this.httpService.delete(url).toPromise().catch((err) => {
+      this.logger.error(`Error deleting person ${person.id}: ${err.message}`);
+    });
 
     this.logger.log(`Done deleting person ${person.id}`);
   }

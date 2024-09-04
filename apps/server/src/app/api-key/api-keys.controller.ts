@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards,Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { UserController } from '../user/user.controller';
 import { AuthGuard } from '@nestjs/passport';
@@ -14,6 +14,8 @@ const serverConfig = <IServerConfig>config.server;
 
 @Controller('api-keys')
 export class ApiKeysController {
+  private readonly logger = new Logger(UserController.name);
+
   constructor(private httpService: HttpService, private appService: AppService) {
   }
 
@@ -38,7 +40,7 @@ export class ApiKeysController {
     return response;
   }
 
-  private addOrRemoveTag(personId: string, tag: ICoding, operation: '$meta-add' | '$meta-delete') {
+  private async addOrRemoveTag(personId: string, tag: ICoding, operation: '$meta-add' | '$meta-delete') {
     const url = this.appService.buildFhirUrl('Person', personId, null, operation);
     const body = {
       resourceType: 'Parameters',
@@ -49,7 +51,13 @@ export class ApiKeysController {
         }
       }]
     };
-    return this.httpService.post(url, body).toPromise();
+    try {
+      const response = await this.httpService.post(url, body).toPromise();
+      return response
+    } catch (error) {
+      this.logger.error(`Error ${operation} for tag, error: ${error}`);
+      return;
+    }
   }
 
   @Post()
