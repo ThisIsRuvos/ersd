@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, InternalServerErrorException, Logger, Post, Req, UseGuards } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import {
   EmailSubscriptionInfo,
@@ -94,7 +94,9 @@ export class SubscriptionController {
 
     if (current && !updated) {
       const deleteUrl = this.appService.buildFhirUrl('Subscription', current.id);
-      return this.httpService.delete(deleteUrl).toPromise();
+      return this.httpService.delete(deleteUrl).toPromise().catch((err) => {
+        this.logger.error(`Error deleting subscription ${current.id}: ${err}`);
+      });
     } else if (updated) {
       if (!current) {
         current = new Subscription();
@@ -114,7 +116,9 @@ export class SubscriptionController {
         method: method,
         url: this.appService.buildFhirUrl('Subscription', current ? current.id : null),
         data: current
-      }).toPromise();
+      }).toPromise().catch((err) => {
+        this.logger.error(`Error updating subscription ${current.id}: ${err}`);
+      });
     }
 
     return Promise.resolve();
@@ -251,7 +255,10 @@ export class SubscriptionController {
   @Get('remove_artifacts')
   @UseGuards(AuthGuard())
   async removeAttachmentsFromSubscriptions() {
-    const subscriptionsBundle = await this.httpService.get(`${this.appService.serverConfig.fhirServerBase}/Subscription?type=email`).toPromise();
+    const subscriptionsBundle = await this.httpService.get(`${this.appService.serverConfig.fhirServerBase}/Subscription?type=email`).toPromise().catch((err) => {
+      this.logger.error(`Error fetching Subscriptions from FHIR server: ${err}`)
+      throw new InternalServerErrorException('Error fetching Subscriptions from FHIR server: ' + err)
+    });
     const { data: bundle } = subscriptionsBundle;
     this.logger.log('Removing attachments from Subscription resources')
     await this.sendUpdateBundle(bundle);
