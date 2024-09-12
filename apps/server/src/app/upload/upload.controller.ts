@@ -47,7 +47,7 @@ export class UploadController {
         const s3client = new S3();
         const Key = this.appService.serverConfig.payload.RCTCKey;
         this.logger.log(`Uploaded RCTC excel to s3://${Bucket}/${Key}`);
-        const s3return = await s3client.putObject({
+        await s3client.putObject({
           Bucket,
           Key,
           Metadata,
@@ -224,7 +224,7 @@ export class UploadController {
         const Key = this.appService.serverConfig.payload.Key;
         const Metadata = { filename: body.fileName };
 
-        const s3return = await s3client.putObject({
+        await s3client.putObject({
           Bucket,
           Key,
           Metadata,
