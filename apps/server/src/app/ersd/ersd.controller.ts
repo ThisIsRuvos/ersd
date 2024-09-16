@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Controller,
   Get,
-
   Logger,
   Query,
   Req,
@@ -27,7 +26,7 @@ export class eRSDController {
 
   private validFormat(format): boolean { return format === 'xml' || format === 'json' || format === 'md' }
 
-  private assertApiKey(request: Request): Promise<Person> {
+  private assertApiKey(request: Request): Promise<Person | void> {
     let authorization: string;
 
     if (request.header('authorization')) {
@@ -60,6 +59,9 @@ export class eRSDController {
         }
 
         return new Person(bundle.entry[0].resource);
+      }).catch((error) => {
+        this.logger.error(`Error fetching Person from FHIR server: ${error}`)
+        throw new UnauthorizedException('Invalid API Key');
       });
   }
 

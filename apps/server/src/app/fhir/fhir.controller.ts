@@ -1,4 +1,4 @@
-import {All, BadRequestException, Controller, Req, UnauthorizedException} from '@nestjs/common';
+import {All, BadRequestException, Controller, Logger, Req, UnauthorizedException} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import {Request} from 'express';
 import {Constants} from '../../../../../libs/ersdlib/src/lib/constants';
@@ -13,6 +13,8 @@ import {AppService} from '../app.service';
 export class FhirController {
   constructor(private httpService: HttpService, private appService: AppService) {
   }
+
+  private readonly logger = new Logger('fhirController');
 
   private assertApiKey(request: Request): Promise<Person> {
     let authorization: string;
@@ -48,6 +50,9 @@ export class FhirController {
         }
 
         return new Person(bundle.entry[0].resource);
+      }).catch((error) => {
+        this.logger.error(`Error fetching Person from FHIR server: ${error}`)
+        throw new UnauthorizedException('Invalid API Key');
       });
   }
 

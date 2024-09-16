@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { IPerson, Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
 import { getErrorString } from '../../../../../libs/ersdlib/src/lib/get-error-string';
@@ -9,15 +9,19 @@ import { IUploadRequest } from '../../../../../libs/ersdlib/src/lib/upload-reque
 import { IEmailRequest, IEmailExportRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
 import { firstValueFrom } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
 
-export class AdminComponent implements OnInit {
+export class AdminComponent implements AfterViewInit {
   public users: Person[] = [];
+  public dataSource = new MatTableDataSource([]);
+  public isLoadingResults = true; // Loading indicator flag
   public message: string;
   public messageIsError: boolean;
   public bundleFile: File;
@@ -31,7 +35,10 @@ export class AdminComponent implements OnInit {
   public excelFileContent: string;
   public active = 1
   public uploading: boolean = false;
+  displayedColumns: string[] = ['firstName', 'lastName', 'email', 'actions'];
 
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   @ViewChild('bundleUploadFile') bundleUploadField: ElementRef;
   @ViewChild('excelUploadFile') excelUploadField: ElementRef;
   @ViewChild('emailType1') emailType1!: ElementRef<HTMLInputElement>;
@@ -45,7 +52,7 @@ export class AdminComponent implements OnInit {
   constructor(private httpClient: HttpClient,
     private modalService: NgbModal,
     public authService: AuthService,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService) {}
 
   setEmailType() {
     const person = this.emailType1.nativeElement.checked;
@@ -63,26 +70,30 @@ export class AdminComponent implements OnInit {
     this.isDisabled = this.emailType.exportTypeOrigin.length === 0;
   }
 
-  async sendEmail() {
-    if (!this.emailRequest.subject || !this.emailRequest.message) {
-      return;
-    }
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+  
+  async ngAfterViewInit() {
+    this.dataSource.filterPredicate = (data, filter) => {
+      const accumulator = data.firstName + ' ' + data.lastName + ' ' + data.email;
+      return accumulator.toLowerCase().includes(filter);
+    };    
+    await this.fetchUserData();
+  }
 
-    if (!confirm('Are you sure you want to send this email to all users?')) {
-      return;
-    }
-
-    this.message = null;
-    this.messageIsError = false;
-
+  async fetchUserData() {
+    this.isLoadingResults = true;
     try {
-      await firstValueFrom(this.httpClient.post('/api/user/email', this.emailRequest));
-      this.message = 'Successfully sent email to all users';
-      window.scrollTo(0, 0);
+      const users = await firstValueFrom(this.httpClient.get<IPerson[]>('/api/user'));
+      this.users = users.map(user => new Person(user));
+      this.updateTableDataSource(users); // Transform and update in one step
     } catch (err) {
-      this.message = getErrorString(err);
-      this.messageIsError = true;
-      window.scrollTo(0, 0);
+      this.handleError(err);
+    } finally {
+      this.isLoadingResults = false;
+      this.initializeTableFeatures();
     }
   }
 
@@ -105,10 +116,26 @@ export class AdminComponent implements OnInit {
         this.toastr.error('Failed to update user details!');
       }
     });
-
-
   }
 
+  
+
+  async deleteUser(user: Person) {
+    if (this.isCurrentUserService(user)) return;
+    if (!confirm(`Are you sure you want to delete the user with email ${user.email}?`)) return;
+
+    try {
+      await firstValueFrom(this.httpClient.delete(`/api/user/${user.id}`));
+      this.users = this.users.filter(u => u.id !== user.id);
+      this.updateTableDataSource([...this.users]); // Update table with current users
+      window.scrollTo(0, 0);
+      this.toastr.success(`${user.firstName} ${user.lastName} has been deleted!`);
+    } catch (err) {
+      window.scrollTo(0, 0);
+      this.handleError(err);
+    }
+  }
+  
   handleBundleFileInput(files: FileList) {
     if (files.length !== 1) {
       this.bundleFile = null;
@@ -139,20 +166,6 @@ export class AdminComponent implements OnInit {
     };
     fileReader.readAsDataURL(this.excelFile);
   }
-
-  // decommissioned atm
-  // async getEmail() {
-  //   const request = this.emailType
-  //   // get emailtype from checkboc and assign it to exportTypeOrigin
-
-  //   try {
-  //     const response = await firstValueFrom(this.httpClient.post('/api/upload/get-emails', request))
-  //     this.sendEmailsFromClient(response)
-  //   } catch (error) {
-  //      // Handle error if the request fails
-  //      console.error('Error:', error);
-  //   }
-  // }
 
 
   async getEmailCSV() {
@@ -186,18 +199,6 @@ export class AdminComponent implements OnInit {
       this.downloading = false;
     }
   }
-
-  // not currently used
-  sendEmailsFromClient(emailList) {
-    const emailString = emailList.join(',');
-    // console.log("emailString",emailString);
-    // Construct the mailto link with the list of email addresses
-    const mailtoLink = `mailto:${emailString}`;
-    // Open the default mail client using Angular's Router service
-    // this.router.navigateByUrl(mailtoLink);
-    window.location.href = mailtoLink;
-  }
-
 
   async uploadExcel() {
     if (!this.excelFile) {
@@ -262,33 +263,35 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  async deleteUser(user: Person) {
-    const currentUserPersonId = this.authService.person ? this.authService.person.id : null;
+  updateTableDataSource(users: IPerson[]) {
+    this.dataSource.data = users.map(({ id, name, telecom }) => ({
+      id,
+      firstName: name?.[0]?.given?.[0],
+      lastName: name?.[0]?.family,
+      email: telecom.find(contact => contact.system === 'email')?.value.replace('mailto:', '')
+    }));
 
-    if (currentUserPersonId === user.id) {
-      this.toastr.error('You cannot delete your user details!');      
-      window.scrollTo(0, 0);
-      return;
-    }
-
-    if (!confirm(`Are you sure you want to delete the user with email ${user.email}?`)) {
-      return;
-    }
-
-    try {
-      await firstValueFrom(this.httpClient.delete('/api/user/' + user.id));
-      const index = this.users.indexOf(user);
-      if (index >= 0) {
-        this.users.splice(index, 1);
-      }
-      this.toastr.success(`${user.firstName} ${user.lastName} has been deleted!`);    
-    } catch (err) {
-      // 
-      this.message = getErrorString(err);
-      this.messageIsError = true;
-    }
+    this.dataSource.filter = this.dataSource.filter; // Re-trigger filtering
   }
 
+  initializeTableFeatures() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
+  isCurrentUserService(user: Person): boolean {
+    const currentUserPersonId = this.authService.person?.id;
+    if (currentUserPersonId === user.id) {
+      this.toastr.error('You cannot delete your user details!');
+      return true;
+    }
+    return false;
+  }
+
+  handleError(err: any) {
+    console.error("Failed to fetch user data:", err);
+    this.toastr.error('An error occurred. Please try again.');
+  }
 
   async removeEmailAttachments() {
     try {
@@ -298,19 +301,6 @@ export class AdminComponent implements OnInit {
     } catch (err) {
       this.message = getErrorString(err);
       this.messageIsError = true;
-    }
-  }
-
-  async ngOnInit() {
-    await this.fetchUserData(); // Initial data fetch when component initializes
-  }
-
-  async fetchUserData() {
-    try {
-      const users = await firstValueFrom(this.httpClient.get<IPerson[]>('/api/user'));
-      this.users = users.map((user) => new Person(user));
-    } catch (err) {
-      // Handle errors if any
     }
   }
 

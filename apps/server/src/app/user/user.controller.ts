@@ -36,78 +36,6 @@ export class UserController {
   constructor(private httpService: HttpService, protected appService: AppService) {
   }
 
-  @Post('email')
-  async emailAllPeople(@Req() request: AuthRequest, @Body() body: IEmailRequest) {
-    this.appService.assertAdmin(request);
-
-    if (!this.appService.emailConfig.host || !this.appService.emailConfig.port) {
-      throw new Error('Email has not been configured on this server');
-    }
-
-    const transportOptions: SMTPConnection.Options = {
-      host: this.appService.emailConfig.host,
-      port: this.appService.emailConfig.port,
-      requireTLS: this.appService.emailConfig.tls
-    };
-
-    if (this.appService.emailConfig.username && this.appService.emailConfig.password) {
-      transportOptions.auth = {
-        user: this.appService.emailConfig.username,
-        pass: this.appService.emailConfig.password
-      };
-    }
-    else {
-      transportOptions.secure = false;
-    }
-    const tos = JSON.stringify(transportOptions);
-    this.logger.log(`transportOptions ${tos}`);
-
-    this.logger.log('Getting all people registered in the FHIR server');
-    const people = await this.getAllPeople(request);
-
-    this.logger.log('Creating email transport to send emails');
-    const transporter = nodemailer.createTransport(transportOptions);
-
-    const sendMessage = (options: Mail.Options) => {
-      return new Promise<SentMessageInfo>((resolve, reject) => {
-        transporter.sendMail(options, (err, info) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(info);
-          }
-        });
-      });
-    };
-
-    const filteredPeople = people.filter((person) => !!person.email);
-
-    this.logger.log(`Sending email to ${filteredPeople.length} people`);
-
-    const sendPromises = filteredPeople
-      .map((person) => {
-        const mailMessage: Mail.Options = {
-          from: this.appService.emailConfig.from,
-          to: person.email,
-          subject: body.subject,
-          text: body.message
-        };
-        return sendMessage(mailMessage);
-      });
-
-    this.logger.log(`Sending email to ${sendPromises.length} people`);
-
-    try {
-      const sendResults = await Promise.all(sendPromises);
-
-      sendResults.forEach((result) => {
-        this.logger.log(`Successfully sent message with ID: ${result.messageId}`);
-      });
-    } catch (ex) {
-      this.logger.error(`Error sending email to all registered users: ${ex.message}`);
-      throw new InternalServerErrorException();
-    }
-  }
 
   @Get()
   async getAllPeople(@Req() request: AuthRequest): Promise<Person[]> {
@@ -156,15 +84,20 @@ export class UserController {
     const identifierQuery = Constants.keycloakSystem + '|' + request.user.sub;
 
     this.logger.log(`Searching for existing person with identifier ${identifierQuery}`);
+    let results
+    try {
+      results = await this.httpService.request<IBundle>({
+        url: this.appService.buildFhirUrl('Person', null, { identifier: identifierQuery }),
+        headers: {
+          'cache-control': 'no-cache'
+        }
+      }).toPromise();
+    } catch (e) {
+      this.logger.log(`User ${identifierQuery} was not found`)
+      throw new NotFoundException();
+    }
 
-    const results = await this.httpService.request<IBundle>({
-      url: this.appService.buildFhirUrl('Person', null, { identifier: identifierQuery }),
-      headers: {
-        'cache-control': 'no-cache'
-      }
-    }).toPromise();
-
-    const peopleBundle = results.data;
+    const peopleBundle = results?.data || {};
 
     if (peopleBundle) {
       if (peopleBundle.total === 1) {
@@ -172,6 +105,9 @@ export class UserController {
         return <Person>peopleBundle.entry[0].resource;
       } else if (peopleBundle.total === 0) {
         throw new NotFoundException();
+      } else if (peopleBundle.total > 1) {
+        // TODO: Not sure how we get into this use case but we need to figure out how to handle in future if such exists
+        this.logger.error(`Found multiple people with identifier ${identifierQuery}`);
       }
     }
 
@@ -308,7 +244,10 @@ export class UserController {
     this.appService.assertAdmin(request);
 
     const url = this.appService.buildFhirUrl('Person', id);
-    const results = await this.httpService.get<Person>(url).toPromise();
+    const results = await this.httpService.get<Person>(url).toPromise().catch((err) => {
+      this.logger.error(`Error retrieving person ${id}: ${err.message}`);
+      throw new InternalServerErrorException('Error retrieving person ' + err.message);
+    });
     return results.data;
   }
 
@@ -317,12 +256,12 @@ export class UserController {
     this.appService.assertAdmin(request);
 
     const url = this.appService.buildFhirUrl('Person', id);
-    // await this.httpService.put<IPerson>(url, body).toPromise();
-    const results = await this.httpService.put<IPerson>(url, body).toPromise();
+    const results = await this.httpService.put<IPerson>(url, body).toPromise().catch((err) => {
+      this.logger.error(`Error updating person ${id}: ${err.message}`);
+      throw new InternalServerErrorException(err.message);
+    });
 
     return results.data; // Return the data from the response to the client
- 
-
   }
 
   private async deleteUserById(id: string) {
@@ -330,7 +269,10 @@ export class UserController {
 
     const url = this.appService.buildFhirUrl('Person', id);
 
-    const getResults = await this.httpService.get<Person>(url).toPromise();
+    const getResults = await this.httpService.get<Person>(url).toPromise().catch((err) => {
+      this.logger.error(`Error retrieving person ${id}: ${err.message}`);
+      throw new NotFoundException('Person not found');
+    });
     const person = getResults.data;
 
     const subscriptionExtensions = (person.extension || [])
@@ -351,7 +293,9 @@ export class UserController {
           this.logger.log(`Deleting subscription ${split[1]} associated with person ${person.id}`);
 
           const subscriptionUrl = this.appService.buildFhirUrl('Subscription', split[1]);
-          return this.httpService.delete(subscriptionUrl).toPromise();
+          return this.httpService.delete(subscriptionUrl).toPromise().catch((err) => {
+            this.logger.error(`Error deleting subscription ${split[1]} associated with person ${person.id}: ${err.message}`);
+          });
         });
 
       await Promise.all(deletePromises);
@@ -363,7 +307,9 @@ export class UserController {
 
     this.logger.log(`Deleting person ${person.id}`);
 
-    await this.httpService.delete(url).toPromise();
+    await this.httpService.delete(url).toPromise().catch((err) => {
+      this.logger.error(`Error deleting person ${person.id}: ${err.message}`);
+    });
 
     this.logger.log(`Done deleting person ${person.id}`);
   }

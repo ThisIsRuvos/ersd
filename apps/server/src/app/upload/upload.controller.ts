@@ -1,18 +1,18 @@
-import {Body, Controller, Logger, Post, Req, Res, Header, UseGuards, InternalServerErrorException, StreamableFile, BadRequestException} from '@nestjs/common';
+import { Body, Controller, Logger, Post, Req, Res, Header, UseGuards, InternalServerErrorException, StreamableFile, BadRequestException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { Parser, } from '@json2csv/plainjs';
 import {
   string as stringFormatter,
 } from '@json2csv/formatters';
-import {AuthGuard} from '@nestjs/passport';
+import { AuthGuard } from '@nestjs/passport';
 import type { AuthRequest } from '../auth-module/auth-request';
-import {Constants} from '../../../../../libs/ersdlib/src/lib/constants';
-import {IUploadRequest,} from '../../../../../libs/ersdlib/src/lib/upload-request';
-import { IEmailExportRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
+import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
+import type { IUploadRequest, } from '../../../../../libs/ersdlib/src/lib/upload-request';
+import type { IEmailExportRequest } from '../../../../../libs/ersdlib/src/lib/email-request';
 
-import {Fhir} from 'fhir/fhir';
-import {IBundle} from '../../../../../libs/ersdlib/src/lib/bundle';
-import {AppService} from '../app.service';
+import { Fhir } from 'fhir/fhir';
+import { IBundle } from '../../../../../libs/ersdlib/src/lib/bundle';
+import { AppService } from '../app.service';
 import S3 from 'aws-sdk/clients/s3';
 import path, { join } from "path";
 import { validateEmail } from '../helper';
@@ -41,13 +41,13 @@ export class UploadController {
     }
     else {
       this.logger.log(`Uploading RCTC excel to s3`);
-      const Metadata = {filename: body.fileName};
+      const Metadata = { filename: body.fileName };
 
       try {
         const s3client = new S3();
         const Key = this.appService.serverConfig.payload.RCTCKey;
         this.logger.log(`Uploaded RCTC excel to s3://${Bucket}/${Key}`);
-        const s3return = await s3client.putObject({
+        await s3client.putObject({
           Bucket,
           Key,
           Metadata,
@@ -55,7 +55,7 @@ export class UploadController {
         }).promise()
         this.logger.log(`Uploaded RCTC excel to s3://${Bucket}/${Key}`);
       }
-      catch(e) {
+      catch (e) {
         this.logger.error(`Failed to upload RCTC excel to s3 ${JSON.stringify(e)}`);
         throw e;
       }
@@ -112,33 +112,33 @@ export class UploadController {
           this.logger.error(`Invalid email address ${email}`);
         }
       })
-      } else if (exportTypeOrigin === 'Person') {
-        resource?.forEach(i => {
-          const primaryEmail = i?.telecom?.find(j => j.system === 'email')?.value
-          const secondaryEmail = i?.contained?.find?.(c => c?.resourceType === 'Person')?.telecom?.find(j => j.system === 'email')?.value
-          const allPersonEmails = [primaryEmail, secondaryEmail].map(i => i && i.replaceAll('mailto:', '')).filter(i => i)
-          allPersonEmails.forEach(email => {
-            if (validateEmail(email)) {
-              emails.push(email)
-            } else {
-              this.logger.error(`Invalid email address ${email}`);
-            }
-          })
+    } else if (exportTypeOrigin === 'Person') {
+      resource?.forEach(i => {
+        const primaryEmail = i?.telecom?.find(j => j.system === 'email')?.value
+        const secondaryEmail = i?.contained?.find?.(c => c?.resourceType === 'Person')?.telecom?.find(j => j.system === 'email')?.value
+        const allPersonEmails = [primaryEmail, secondaryEmail].map(i => i && i.replaceAll('mailto:', '')).filter(i => i)
+        allPersonEmails.forEach(email => {
+          if (validateEmail(email)) {
+            emails.push(email)
+          } else {
+            this.logger.error(`Invalid email address ${email}`);
+          }
         })
-      }
+      })
+    }
     return [...new Set(emails.map(i => i.toLowerCase()))]
   }
 
-   @Post('get-emails')
-   @UseGuards(AuthGuard())
-    async getEmaisl(@Body() { exportTypeOrigin }: { exportTypeOrigin: string }) {
-      const emails = await this.getEmails(exportTypeOrigin);
-      return emails;
-    }
+  @Post('get-emails')
+  @UseGuards(AuthGuard())
+  async getEmaisl(@Body() { exportTypeOrigin }: { exportTypeOrigin: string }) {
+    const emails = await this.getEmails(exportTypeOrigin);
+    return emails;
+  }
 
   @Post('export')
   @Header('Content-Type', 'text/csv')
-  @Header('Content-Disposition', 'attachment; filename="emails.csv"')  
+  @Header('Content-Disposition', 'attachment; filename="emails.csv"')
   @UseGuards(AuthGuard())
   async exportEmails(@Req() request: AuthRequest, @Res({ passthrough: true }) res: Response, @Body() body: IEmailExportRequest) {
     this.appService.assertAdmin(request);
@@ -162,18 +162,7 @@ export class UploadController {
           string: stringFormatter({ quote: '' }),
         }
       });
-      const csv = parser.parse(emails.map(i => ({email: i})));
-      writeFileSync('tmp.csv', csv)
-
-      const stream = createReadStream(join(process.cwd(), 'tmp.csv'))
-      stream.on('end', () => {
-        try{
-          unlinkSync('tmp.csv');
-        } catch (error) {
-          this.logger.warn('An error occurred while removing tmp file.');
-        }
-      })
-      return new StreamableFile(stream);
+      return parser.parse(emails.map(i => ({ email: i })));
     } catch (err) {
       this.logger.error('Error converting emails to CSV', err);
     }
@@ -207,7 +196,7 @@ export class UploadController {
 
     // Attach the message to the bundle being uploaded
     if (body.message && resource.resourceType === 'Bundle') {
-      const bundle = <IBundle> resource;
+      const bundle = <IBundle>resource;
 
       this.logger.log('Creating an extension on the first entry in the bundle being upload that includes the message from the admin');
 
@@ -233,9 +222,9 @@ export class UploadController {
       else {
         const s3client = new S3();
         const Key = this.appService.serverConfig.payload.Key;
-        const Metadata = {filename: body.fileName};
+        const Metadata = { filename: body.fileName };
 
-        const s3return = await s3client.putObject({
+        await s3client.putObject({
           Bucket,
           Key,
           Metadata,
@@ -244,7 +233,7 @@ export class UploadController {
         this.logger.log(`Uploaded bundle to s3://${Bucket}/${Key}`);
       }
     }
-    catch(e) {
+    catch (e) {
       this.logger.error(`Failed to upload bundle ${JSON.stringify(e)}`);
       throw e;
     }
