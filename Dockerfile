@@ -9,8 +9,6 @@ WORKDIR /ersd
 
 COPY . .
 
-RUN npm install -g @angular/cli@16.1.4
-
 RUN npm ci
 RUN npm run build:server
 RUN npm run build:client
