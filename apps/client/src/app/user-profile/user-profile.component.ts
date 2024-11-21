@@ -56,7 +56,8 @@ export class UserProfileComponent implements OnInit {
       this.editPersonField.resetFormDirty()
       window.scrollTo(0, 0);
     } catch (err) {
-      this.toastr.error('Failed to update user details!');      
+      this.toastr.error('Failed to update user details!');
+      this.loading = false;
       window.scrollTo(0, 0);
     }
   }

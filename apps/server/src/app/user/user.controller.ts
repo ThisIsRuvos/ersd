@@ -1,13 +1,10 @@
-import * as SMTPConnection from 'nodemailer/lib/smtp-connection';
-import * as Mail from 'nodemailer/lib/mailer';
-import * as nodemailer from 'nodemailer';
-
 import {
   Body,
   Controller,
   Delete,
   Get,
   InternalServerErrorException,
+  BadRequestException,
   Logger,
   NotFoundException,
   Param,
@@ -23,8 +20,6 @@ import type {AuthRequest} from '../auth-module/auth-request';
 import {Constants} from '../../../../../libs/ersdlib/src/lib/constants';
 import {IBundle} from '../../../../../libs/ersdlib/src/lib/bundle';
 import {Subscription} from '../../../../../libs/ersdlib/src/lib/subscription';
-import {IEmailRequest} from '../../../../../libs/ersdlib/src/lib/email-request';
-import {SentMessageInfo} from 'nodemailer/lib/smtp-transport';
 import {buildFhirUrl} from '../helper';
 import {AppService} from '../app.service';
 
@@ -163,6 +158,10 @@ export class UserController {
   @Post('me')
   async updateMyPerson(@Req() request: AuthRequest, @Body() body: Person): Promise<Person> {
     const updatePerson = new Person(body);
+    if (!updatePerson.isValid()) {
+      this.logger.error('Person is not valid, missing required fields');
+      throw new BadRequestException('missing required fields');
+    }
     updatePerson.identifier = updatePerson.identifier || [];
 
     let foundIdentifier = updatePerson.identifier.find((identifier) => identifier.system === Constants.keycloakSystem);
