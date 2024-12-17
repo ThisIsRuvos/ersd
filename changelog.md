@@ -8,3 +8,4 @@
 - Updated footer - support links now link out to service desk rather than email
 - Admin page user list bug fix for case where accounts have no data and cause the full list display to fail
 - Fix to the Change Preview page layout - resolves issue with Download button overflowing horizontally
+- Added validation on user config to avoid saving users without required data
