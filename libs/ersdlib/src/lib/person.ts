@@ -199,6 +199,10 @@ export class Person implements IPerson {
     }
   }
 
+  public isValid(): boolean {
+    return (this.telecom != null && this.telecom.length > 0) && this.name != null && this.name.length > 0;
+  }
+
   public get organizationTitle(): string {
     if (this.extension) {
       const foundExtension = this.extension.find((extension) => extension.url === Constants.extensions.organizationTitle);

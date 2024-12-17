@@ -268,7 +268,7 @@ export class AdminComponent implements AfterViewInit {
       id,
       firstName: name?.[0]?.given?.[0],
       lastName: name?.[0]?.family,
-      email: telecom.find(contact => contact.system === 'email')?.value.replace('mailto:', '')
+      email: telecom?.find(contact => contact?.system === 'email')?.value?.replace('mailto:', '')
     }));
 
     this.dataSource.filter = this.dataSource.filter; // Re-trigger filtering

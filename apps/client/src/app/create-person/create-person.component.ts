@@ -35,6 +35,7 @@ async ok() {
   } catch (err) {
     this.message = getErrorString(err);
     this.toastr.error('Failed to update user details!');
+    this.loading = false;
   }
 }
 
