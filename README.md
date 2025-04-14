@@ -196,3 +196,49 @@ The following table indicates what KeyCloak custom attributes are recognized by 
 | Postal Code | postal | postalCode | zip |
 
 Refer to the [this link](https://medium.com/@auscunningham/create-a-custom-theme-for-keycloak-8781207be604) for guidance on how to create a custom keylcoak template that captures custom fields (such as the fields listed in the table above).
+
+### Database Queries
+
+Select users with email address like.
+
+``
+SELECT
+  r.fhir_id,
+  v.res_text_vc
+FROM public.hfj_res_ver v
+JOIN public.hfj_resource r ON r.res_id = v.res_id
+WHERE r.res_type = 'Person'
+  AND res_text_vc::text ILIKE '%Paige.O''Connor@centracare.com%';
+``
+
+Select user with name and surname
+
+``
+SELECT
+  r.fhir_id,
+  v.res_text_vc
+FROM public.hfj_res_ver v
+JOIN public.hfj_resource r ON r.res_id = v.res_id
+WHERE r.res_type = 'Person'
+  AND res_text_vc::jsonb @> '{"name":[{"family":"O''Connor", "given":["Paige"]}]}';
+``
+
+Update User's email address
+
+``
+UPDATE public.hfj_res_ver
+SET res_text_vc = jsonb_set(
+    res_text_vc::jsonb,
+    '{telecom,0,value}',
+    to_jsonb('paige.o''connor@hcmed.org'::text),
+    false
+)
+WHERE res_id IN (
+    SELECT v.res_id
+    FROM public.hfj_res_ver v
+    JOIN public.hfj_resource r ON r.res_id = v.res_id
+    WHERE r.res_type = 'Person'
+      AND res_text_vc::jsonb @> '{"name":[{"family":"O''Connor", "given":["Paige"]}]}'
+      AND res_text_vc::jsonb -> 'telecom' -> 0 ->> 'value' = 'paige.oconnor@hcmed.org'
+);
+``
