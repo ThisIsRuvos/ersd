@@ -16,6 +16,7 @@ jest.mock('nodemailer');
 
 const fhirServerBase = 'http://test-fhir-server.com';
 const contactInfoConfig: IServerConfigContactInfo = {
+  enableExpiryCheck: true,
   checkCountPerPage: 5,
   checkDurationSeconds: 60,
   expiration: {
