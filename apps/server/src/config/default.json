@@ -41,6 +41,7 @@
     ],
     "exampleQuery": "/api/fhir/Bundle?_sort=-_lastUpdated&_count=1",
     "contactInfo": {
+      "enableExpiryCheck": false,
       "checkDurationSeconds": 0,
       "checkCountPerPage": 5,
       "expiration": {

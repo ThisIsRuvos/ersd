@@ -1,4 +1,5 @@
 export interface IServerConfigContactInfo {
+  enableExpiryCheck: boolean;
   checkDurationSeconds?: number;
   checkCountPerPage: number;
   expiration: {

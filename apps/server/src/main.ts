@@ -32,7 +32,10 @@ if (!appService.serverConfig.fhirServerBase) {
 }
 
 try {
-  CheckContactInfo.execute(appService.serverConfig.fhirServerBase, appService.serverConfig.contactInfo, appService.emailConfig);
+  logger.log(`Contact Information Expiry check enabled: ${appService.serverConfig.contactInfo.enableExpiryCheck}`)
+  if (appService.serverConfig.contactInfo.enableExpiryCheck) {
+      CheckContactInfo.execute(appService.serverConfig.fhirServerBase, appService.serverConfig.contactInfo, appService.emailConfig);
+  }
 } catch { }
 
 if (!appService.serverConfig.rctcExcelPath) {
