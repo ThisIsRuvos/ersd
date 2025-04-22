@@ -1,6 +1,6 @@
 {
   "name": "ersd",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "license": "MIT",
   "scripts": {
     "start:server": "nx serve server",
