@@ -16,7 +16,7 @@
     <div class="col-md-6">
       <label for="email" class="form-label">Email *</label>
       <input name="email" id="email" type="text" class="form-control" [(ngModel)]="person.email" email="true" required="required"
-        placeholder="Enter your email address" #email="ngModel" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        placeholder="Enter your email address" #email="ngModel" pattern="[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         [class.is-invalid]="email.errors?.email || email.errors?.required || email.errors?.pattern" />
     </div>
     <div class="col-md-6">
@@ -130,19 +130,19 @@
     <div class="row g-3">
       <div class="col-md-6">
         <label for="secondaryFirstName" class="form-label">First Name *</label>
-        <input name="secondaryFirstName" id="secondaryFirstName" type="text" class="form-control" [(ngModel)]="secondary.firstName" 
+        <input name="secondaryFirstName" id="secondaryFirstName" type="text" class="form-control" [(ngModel)]="secondary.firstName"
         #secondaryFirstName="ngModel" [class.is-invalid]="secondaryFirstName.errors?.required"
         [required]="secondary"/>
       </div>
       <div class="col-md-6">
         <label for="secondaryLastName" class="form-label">Last Name *</label>
-        <input name="secondaryLastName" id="secondaryLastName" type="text" class="form-control" [(ngModel)]="secondary.lastName" 
+        <input name="secondaryLastName" id="secondaryLastName" type="text" class="form-control" [(ngModel)]="secondary.lastName"
         #secondaryLastName="ngModel" [class.is-invalid]="secondaryLastName.errors?.required"
         [required]="secondary"/>
       </div>
       <div class="col-md-6">
         <label for="secondaryEmail" class="form-label">Email *</label>
-        <input name="secondaryEmail" id="secondaryEmail" type="text" class="form-control" [(ngModel)]="secondary.email" email="true" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        <input name="secondaryEmail" id="secondaryEmail" type="text" class="form-control" [(ngModel)]="secondary.email" email="true" pattern="[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         placeholder="Enter your email address" #secondaryEmail="ngModel" [class.is-invalid]="secondaryEmail.errors?.email || secondaryEmail.errors?.required || secondaryEmail.errors?.pattern" [required]="secondary"/>
       </div>
       <div class="col-md-6">
@@ -249,7 +249,7 @@
 
 
 
-<!-- 
+<!--
 
   this is the main modal component
  -->
