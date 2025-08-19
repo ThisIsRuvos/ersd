@@ -14,7 +14,7 @@ RUN npm run build:server
 RUN npm run build:client
 RUN npm prune --omit=dev
 
-FROM ubuntu:jammy-20240911.1
+FROM ubuntu:jammy-20250730
 
 RUN apt-get update && \
 	apt-get install curl -y && \
