@@ -7,4 +7,3 @@
 - Updated the email address input mask throughout the app to allow for some special characters, specifically apostrophe ("'").
 - Resolved all current NPM vulnerabilities
 - Updated Docker Ubuntu image to resolve AWS vulnerabilities.
-- Updated Keycloak to version 26.2.5
