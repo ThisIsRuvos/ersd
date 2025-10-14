@@ -82,12 +82,13 @@ export class eRSDController {
   @Get('v1specification')
   async getV1Spec(@Req() request: Request, @Query() queryParams, @Response() response: Res) {
     await this.assertApiKey(request);
+
     const format = queryParams['format'].toLowerCase()
     if (!format || !this.validFormat(format)) { throw new BadRequestException('Please specify a valid download format: XML or JSON') }
 
     const Bucket = this.appService.serverConfig.payload.Bucket;
-    const Key = format === 'xml' ? this.appService.serverConfig.payload.ERSDV1_XML_KEY :
-      this.appService.serverConfig.payload.ERSDV1_JSON_KEY
+    const Key = format === 'xml' ? this.appService.serverConfig.payload.ERSDV1_SPECIFICATION_XML_KEY :
+      this.appService.serverConfig.payload.ERSDV1_SPECIFICATION_JSON_KEY
 
     if (typeof Bucket === 'undefined' || Bucket === '' || Key === '') {
       const errorMessage = 'Failed to download from S3, no Bucket or Key specified'
@@ -99,16 +100,15 @@ export class eRSDController {
 
     const headParams = {
       Bucket,
-      Key
+      Key,
     }
 
     const data = await s3client.getObject(headParams).promise();
     const body = data.Body.toString('utf-8')
-
     if (format === 'xml') {
-      return response.set({ 'Content-Type': 'text/xml' }).send(this.stripOuterBundleXML(body))
+      return response.set({ 'Content-Type': 'text/xml' }).send(body)
     } else {
-      return response.set({ 'Content-Type': 'application/json' }).json(this.stripOuterBundleJSON(JSON.parse(body)))
+      return response.set({ 'Content-Type': 'application/json' }).json(JSON.parse(body))
     }
   }
 
