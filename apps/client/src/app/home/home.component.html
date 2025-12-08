@@ -2,12 +2,11 @@
   <main role="main" class="container">
     <div class="card bg-primary border-0 rounded-1 mb-4">
       <div class="card-body">
-        <p class="mb-0">
-          This site provides access to the eRSD specifications for electronic Case Reporting (eCR). The eRSD is used to
-          guide triggering and reporting of initial case reports from Electronic Health Records. For
-          more information, please visit the <a class="link-primary"
-            href="https://ecr.aimsplatform.org/ehr-implementers/triggering/">EHR triggering documentation for EHR
-            implementers</a>.
+        <p class="mb-0">This site provides access to the Electronic Reporting and Surveillance Distribution (eRSD) 
+          specifications for electronic case reporting (eCR). eRSD defines the Reportable Condition Trigger Codes (RCTC) used to identify reportable conditions, the reporting logic and timing 
+          parameters for those conditions, and the clinical data elements that determine
+          reportability. For more information, please visit the <a class="link-primary"  href="https://ecr.aimsplatform.org/ehr-implementers/triggering/">EHR triggering documentation for EHR 
+          implementers</a>.
           The site may also contain specifications for other public health reporting programs and pilots.
         </p>
       </div>
@@ -20,12 +19,38 @@
         </div>
         <div class="mx-4">
           <div class="alert alert-primary border-0 shadow-sm" role="alert">
-            <div class="row">
+            <div class="row mb-3">
               <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
               <div class="col">
-                <span class="fw-bold">If you do not know which eRSD version to use:</span> please contact your EHR
-                vendor or for eCR Now App implementations you can also read the “eRSD Configuration Instructions” file in your eCR
-                Now App download folder.
+                <h6 class="fw-bold mb-2">eRSD Version 3 – Current and Recommended</h6>
+                <ul class="mb-2">
+                  <li>eRSD Version (v3) is the recommended and actively supported specification for all implementers, as it incorporates the following:
+                    <ul>
+                      <li>broader clinical context,</li>
+                      <li>adds version control to all value sets for stronger conformance,</li>
+                      <li>expands and refines the data and logic used for determining reportability</li>
+                      <li>enhances accuracy by refining problem-list and encounter-diagnosis logic,</li>
+                      <li>semantic versioning as opposed to date formats, and</li>
+                      <li>further supports CDA eICR R3.1.1 and FHIR specifications.</li>
+                    </ul>
+                  </li>
+                  <li>All implementers (including eCR Now FHIR App users and vendor developed solutions) should migrate to eRSD v3 by no later than January 31<sup>st</sup> 2026.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
+              <div class="col">
+                <h6 class="fw-bold mb-2">eRSD Versions 1 and 2 Sunsetting - Reminders</h6>
+                <p class="mb-2">eRSD Versions 1 and 2 will be officially sunset on January 31, 2026. These versions will no longer be maintained or supported after that date. Please also be aware of the following service change associated with this transition:</p>
+                <ul>
+                  <li><strong>Deprecation of the excel-based specification bundle:</strong> The eRSD specification bundle spreadsheet (e.g., RCTC excel-based spreadsheet) will be deprecated and no longer available for implementing updates by late Q3 2026.
+                    <ul>
+                      <li>If your implementation currently relies on the spreadsheet format, we strongly recommend beginning the transition to a FHIR-based implementation.</li>
+                    </ul>
+                  </li>
+                  <li><strong>Reportability Response "Out-of-date" warnings:</strong> Implementations that have not transitioned to the eRSD Version 3 release may begin receiving RR documents with "out of date" warning messages following the next scheduled effective date for eRSD v3 release in Q1 2026.</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -47,13 +72,19 @@
             <div class="row mb-3">
               <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
               <div class="col">
-                <span class="fw-bold">New versions of the eRSD are under development:</span> implementers may view in-progress drafts of upcoming eRSD Versions to anticipate possible structural changes that may affect queries.
+                Future updates will only be applied to eRSD v3, and will continue improving performance, in alignment with CDA and FHIR standards, and data completeness.
               </div>
             </div>
             <div class="row">
+              <div class="col-auto pe-0"><span><i class="fas fa-info-circle"></i></span></div>
+              <div class="col">
+                <span class="fw-bold">Previews are shared for implementer awareness to anticipate possible structural changes that may affect queries prior to the release.</span>
+              </div>
+            </div>
+            <div class="row mb-3">
               <div class="col-auto pe-0"><span><i class="fas fa-exclamation-triangle"></i></span></div>
               <div class="col">
-                Please note: Previews <span class="fw-bold">do not</span> contain new trigger codes. The current trigger codes are only available upon full release in an eRSD production version.
+                Please note: Change Previews do not include new trigger codes. Those are only available in official eRSD production releases.
               </div>
             </div>
           </div>

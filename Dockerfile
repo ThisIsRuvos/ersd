@@ -9,7 +9,7 @@ WORKDIR /ersd
 
 COPY . .
 
-RUN npm ci
+RUN npm ci --max-old-space-size=8192
 RUN npm run build:server
 RUN npm run build:client
 RUN npm prune --omit=dev
