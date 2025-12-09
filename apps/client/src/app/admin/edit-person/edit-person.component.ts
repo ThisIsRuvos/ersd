@@ -8,7 +8,8 @@ import { firstValueFrom } from 'rxjs';
 
 @Component({
   templateUrl: './edit-person.component.html',
-  styleUrls: ['./edit-person.component.css']
+  styleUrls: ['./edit-person.component.css'],
+  standalone: false
 })
 export class AdminEditPersonComponent implements OnInit {
   @Output() updatedUser: EventEmitter<any> = new EventEmitter<any>();

@@ -15,7 +15,8 @@ import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.css']
+  styleUrls: ['./admin.component.css'],
+  standalone: false
 })
 
 export class AdminComponent implements AfterViewInit {

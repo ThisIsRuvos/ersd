@@ -8,7 +8,8 @@ import { ConfigService } from '../config.service';
 
 @Component({
   templateUrl: './api-keys.component.html',
-  styleUrls: ['./api-keys.component.css']
+  styleUrls: ['./api-keys.component.css'],
+  standalone: false
 })
 export class ApiKeysComponent implements OnInit {
   public apiKeys: IUserApiKeys = {};

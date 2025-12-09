@@ -3,18 +3,19 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
 import { getErrorString } from '../../../../../libs/ersdlib/src/lib/get-error-string';
-import { KeycloakProfile } from '../auth.service';
+import { ExtendedKeycloakProfile } from '../auth.service';
 import { formatPhone } from '../../../../../libs/ersdlib/src/lib/helper';
 import { firstValueFrom } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
   templateUrl: './create-person.component.html',
-  styleUrls: ['./create-person.component.css']
+  styleUrls: ['./create-person.component.css'],
+  standalone: false
 })
 export class CreatePersonComponent implements OnInit {
   @Input() person = new Person();
-  @Input() profile: KeycloakProfile;
+  @Input() profile: ExtendedKeycloakProfile;
 
   public message: string;
   public loading: boolean = false;
