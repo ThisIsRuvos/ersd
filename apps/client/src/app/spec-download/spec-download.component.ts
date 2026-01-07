@@ -20,7 +20,7 @@ export class SpecDownloadComponent implements OnInit {
   request: any = {}
   loadingDownloadFiles: boolean = false;
   loadingDownloadSpreadsheet: boolean = false;
-  version = 'ecrv1'
+  version = 'ecrv3'
   bundleType = ''
   contentType = 'json'
   isDisabled = true;
