@@ -29,7 +29,7 @@
       "RCTC_RELEASE_SPREADSHEET_KEY": "RCTC_Release.xlsx"
     },
     "port": 3333,
-    "authCertificate": "",
+    "authCertificate": "-----BEGIN CERTIFICATE-----\nMIIClzCCAX8CBgGa7qqtfDANBgkqhkiG9w0BAQsFADAPMQ0wCwYDVQQDDARlcnNkMB4XDTI1MTIwNTEzMTczNFoXDTM1MTIwNTEzMTkxNFowDzENMAsGA1UEAwwEZXJzZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALSxglyyW2+YXNDSxxjh9kb3UnY5UB4PK9wb1oK815weVFrmDSZP4LuJL04Z2TikKwr5C9OodizKnWAwqsjN3SqTy66+C1kWMTLWUxXs2me5l355/yM/dOa6/soBnDEpjtQtvEHRudnxAW0iTPr9BwDR/9afjaawh83zMrH/v/u/l0VHQzf1Nmn0Hdk6qgtZaLu8wXrUJTRy5g1H7Qb3emsU/YCArRozmjVT3Z7hAc6PDhc2cFu0bWU6l7WrIXP3ZyeACEAAX46Yh5+vtR8MkntwcGMm597CrE0HCNWysiwRPh+Iq8QpLHhAWW+RUVEYO7ZIpYJIFfJpAZhGoRNgH7UCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEANh4XQ6Q+4UsVqwN/IqPuG8G/5tsiowM8RQmeIccrQ4rKURg2Y7IpwWgwpBJTdVP1vysgQ3hXpXRheG4I16O5JRr2QzAi3glNvQVOleXHcRouAh6THu+DR9ZKq/jV2rY4+tBmYMTytJhevRcfQFKKN9ArW8wHgn/dJhv2imD+GnHOl264+HM/d3tdn37MQ7Kz6hHct2fhuxf0X5PKRD3lrG4oD0hySrLrnHMNuxhWWFdB12iZX/DP3BExu8vQTmmVjDQHtIOl4SyAhVHGASzCbxbF8/fDfxqiCYexuW90Sqkh3X7mI5ks4ipurDZKMWIUq5G+cOksQBBIFjrEwuYiaw==\n-----END CERTIFICATE-----",
     "fhirServerBase": "http://ersd-hapi-fhir:8080/fhir",
     "rctcExcelPath": "assets/rctc.xlsx",
     "bundlePath": "assets/bundle.xml",

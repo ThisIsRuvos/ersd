@@ -6,7 +6,8 @@ import { ConfigService } from '../config.service';
 @Component({
   selector: 'navigation',
   templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.css']
+  styleUrls: ['./navigation.component.css'],
+  standalone: false
 })
 
 export class NavigationComponent implements OnInit {

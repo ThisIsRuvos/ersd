@@ -3,59 +3,62 @@
   <fieldset class="px-4">
     <div class="fw-medium">Select Specification Bundle:</div>
     <form>
-      <!-- Version 1 -->
-      <div class="form-check mb-4">
-        <input class="form-check-input" type="radio" name="ersdVersion" id="versions-1" value="ecrv1"
-          (change)="setVersion($event)" checked>
-        <div class="d-flex">
-          <label class="form-check-label" for="versions-1">
-            <span class="fw-bold">eRSD Version 1</span>
-          </label>
-          <a href="javascript:void(0)" (click)="downloadReleaseNotes('ersdv1')" class="ms-2 link-primary form-text">
-            eRSD VERSION 1 RELEASE DESCRIPTION
-          </a><i class="fas fa-external-link-alt superscript-icon"></i>
-        </div>
-        <div class="form-text fst-italic">
-          <p>eRSD Version 1 includes the queries necessary for producing CDA eICR R1.1 reports. For eCR Now App Release
-            2.X.</p>
-        </div>
-      </div>
-      <!-- Version 2 -->
-      <div class="form-check mb-4">
-        <input class="form-check-input" type="radio" name="ersdVersion" id="versions-2" value="ecrv2"
-          (change)="setVersion($event)">
-        <div class="d-flex">
-          <label class="form-check-label" for="versions-2">
-            <span class="fw-bold">eRSD Version 2</span>
-          </label>
-          <a href="javascript:void(0)" (click)="downloadReleaseNotes('ersdv2')" class="ms-2 link-primary form-text">
-            eRSD VERSION 2 RELEASE DESCRIPTION
-          </a><i class="fas fa-external-link-alt superscript-icon"></i>
-        </div>
-        <div class="form-text fst-italic">
-          <p>eRSD Version 2 includes the queries necessary for producing CDA eICR R1.1 reports. It is for users of the
-            eCR Now FHIR App release 3.X and greater.</p>
-        </div>
-      </div>
       <!-- Version 3 -->
       <div *ngIf="configService.serveV3" class="form-check mb-4">
         <input class="form-check-input" type="radio" name="ersdVersion" id="versions-3" value="ecrv3"
-          (change)="setVersion($event)">
+          (change)="setVersion($event)" checked>
         <div class="d-flex">
           <label class="form-check-label" for="versions-3">
-            <span class="fw-bold">eRSD Version 3</span>
+            <span class="fw-bold">eRSD Version 3 - Current and Recommended</span>
           </label>
           <a href="javascript:void(0)" (click)="downloadReleaseNotes('ersdv3')" class="ms-2 link-primary form-text">
             eRSD VERSION 3 RELEASE DESCRIPTION
           </a><i class="fas fa-external-link-alt superscript-icon"></i>
         </div>
         <div class="form-text fst-italic">
-          <p>eRSD Version 3 includes the queries necessary for producing both CDA eICR R1.1 and CDA eICR R3.1 reports.
-            It is for users of the eCR Now FHIR App release 3.X and greater.
+          <p>eRSD v3 includes the queries necessary for producing both CDA eICR R1.1
+            and R3.1.1 documents and is the recommended and actively supported
+            specification for all implementers.
           </p>
         </div>
       </div>
-
+       <!-- Version 2 -->
+       <div class="form-check mb-4">
+        <input class="form-check-input" type="radio" name="ersdVersion" id="versions-2" value="ecrv2"
+          (change)="setVersion($event)">
+        <div class="d-flex">
+          <label class="form-check-label" for="versions-2">
+            <span class="fw-bold">eRSD Version 2 - Transitional (Sunsetting by January 31, 2026)</span>
+          </label>
+          <a href="javascript:void(0)" (click)="downloadReleaseNotes('ersdv2')" class="ms-2 link-primary form-text">
+            eRSD VERSION 2 RELEASE DESCRIPTION
+          </a><i class="fas fa-external-link-alt superscript-icon"></i>
+        </div>
+        <div class="form-text fst-italic">
+          <p>eRSD v2 introduced the Specification Library and manifest-based
+            structure used by eRSD v3. It is supported for existing implementations but will no
+            longer be maintained after January 31, 2026, including no new updates or RCTC
+            content.</p>
+        </div>
+      </div>
+      <!-- Version 1 -->
+      <div class="form-check mb-4">
+        <input class="form-check-input" type="radio" name="ersdVersion" id="versions-1" value="ecrv1"
+          (change)="setVersion($event)">
+        <div class="d-flex">
+          <label class="form-check-label" for="versions-1">
+            <span class="fw-bold">eRSD Version 1 - Legacy (Sunsetting by January 31, 2026)</span>
+          </label>
+          <a href="javascript:void(0)" (click)="downloadReleaseNotes('ersdv1')" class="ms-2 link-primary form-text">
+            eRSD VERSION 1 RELEASE DESCRIPTION
+          </a><i class="fas fa-external-link-alt superscript-icon"></i>
+        </div>
+        <div class="form-text fst-italic">
+          <p>eRSD v1 supported the earliest eCR 1.x implementations and used date-based
+            versioning. It is supported for existing implementations but will no longer be
+            maintained after January 31, 2026, including no new updates or RCTC content.</p>
+        </div>
+      </div>
       <div class="mb-4">
         <span class="fw-medium me-2">Select Download Format:</span>
         <div class="form-check form-check-inline">

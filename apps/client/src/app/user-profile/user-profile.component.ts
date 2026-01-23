@@ -15,7 +15,8 @@ import { firstValueFrom } from 'rxjs';
 
 @Component({
   templateUrl: './user-profile.component.html',
-  styleUrls: ['./user-profile.component.css']
+  styleUrls: ['./user-profile.component.css'],
+  standalone: false
 })
 export class UserProfileComponent implements OnInit {
   public userSubscriptions: UserSubscriptions = new UserSubscriptions();

@@ -12,7 +12,8 @@ services:
       hapi.fhir.fhir_version: R4
       hapi.fhir.client_id_strategy: ANY
     depends_on:
-      - hapi-db
+      hapi-db:
+        condition: service_healthy
   hapi-db:
     image: postgres:9.4.26-alpine
     volumes:
@@ -21,8 +22,13 @@ services:
       POSTGRES_DB: hapi_db
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: secret
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d hapi_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   postgres:
-    image: postgres
+    image: postgres:13-alpine
     ports:
       - 5432:5432
     volumes:
@@ -31,9 +37,14 @@ services:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   keycloak:
     image: quay.io/keycloak/keycloak:21.1.1
-    command: '--spi-login-protocol-openid-connect-legacy-logout-redirect-uri=true start --metrics-enabled=true'
+    command: '--spi-login-protocol-openid-connect-legacy-logout-redirect-uri=http:localhost:3333 start --metrics-enabled=true'
     ports:
       - 8085:8080
     environment:
@@ -51,7 +62,8 @@ services:
       KC_HOSTNAME: localhost
       KC_HOSTNAME_STRICT: false
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
   web:
     build: .
     ports:
@@ -63,6 +75,7 @@ services:
       - ersd-hapi-fhir
       - keycloak
     environment:
+      NODE_CONFIG: '{"server":{"authCertificate":"-----BEGIN CERTIFICATE-----\nMIIClzCCAX8CBgFxEivHlTANBgkqhkiG9w0BAQsFADAPMQ0wCwYDVQQDDARlcnNkMB4XDTIwMDMyNTE0NDgxMVoXDTMwMDMyNTE0NDk1MVowDzENMAsGA1UEAwwEZXJzZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALakYNbkCiYR0Goc15sd4D/Vc2wcLr0Ne7CUqJwBQC5FgawZzZh91OthJEO3ZE7TqAFEMqE/N9Vp32GiteQOKeq5XxW7a/msmfnFFk/lTVyxeda7xV4dU+FVAIYVOjJzV5xiFZyXvVjtllvz5bPzTNK8cYwMXInLXYwNB0EPzXUoGddFYVQ/JX3ETufEcJ6aWaqG165CcEFckkEZzxDAUyfnOW36FKwRNSUcTulC1U99cK/3sBCbjcOa1V4vvD3nbPcrI1leYJ/33UKXWWfhVjklGiViRgHdox+4iP2zx2Z1dE1dT9FyZrdbWy+kKI54Y5VhYbyiIOucBWlfmzTKujsCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAJ51fbT8XgOk6QLzFfevBABqHp0EK6tcPd8T3ZiOqGOt6qdV9tm5kWTorEiCOesNRQWzMWk+Kt3ujgvJ4PlxrZh7txhBmOE69b7rU0Ubz1/crtTWCJfHDQhwOqMX96HWRxPjCJcKpdVGLlsZ0lY7oeK0F7YCuyuKRnhkDFhs9SXtoIXuswvWdHQs545YISCVM5fGcvmyX93qmVfPO4K5rCfyU3/QwGQ+zzGEtX7qtheBxlaciLHCLJgA5SIgelfYG1C18UKhuZ9D/IRzLWxnK2knQSEMLyaIKuYBhwqaycoug/GsK6TBoHWfCvo9Lfl8VDZAXdeIdOUqNB4yTdZBQPA==\n-----END CERTIFICATE-----","fhirServerBase":"http://localhost:8081/fhir","enableSubscriptions":true,"serveV2":false,"serveV3":true,"payload":{"Bucket":"ersd-sandbox","Key":"latest-bundle.xml","RCTCKey":"latest-rctc.xlsx","ERSDV1_JSON_KEY":"eRSDv1bundle.json","ERSDV1_XML_KEY":"eRSDv1bundle.xml","ERSDV2_SUPPLEMENTAL_XML_KEY":"eRSDv2_supplemental_bundle.xml","ERSDV1_SPECIFICATION_JSON_KEY":"eRSDv1_specification_bundle.json","ERSDV1_SPECIFICATION_XML_KEY":"eRSDv1_specification_bundle.xml","ERSDV2_SPECIFICATION_JSON_KEY":"eRSDv2_specification_bundle.json","ERSDV2_SPECIFICATION_XML_KEY":"eRSDv2_specification_bundle.xml","ERSDV3_SPECIFICATION_JSON_KEY":"eRSDv3_specification_bundle.json","ERSDV3_SPECIFICATION_XML_KEY":"eRSDv3_specification_bundle.xml","ERSD_RELEASE_DESCRIPTION_V1_KEY":"eRSDv1_specification_release_description.txt","ERSD_RELEASE_DESCRIPTION_V2_KEY":"eRSDv2_specification_release_description.txt","ERSD_RELEASE_DESCRIPTION_V3_KEY":"eRSDv3_specification_release_description.txt","ERSDV2_CHANGE_PREVIEW_JSON_KEY":"eRSDv2_change_preview.json","ERSDV2_CHANGE_PREVIEW_XML_KEY":"eRSDv2_change_preview.xml","ERSDV3_CHANGE_PREVIEW_JSON_KEY":"eRSDv3_change_preview.json","ERSDV3_CHANGE_PREVIEW_XML_KEY":"eRSDv3_change_preview.xml","ERSDV2_CHANGE_PREVIEW_SUMMARY_KEY":"eRSDv2_change_preview_summary.md","ERSDV3_CHANGE_PREVIEW_SUMMARY_KEY":"eRSDv3_change_preview_summary.md","RCTC_CHANGE_LOG_KEY":"RCTC_Change_Log.xlsx","RCTC_RELEASE_SPREADSHEET_KEY":"RCTC_Release.xlsx"},"sentry":{"dsn":"https://bf88d40ee680445796e0ecffe8154abb@sentry.dmz.aimsplatform.org/15"},"contactInfo":{"checkDurationSeconds":3600,"checkCountPerPage":5,"enableExpiryCheck":false,"expiration":{"value":365,"unit":"days"},"notificationInterval":{"value":7,"unit":"days"},"maxNotifications":3,"templates":{"variables":{"portal_link":"https://localhost:3333/"},"expiring":{"subject":"Your eRSD contact information is about to expire","text":"config/templates/contact-info-expiring.txt","html":"config/templates/contact-info-expiring.html"},"expired":{"subject":"Your eRSD contact information has expired","text":"config/templates/contact-info-expired.txt","html":"config/templates/contact-info-expired.html"}}},"keycloakAdminClient":"ersd-admin","keycloakAdminClientSecret":"36cf6c0d-146a-4ad5-b8e5-2191a74b0404","keycloakRealm":"ersd","keycloakAddress":"http://localhost:8085"},"email":{"from":"paul@ruvos.com","host":"email-smtp.us-east-1.amazonaws.com","port":587,"tls":true,"username":"AKIAYI2X2S7CMB2SZFGV","password":"BG0Dh7rxNcTvhpLxTY4THq67rSLzeUdqNXep8csw3Czm"},"client":{"keycloak":{"url":"http://localhost:8085","realm":"ersd","clientId":"ersd-app"}}}'
       AWS_REGION: ${AWS_REGION}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}

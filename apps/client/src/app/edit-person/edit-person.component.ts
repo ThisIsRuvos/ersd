@@ -6,7 +6,8 @@ import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
 @Component({
   selector: 'ersd-edit-person',
   templateUrl: './edit-person.component.html',
-  styleUrls: ['./edit-person.component.css']
+  styleUrls: ['./edit-person.component.css'],
+  standalone: false
 })
 export class EditPersonComponent implements OnInit {
   @Input() person: Person;

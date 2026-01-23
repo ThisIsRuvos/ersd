@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
+import { KeycloakProfile } from 'keycloak-js';
 import { IPerson } from '../../../../libs/ersdlib/src/lib/person';
 import { HttpClient } from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -7,7 +8,7 @@ import { CreatePersonComponent } from './create-person/create-person.component';
 import { formatHumanName } from '../../../../libs/ersdlib/src/lib/helper';
 import { Router } from '@angular/router';
 
-export interface KeycloakProfile extends Keycloak.KeycloakProfile {
+export interface ExtendedKeycloakProfile extends KeycloakProfile {
   attributes: {
     [key: string]: string[];
   };
@@ -18,7 +19,7 @@ export interface KeycloakProfile extends Keycloak.KeycloakProfile {
 })
 export class AuthService {
   public loggedIn: boolean;
-  public profile: KeycloakProfile;
+  public profile: ExtendedKeycloakProfile;
   public roles: string[];
   public person: IPerson;
   public logoutInProgress: boolean = false;
@@ -95,7 +96,7 @@ export class AuthService {
     ])
     .then((data) => {
       if (data) {
-        this.profile = <KeycloakProfile> data[0];
+        this.profile = <ExtendedKeycloakProfile> data[0];
         this.roles = <string[]> data[1];
 
         const kc = this.keycloakService.getKeycloakInstance();

@@ -13,13 +13,14 @@ interface PayloadDownload {
 @Component({
   selector: 'ersd-spec-download',
   templateUrl: './spec-download.component.html',
-  styleUrls: ['./spec-download.component.css']
+  styleUrls: ['./spec-download.component.css'],
+  standalone: false
 })
 export class SpecDownloadComponent implements OnInit {
   request: any = {}
   loadingDownloadFiles: boolean = false;
   loadingDownloadSpreadsheet: boolean = false;
-  version = 'ecrv1'
+  version = 'ecrv3'
   bundleType = ''
   contentType = 'json'
   isDisabled = true;

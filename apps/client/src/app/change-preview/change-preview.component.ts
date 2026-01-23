@@ -11,7 +11,8 @@ interface PayloadDownload {
 @Component({
   selector: 'change-preview',
   templateUrl: './change-preview.component.html',
-  styleUrls: ['./change-preview.component.css']
+  styleUrls: ['./change-preview.component.css'],
+  standalone: false
 })
 export class ChangePreviewComponent implements OnInit {
   @ViewChild('modalAcknowledgement') modalAcknowledgement: ElementRef;
