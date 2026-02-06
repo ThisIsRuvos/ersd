@@ -17,10 +17,9 @@ interface PayloadDownload {
 export class ChangePreviewComponent implements OnInit {
   @ViewChild('modalAcknowledgement') modalAcknowledgement: ElementRef;
   request: any = {}
-  version = 'ersdv2-draft'
+  version = 'ersdv3-draft'
   bundleType = ''
   contentType = 'json'
-  markdownContentV2: string = '';
   markdownContentV3: string = '';
   draftVersion : string = '';
   isDisabled: boolean = true;
@@ -46,16 +45,11 @@ export class ChangePreviewComponent implements OnInit {
   async fetchMarkdown() {
     try {
       const data: any = await firstValueFrom(this.httpClient.get('/api/ersd/markdown'));
-      const file1Exists = data.markdownFile1 !== null && data.markdownFile1 !== undefined;
-      const file2Exists = data.markdownFile2 !== null && data.markdownFile2 !== undefined;
+      const fileExists = data.markdownFile2 !== null && data.markdownFile2 !== undefined;
   
-      this.filesExist = file1Exists || file2Exists;
+      this.filesExist = fileExists;
   
-      if (file1Exists) {
-        this.markdownContentV2 = data.markdownFile1;
-      }
-  
-      if (file2Exists) {
+      if (fileExists) {
         this.markdownContentV3 = data.markdownFile2;
       }
     } catch (error) {
@@ -77,8 +71,6 @@ export class ChangePreviewComponent implements OnInit {
     this.draftVersion = `${this.version}-${button.name}`;
   
     const urls = {
-      'ersdv2-draft-json': 'api/download/change-preview-json',
-      'ersdv2-draft-xml': 'api/download/change-preview-xml',
       'ersdv3-draft-json': 'api/download/change-preview-json',
       'ersdv3-draft-xml': 'api/download/change-preview-xml',
       // Add more versions here if needed

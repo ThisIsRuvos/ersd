@@ -9,6 +9,11 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private appService: AppService) { }
 
+  @Get('health')
+  getHealth(): { status: string } {
+    return { status: 'ok' };
+  }
+
   @Get('config')
   getClientConfig(): IClientConfig {
     const rctcExcelPath = path.resolve(this.appService.serverConfig.rctcExcelPath);

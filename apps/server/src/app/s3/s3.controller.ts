@@ -6,6 +6,7 @@ import {
   UseGuards,
   Query,
   Get,
+  GoneException,
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { AppService } from '../app.service';
@@ -18,18 +19,9 @@ export class S3Controller {
   constructor(private appService: AppService) {
   }
 
-  private setJSONKey(version, bundle = 'specification') { // currently defaults to specification for eRSD V2 for initial release
+  private setJSONKey(version, bundle = 'specification') {
     let key = ''
-    if(version == 'ecrv1') {
-      key = this.appService.serverConfig.payload.ERSDV1_JSON_KEY
-    } else if (version == 'ecrv2' && bundle !== '') {
-      switch(bundle) {
-        case 'supplemental':
-          key = this.appService.serverConfig.payload.ERSDV2_SUPPLEMENTAL_JSON_KEY
-        case 'specification':
-          key = this.appService.serverConfig.payload.ERSDV2_SPECIFICATION_JSON_KEY
-      } 
-    } else if (version == 'ecrv3' && bundle !== '') {
+    if (version == 'ecrv3' && bundle !== '') {
       switch(bundle) {
         // case 'supplemental':
         //   key = this.appService.serverConfig.payload.ERSDV3_SUPPLEMENTAL_JSON_KEY
@@ -40,18 +32,9 @@ export class S3Controller {
     return key
   }
 
-  private setXMLKey(version, bundle = 'specification') { // currently defaults to specification for eRSD V2 for initial release
+  private setXMLKey(version, bundle = 'specification') {
     let key = ''
-    if(version == 'ecrv1') {
-      key = this.appService.serverConfig.payload.ERSDV1_XML_KEY
-    } else if (version == 'ecrv2' && bundle !== '') {
-      switch(bundle) {
-        case 'supplemental':
-          key = this.appService.serverConfig.payload.ERSDV2_SUPPLEMENTAL_XML_KEY
-        case 'specification':
-          key = this.appService.serverConfig.payload.ERSDV2_SPECIFICATION_XML_KEY
-      }
-    } else if (version == 'ecrv3' && bundle !== '') {
+    if (version == 'ecrv3' && bundle !== '') {
       switch(bundle) {
         // case 'supplemental':
         //   key = this.appService.serverConfig.payload.ERSDV3_SUPPLEMENTAL_JSON_KEY
@@ -65,6 +48,11 @@ export class S3Controller {
   @Post('json')
   @UseGuards(AuthGuard())
   async getJSON(@Query() queryParams) {
+    // Check for deprecated versions
+    if (queryParams.version === 'ecrv1' || queryParams.version === 'ecrv2') {
+      throw new GoneException('eRSD Versions 1 and 2 are no longer available. Please use eRSD Version 3 (ecrv3)');
+    }
+
     const Bucket = this.appService.serverConfig.payload.Bucket;
     const Key = this.setJSONKey(queryParams.version, queryParams.bundle)
     const ResponseContentDisposition = `attachment; filename="${Key}"`;
@@ -92,6 +80,11 @@ export class S3Controller {
   @Post('xml')
   @UseGuards(AuthGuard())
   async getXML(@Query() queryParams) {
+    // Check for deprecated versions
+    if (queryParams.version === 'ecrv1' || queryParams.version === 'ecrv2') {
+      throw new GoneException('eRSD Versions 1 and 2 are no longer available. Please use eRSD Version 3 (ecrv3)');
+    }
+
     const Bucket = this.appService.serverConfig.payload.Bucket;
     const Key = this.setXMLKey(queryParams.version, queryParams.bundle)
     const ResponseContentDisposition = `attachment; filename="${Key}"`;

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Controller,
   Get,
+  GoneException,
   Logger,
   Query,
   Req,
@@ -80,71 +81,28 @@ export class eRSDController {
   }
 
   @Get('v1specification')
-  async getV1Spec(@Req() request: Request, @Query() queryParams, @Response() response: Res) {
+  async getV1Spec(@Req() request: Request) {
     await this.assertApiKey(request);
+    throw new GoneException('eRSD Version 1 is no longer available. Please use eRSD Version 3 at /ersd/v3specification');
+  }
 
-    const format = queryParams['format'].toLowerCase()
-    if (!format || !this.validFormat(format)) { throw new BadRequestException('Please specify a valid download format: XML or JSON') }
-
-    const Bucket = this.appService.serverConfig.payload.Bucket;
-    const Key = format === 'xml' ? this.appService.serverConfig.payload.ERSDV1_SPECIFICATION_XML_KEY :
-      this.appService.serverConfig.payload.ERSDV1_SPECIFICATION_JSON_KEY
-
-    if (typeof Bucket === 'undefined' || Bucket === '' || Key === '') {
-      const errorMessage = 'Failed to download from S3, no Bucket or Key specified'
-      this.logger.error(errorMessage);
-      throw Error(errorMessage);
-    }
-
-    const s3client = new S3();
-
-    const headParams = {
-      Bucket,
-      Key,
-    }
-
-    const data = await s3client.getObject(headParams).promise();
-    const body = data.Body.toString('utf-8')
-    if (format === 'xml') {
-      return response.set({ 'Content-Type': 'text/xml' }).send(body)
-    } else {
-      return response.set({ 'Content-Type': 'application/json' }).json(JSON.parse(body))
-    }
+  @Get('v1supplemental')
+  async getV1Supplemental(@Req() request: Request) {
+    await this.assertApiKey(request);
+    throw new GoneException('eRSD Version 1 supplemental is no longer available. Please use eRSD Version 3 at /ersd/v3specification');
   }
 
   @Get('v2specification')
-  async getV2Spec(@Req() request: Request, @Query() queryParams, @Response() response: Res) {
+  async getV2Spec(@Req() request: Request) {
     await this.assertApiKey(request);
-
-    const format = queryParams['format'].toLowerCase()
-    if (!format || !this.validFormat(format)) { throw new BadRequestException('Please specify a valid download format: XML or JSON') }
-
-    const Bucket = this.appService.serverConfig.payload.Bucket;
-    const Key = format === 'xml' ? this.appService.serverConfig.payload.ERSDV2_SPECIFICATION_XML_KEY :
-      this.appService.serverConfig.payload.ERSDV2_SPECIFICATION_JSON_KEY
-
-    if (typeof Bucket === 'undefined' || Bucket === '' || Key === '') {
-      const errorMessage = 'Failed to download from S3, no Bucket or Key specified'
-      this.logger.error(errorMessage);
-      throw Error(errorMessage);
-    }
-
-    const s3client = new S3();
-
-    const headParams = {
-      Bucket,
-      Key,
-    }
-
-    const data = await s3client.getObject(headParams).promise();
-    const body = data.Body.toString('utf-8')
-    if (format === 'xml') {
-      return response.set({ 'Content-Type': 'text/xml' }).send(body)
-    } else {
-      return response.set({ 'Content-Type': 'application/json' }).json(JSON.parse(body))
-    }
+    throw new GoneException('eRSD Version 2 is no longer available. Please use eRSD Version 3 at /ersd/v3specification');
   }
 
+  @Get('v2supplemental')
+  async getV2Supplemental(@Req() request: Request) {
+    await this.assertApiKey(request);
+    throw new GoneException('eRSD Version 2 supplemental is no longer available. Please use eRSD Version 3 at /ersd/v3specification');
+  }
 
   @Get('v3specification')
   async getV3Spec(@Req() request: Request, @Query() queryParams, @Response() response: Res) {
@@ -178,48 +136,13 @@ export class eRSDController {
     }
   }
 
-  @Get('v2supplemental')
-  async getV2Supplemental(@Req() request: Request, @Query() queryParams, @Response() response: Res) {
-    if (!this.appService.serverConfig.serveV2Supplemental) { throw new BadRequestException('eRSD V2 Supplemental Bundle not currently available') }
-    await this.assertApiKey(request);
-
-    const format = queryParams['format'].toLowerCase()
-    if (!format || !this.validFormat(format)) { throw new BadRequestException('Please specify a valid download format: XML or JSON') }
-
-    const Bucket = this.appService.serverConfig.payload.Bucket;
-    const Key = format === 'xml' ? this.appService.serverConfig.payload.ERSDV2_SUPPLEMENTAL_XML_KEY :
-      this.appService.serverConfig.payload.ERSDV2_SUPPLEMENTAL_JSON_KEY
-
-    if (typeof Bucket === 'undefined' || Bucket === '' || Key === '') {
-      const errorMessage = 'Failed to download from S3, no Bucket or Key specified'
-      this.logger.error(errorMessage);
-      throw Error(errorMessage);
-    }
-
-    const s3client = new S3();
-
-    const headParams = {
-      Bucket,
-      Key,
-    }
-
-    const data = await s3client.getObject(headParams).promise();
-    const body = data.Body.toString('utf-8')
-    if (format === 'xml') {
-      return response.set({ 'Content-Type': 'text/xml' }).send(body)
-    } else {
-      return response.set({ 'Content-Type': 'application/json' }).json(JSON.parse(body))
-    }
-  }
-
   // Markdown functions
-  // change to get both v2 and v3
+  // Get v3 markdown
   @Get('markdown')
   async getMarkdown(@Response() response: Res) {
 
     const Bucket = this.appService.serverConfig.payload.Bucket;
-    const Key1 = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_SUMMARY_KEY;
-    const Key2 = this.appService.serverConfig.payload.ERSDV3_CHANGE_PREVIEW_SUMMARY_KEY;
+    const Key = this.appService.serverConfig.payload.ERSDV3_CHANGE_PREVIEW_SUMMARY_KEY;
 
     if (!Bucket) {
       const errorMessage = 'Failed to download from S3, missing Bucket';
@@ -230,25 +153,14 @@ export class eRSDController {
     const s3client = new S3();
     let markdownFiles = {};
 
-    if (Key1) {
-      const params1 = { Bucket, Key: Key1 };
+    if (Key) {
+      const params = { Bucket, Key };
 
       try {
-        const data1 = await s3client.getObject(params1).promise();
-        markdownFiles['markdownFile1'] = data1.Body.toString();
+        const data = await s3client.getObject(params).promise();
+        markdownFiles['markdownFile2'] = data.Body.toString();
       } catch (error) {
-        console.error(`Error fetching Markdown from S3 for Key1: ${error}`);
-      }
-    }
-
-    if (Key2) {
-      const params2 = { Bucket, Key: Key2 };
-
-      try {
-        const data2 = await s3client.getObject(params2).promise();
-        markdownFiles['markdownFile2'] = data2.Body.toString();
-      } catch (error) {
-        console.error(`Error fetching Markdown from S3 for Key2: ${error}`);
+        console.error(`Error fetching Markdown from S3 for Key: ${error}`);
       }
     }
 
