@@ -30,4 +30,4 @@ jobs:
           GIT_SSH_COMMAND: "ssh -i ~/.ssh/gitlab_deploy_key -o IdentitiesOnly=yes"
         run: |
           git remote add gitlab git@gitlab.com:aphl_aims/devteam/ersd.git || true
-          git push gitlab master --tags
+          git push gitlab refs/remotes/origin/master:refs/heads/master --tags
