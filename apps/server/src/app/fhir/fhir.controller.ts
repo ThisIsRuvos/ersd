@@ -1,4 +1,4 @@
-import {All, BadRequestException, Controller, Logger, Req, UnauthorizedException} from '@nestjs/common';
+import {All, BadRequestException, Controller, Get, GoneException, Logger, Req, UnauthorizedException} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import {Request} from 'express';
 import {Constants} from '../../../../../libs/ersdlib/src/lib/constants';
@@ -54,6 +54,12 @@ export class FhirController {
         this.logger.error(`Error fetching Person from FHIR server: ${error}`)
         throw new UnauthorizedException('Invalid API Key');
       });
+  }
+
+  @Get('Bundle')
+  async getBundle(@Req() request: Request) {
+    await this.assertApiKey(request);
+    throw new GoneException('The FHIR Bundle endpoint is no longer available. Please use the eRSD v3 specification endpoints at /api/ersd/v3specification or download via /api/s3/json or /api/s3/xml');
   }
 
   @All('*')

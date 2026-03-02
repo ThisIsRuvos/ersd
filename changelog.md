@@ -1,3 +1,36 @@
+# Change Log: eRSD Release 1.5.0
+
+### Breaking Changes
+- Removed eRSD Version 1 and Version 2 download functionality
+- Removed v1/v2 UI components from specification download page
+- Removed v1/v2 API endpoints (v1specification, v2specification, v2supplemental)
+- Removed v2 change preview functionality
+- Removed v1/v2 configuration properties
+- Updated API documentation to reflect v3-only endpoints
+
+### UI/UX Updates
+- Removed Version 1 and Version 2 radio button options from specification download page
+- Removed Version 2 tab from change preview page
+- Removed sunsetting alert banner from home page (no longer needed as v1/v2 are removed)
+- Simplified specification download interface to only support Version 3
+- Updated API documentation to show only Version 3 endpoints
+
+### Backend Changes
+- Removed v1specification and v2specification API endpoints
+- Removed v2supplemental API endpoint
+- Removed v1/v2 release notes download handlers
+- Removed v1/v2 S3 key configuration and handling
+- Removed v2 draft change preview functionality
+- Simplified download controller to only handle Version 3 specifications
+
+### Configuration Updates
+- Removed all v1/v2 related configuration properties from server-config.ts
+- Removed v1/v2 configuration keys from default.json
+- Updated docker-compose.yml to remove v1/v2 environment variables
+- Removed serveV2Supplemental configuration flag
+
+---
+
 # Change Log: eRSD Release 1.4.6
 
 ### UI/UX Updates

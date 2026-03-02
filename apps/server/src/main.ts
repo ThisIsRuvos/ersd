@@ -17,7 +17,18 @@ async function bootstrap() {
 
   app.useBodyParser('json', { limit: '50mb' });
   app.useBodyParser('urlencoded', { limit: '50mb', extended: true });
-  app.useStaticAssets(path.join(__dirname, '/../client'));
+  
+  const clientPath = path.join(__dirname, '/../client');
+  app.useStaticAssets(clientPath);
+  
+  // Serve index.html for all non-API routes (SPA fallback)
+  app.use((req, res, next) => {
+    if (!req.path.startsWith('/api')) {
+      res.sendFile(path.join(clientPath, 'index.html'));
+    } else {
+      next();
+    }
+  });
 
   const port = process.env.port || appService.serverConfig.port || 3333;
   await app.listen(port, () => {

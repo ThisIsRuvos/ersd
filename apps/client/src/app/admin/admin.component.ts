@@ -25,9 +25,6 @@ export class AdminComponent implements AfterViewInit {
   public isLoadingResults = true; // Loading indicator flag
   public message: string;
   public messageIsError: boolean;
-  public bundleFile: File;
-  public bundleFileContent: string;
-  public bundleUploadMessage: string;
   public emailRequest: IEmailRequest = {
     subject: '',
     message: ''
@@ -40,7 +37,6 @@ export class AdminComponent implements AfterViewInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  @ViewChild('bundleUploadFile') bundleUploadField: ElementRef;
   @ViewChild('excelUploadFile') excelUploadField: ElementRef;
   @ViewChild('emailType1') emailType1!: ElementRef<HTMLInputElement>;
   @ViewChild('emailType2') emailType2!: ElementRef<HTMLInputElement>;
@@ -136,25 +132,10 @@ export class AdminComponent implements AfterViewInit {
       this.handleError(err);
     }
   }
-  
-  handleBundleFileInput(files: FileList) {
-    if (files.length !== 1) {
-      this.bundleFile = null;
-      return;
-    }
-
-    this.bundleFile = files.item(0);
-
-    const fileReader = new FileReader();
-    fileReader.onload = () => {
-      this.bundleFileContent = <string>fileReader.result;
-    };
-    fileReader.readAsText(this.bundleFile);
-  }
 
   handleExcelFileInput(files: FileList) {
     if (files.length !== 1) {
-      this.bundleFile = null;
+      this.excelFile = null;
       return;
     }
 
@@ -226,39 +207,6 @@ export class AdminComponent implements AfterViewInit {
       this.message = getErrorString(err);
       this.messageIsError = true;
       this.toastr.error("Failed to upload!");
-    } finally {
-      this.uploading = false;
-    }
-  }
-
-  async uploadBundle() {
-    if (!this.bundleFile) {
-      return;
-    }
-
-    if (!confirm('Are you sure you want to upload the selected resource/file?')) {
-      return;
-    }
-
-    this.uploading = true;
-
-    const request: IUploadRequest = {
-      fileContent: this.bundleFileContent,
-      fileName: this.bundleFile.name,
-      message: this.bundleUploadMessage
-    };
-
-    try {
-      await firstValueFrom(this.httpClient.post('/api/upload/bundle', request));
-      this.toastr.success("Successfully uploaded!");   
-      this.bundleUploadField.nativeElement.value = '';
-      this.bundleUploadMessage = null;
-      this.bundleFile = null;
-      this.bundleFileContent = null;
-    } catch (err) {
-      this.message = getErrorString(err);
-      this.messageIsError = true;
-      this.toastr.error("Failed to upload!");  
     } finally {
       this.uploading = false;
     }

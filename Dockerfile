@@ -9,7 +9,7 @@ WORKDIR /ersd
 
 COPY . .
 
-RUN npm install --max-old-space-size=8192
+RUN npm install --max-old-space-size=8192 --legacy-peer-deps
 RUN npm run build:server
 RUN npm run build:client
 RUN npm prune --omit=dev

@@ -168,10 +168,10 @@ export class DownloadController {
       return {url}
   }
 
-  // this needs to be changed to get both files v2 and v3
+  // Download change preview JSON for eRSD v3 draft
   @Post('change-preview-json')
   @UseGuards(AuthGuard())
-  async downloadChangePreviewV1DraftJSON(@Query() queryParams) {
+  async downloadChangePreviewV3DraftJSON(@Query() queryParams) {
     const { version } = queryParams;
 
 
@@ -179,10 +179,7 @@ export class DownloadController {
       const s3client = new S3();
       let Key, ResponseContentDisposition;
 
-      if (version === "ersdv2-draft") {
-        Key = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_JSON_KEY;
-        ResponseContentDisposition = `attachment; filename="eRSDv2_specification_bundle_draft.json"`;
-      } else if (version === "ersdv3-draft") {
+      if (version === "ersdv3-draft") {
         Key = this.appService.serverConfig.payload.ERSDV3_CHANGE_PREVIEW_JSON_KEY;
         ResponseContentDisposition = `attachment; filename="eRSDv3_specification_bundle_draft.json"`;
       }
@@ -196,10 +193,10 @@ export class DownloadController {
       return {url}
   }
 
-    // this needs to be changed to get both files v2 and v3
+  // Download change preview XML for eRSD v3 draft
   @Post('change-preview-xml')
   @UseGuards(AuthGuard())
-  async downloadChangePreviewV1DraftXML(@Query() queryParams) {
+  async downloadChangePreviewV3DraftXML(@Query() queryParams) {
     const { version } = queryParams;
 
     const Bucket = this.appService.serverConfig.payload.Bucket;
@@ -207,10 +204,7 @@ export class DownloadController {
 
       let Key, ResponseContentDisposition;
 
-      if (version === "ersdv2-draft") {
-        Key = this.appService.serverConfig.payload.ERSDV2_CHANGE_PREVIEW_XML_KEY;
-        ResponseContentDisposition = `attachment; filename="eRSDv2_specification_bundle_draft.xml"`;
-      } else if (version === "ersdv3-draft") {
+      if (version === "ersdv3-draft") {
         Key = this.appService.serverConfig.payload.ERSDV3_CHANGE_PREVIEW_XML_KEY;
         ResponseContentDisposition = `attachment; filename="eRSDv3_specification_bundle_draft.xml"`;
       }
@@ -232,13 +226,7 @@ export class DownloadController {
     const s3client = new S3();
     let Key, ResponseContentDisposition;
   
-    if (version === "ersdv1") {
-      Key = this.appService.serverConfig.payload.ERSD_RELEASE_DESCRIPTION_V1_KEY;
-      ResponseContentDisposition = `attachment; filename="eRSDv1_specification_release_description.txt"`;
-    } else if (version === "ersdv2") {
-      Key = this.appService.serverConfig.payload.ERSD_RELEASE_DESCRIPTION_V2_KEY;
-      ResponseContentDisposition = `attachment; filename="eRSDv2_specification_release_description.txt"`;
-    } else if (version === "ersdv3") {
+    if (version === "ersdv3") {
       Key = this.appService.serverConfig.payload.ERSD_RELEASE_DESCRIPTION_V3_KEY;
       ResponseContentDisposition = `attachment; filename="eRSDv3_specification_release_description.txt"`;
     }
