@@ -11,7 +11,8 @@ import {
 import { HttpService } from '@nestjs/axios';
 import { AppService } from '../app.service';
 import { AuthGuard } from '@nestjs/passport';
-import S3 from 'aws-sdk/clients/s3';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 @Controller('s3')
 export class S3Controller {
@@ -63,18 +64,15 @@ export class S3Controller {
       throw Error(errorMessage);
     } 
 
-    const s3client = new S3();
+    const s3client = new S3Client({});
 
-    const params = {
+    const command = new GetObjectCommand({
       Bucket,
       Key,
       ResponseContentDisposition,
-    }
-    // const data = await s3client.getObject(params).promise();
-    // const fileData = data.Body.toString('utf-8');
-    const url = await s3client.getSignedUrlPromise('getObject', params);
-    // return { data: fileData, url: url };
-    return { url: url };
+    });
+    const url = await getSignedUrl(s3client, command);
+    return { url };
   }
 
   @Post('xml')
@@ -95,15 +93,15 @@ export class S3Controller {
       throw Error(errorMessage);
     } 
 
-    const s3client = new S3();
+    const s3client = new S3Client({});
 
-    const params = {
+    const command = new GetObjectCommand({
       Bucket,
       Key,
       ResponseContentDisposition,
-    }
-    const url = await s3client.getSignedUrlPromise('getObject', params);
-    return {url}
+    });
+    const url = await getSignedUrl(s3client, command);
+    return { url };
   }
 }
 

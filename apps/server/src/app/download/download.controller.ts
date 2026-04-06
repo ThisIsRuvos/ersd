@@ -16,7 +16,8 @@ import { HttpService } from '@nestjs/axios';
 import { AuthGuard } from '@nestjs/passport';
 import type { AuthRequest } from '../auth-module/auth-request';
 import { AppService } from '../app.service';
-import S3 from 'aws-sdk/clients/s3';
+import { S3Client, HeadObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import path from "path";
 import * as fs from 'fs';
 
@@ -47,7 +48,7 @@ export class DownloadController {
     if (typeof Bucket === 'undefined' || Bucket === "") {
       return { url:'/api/download/localjsonbundle' }
     } 
-    const s3client = new S3();
+    const s3client = new S3Client({});
     const Key = this.appService.serverConfig.payload.JSONKey;
 
     const headParams = {
@@ -55,18 +56,17 @@ export class DownloadController {
       Key,
     }
 
-    const data = await s3client.headObject(headParams).promise();
+    const data = await s3client.send(new HeadObjectCommand(headParams));
     const metaData = data.Metadata;
     this.logger.log(`metadata: ${JSON.stringify(metaData, null, 2)}\n\n data: ${JSON.stringify(data, null, 2)}`)
     const fileName = metaData['filename'] || Key;
     const ResponseContentDisposition = `attachment; filename="${fileName}"`;
 
-    const params = {
+    const url = await getSignedUrl(s3client, new GetObjectCommand({
       Bucket,
       Key,
       ResponseContentDisposition,
-    }
-    const url = await s3client.getSignedUrlPromise('getObject', params);
+    }));
     return {url}
   }
 
@@ -134,17 +134,16 @@ export class DownloadController {
   @UseGuards(AuthGuard())
   async downloadExcel() {
     const Bucket = this.appService.serverConfig.payload.Bucket;
-      const s3client = new S3();
+      const s3client = new S3Client({});
 
       const Key = this.appService.serverConfig.payload.RCTCKey;
       const ResponseContentDisposition = `attachment; filename="rctc.zip"`;
 
-      const params = {
+      const url = await getSignedUrl(s3client, new GetObjectCommand({
         Bucket,
         Key,
         ResponseContentDisposition,
-      }
-      const url = await s3client.getSignedUrlPromise('getObject', params);
+      }));
       return {url}
   }
 
@@ -154,17 +153,16 @@ export class DownloadController {
   @UseGuards(AuthGuard())
   async downloadRCTCReleaseSpreadsheet() {
     const Bucket = this.appService.serverConfig.payload.Bucket;
-      const s3client = new S3();
+      const s3client = new S3Client({});
 
       const Key = this.appService.serverConfig.payload.RCTC_RELEASE_SPREADSHEET_KEY;
       const ResponseContentDisposition = `attachment; filename="RCTC_Release.xlsx"`;
 
-      const params = {
+      const url = await getSignedUrl(s3client, new GetObjectCommand({
         Bucket,
         Key,
         ResponseContentDisposition,
-      }
-      const url = await s3client.getSignedUrlPromise('getObject', params);
+      }));
       return {url}
   }
 
@@ -176,7 +174,7 @@ export class DownloadController {
 
 
     const Bucket = this.appService.serverConfig.payload.Bucket;
-      const s3client = new S3();
+      const s3client = new S3Client({});
       let Key, ResponseContentDisposition;
 
       if (version === "ersdv3-draft") {
@@ -184,12 +182,11 @@ export class DownloadController {
         ResponseContentDisposition = `attachment; filename="eRSDv3_specification_bundle_draft.json"`;
       }
 
-      const params = {
+      const url = await getSignedUrl(s3client, new GetObjectCommand({
         Bucket,
         Key,
         ResponseContentDisposition,
-      }
-      const url = await s3client.getSignedUrlPromise('getObject', params);
+      }));
       return {url}
   }
 
@@ -200,7 +197,7 @@ export class DownloadController {
     const { version } = queryParams;
 
     const Bucket = this.appService.serverConfig.payload.Bucket;
-      const s3client = new S3();
+      const s3client = new S3Client({});
 
       let Key, ResponseContentDisposition;
 
@@ -209,12 +206,11 @@ export class DownloadController {
         ResponseContentDisposition = `attachment; filename="eRSDv3_specification_bundle_draft.xml"`;
       }
 
-      const params = {
+      const url = await getSignedUrl(s3client, new GetObjectCommand({
         Bucket,
         Key,
         ResponseContentDisposition,
-      }
-      const url = await s3client.getSignedUrlPromise('getObject', params);
+      }));
       return {url}
   }
 
@@ -223,7 +219,7 @@ export class DownloadController {
   async downloadNotes(@Query() queryParams) {
     const { version } = queryParams;
     const Bucket = this.appService.serverConfig.payload.Bucket;
-    const s3client = new S3();
+    const s3client = new S3Client({});
     let Key, ResponseContentDisposition;
   
     if (version === "ersdv3") {
@@ -231,13 +227,11 @@ export class DownloadController {
       ResponseContentDisposition = `attachment; filename="eRSDv3_specification_release_description.txt"`;
     }
   
-    const params = {
+    const url = await getSignedUrl(s3client, new GetObjectCommand({
       Bucket,
       Key,
       ResponseContentDisposition,
-    };
-  
-    const url = await s3client.getSignedUrlPromise('getObject', params);
+    }));
     return { url };
   }
   
@@ -247,16 +241,15 @@ export class DownloadController {
 async downloadChangeLogs() {
   const Bucket = this.appService.serverConfig.payload.Bucket;
 
-  const s3client = new S3();
+  const s3client = new S3Client({});
   const Key = this.appService.serverConfig.payload.RCTC_CHANGE_LOG_KEY;
   const ResponseContentDisposition = `attachment; filename="RCTC_Change_Log.xlsx"`;
 
-  const params = {
+  const url = await getSignedUrl(s3client, new GetObjectCommand({
     Bucket,
     Key,
     ResponseContentDisposition,
-  }
-  const url = await s3client.getSignedUrlPromise('getObject', params);
+  }));
   return {url}
 }
 
