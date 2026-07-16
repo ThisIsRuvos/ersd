@@ -1,46 +1,86 @@
 include:
+  # Assume roles
   - project: aphl_aims/devsecops/centralized-cicd
     ref: stable
     file:
       - gitlab-ci-templates/iam-oidc/aws-assume.yaml
 
 stages:
-  - build
+  - image promotion
 
 variables:
   AWS_DEFAULT_REGION: us-east-1
   ECR_REPO: kds/kds-portal
   DOCKER_HOST: "tcp://docker:2375"
 
-.build_setup:
+########################################################################################################################
+# Template that is run against each account
+########################################################################################################################
+
+.image_setup:
   id_tokens:
     GITLAB_OIDC_TOKEN:
       aud: https://gitlab.com
   tags:
     - saas-linux-large-amd64
-  image: docker:26
+  image: docker:24
   services:
-    - name: docker:26-dind
+    - name: docker:24-dind
   before_script:
+    - apk update
+    - apk upgrade --no-cache
     - apk add aws-cli
 
 .build_and_push:
   script:
+    # Debugging output
+    - |
+      echo "Debugging information"
+      printf "%80s\n" | tr ' ' '-'
+      aws --version
+      docker --version
+      echo
+
+    # Assume role and log in to the target account registry
     - export AWS_ACCOUNT_ID=${TARGET_AWS_ACCOUNT_ID}
     - !reference [.assume_role]
     - ECR_REGISTRY="${TARGET_AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
     - aws ecr get-login-password --region $AWS_DEFAULT_REGION |
         docker login --username AWS --password-stdin $ECR_REGISTRY
-    - IMAGE="${ECR_REGISTRY}/${ECR_REPO}:${CI_COMMIT_TAG}"
-    - docker build -t "$IMAGE" .
-    - docker push "$IMAGE"
 
-Build and push to sandbox:
-  stage: build
+    # Build and push only if the tag is missing from the target registry
+    - echo "Building and pushing image to ${TARGET_ENVIRONMENT} registry in account ${TARGET_AWS_ACCOUNT_ID}"
+    - |
+      printf "%80s\n" | tr ' ' '-'
+      IMAGE="${ECR_REGISTRY}/${ECR_REPO}:${CI_COMMIT_TAG}"
+      echo "Checking for image ${ECR_REPO}:${CI_COMMIT_TAG} in target ECR"
+      if docker manifest inspect "$IMAGE" > /dev/null 2>&1; then
+        echo "Image $IMAGE exists. No Actions needed"
+      else
+        echo "Image $IMAGE does not exist. Building and pushing image"
+        echo ""
+        echo "Building $IMAGE"
+        echo -n "  "
+        docker build --platform linux/amd64 -t "$IMAGE" .
+        echo "  Complete"
+        echo ""
+        echo "Pushing $IMAGE"
+        echo -n "  "
+        docker push "$IMAGE"
+        echo "  Complete"
+      fi
+
+########################################################################################################################
+# Environment Rules
+########################################################################################################################
+
+Container build and push to sandbox:
+  stage: image promotion
   rules:
     - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/'
   variables:
-    TARGET_AWS_ACCOUNT_ID: '703861148810'
+    TARGET_AWS_ACCOUNT_ID: '703861148810' # sandbox account
+    TARGET_ENVIRONMENT: sandbox
   extends:
-    - .build_setup
+    - .image_setup
     - .build_and_push
