@@ -8,6 +8,7 @@ include:
 stages:
   - build
   - deploy
+  - deploy-production
 
 variables:
   AWS_DEFAULT_REGION: us-east-1
@@ -51,6 +52,53 @@ variables:
     - aws ecr get-login-password --region $AWS_DEFAULT_REGION |
         docker login --username AWS --password-stdin $ECR_REGISTRY
 
+# Promote an already-built release image from the source account registry into the
+# target account registry (pull -> retag -> push). Assumes a role in each account.
+# SOURCE_ECR_REPO / TARGET_ECR_REPO default to ECR_REPO when unset.
+.promote_image:
+  script:
+    - |
+      echo "Debugging information"
+      printf "%80s\n" | tr ' ' '-'
+      aws --version
+      docker --version
+      echo
+    - export SOURCE_ECR_REPO="${SOURCE_ECR_REPO:-$ECR_REPO}"
+    - export TARGET_ECR_REPO="${TARGET_ECR_REPO:-$ECR_REPO}"
+    # Log in to the source (sandbox) registry and pull the release image
+    - export AWS_ACCOUNT_ID=${SOURCE_AWS_ACCOUNT_ID}
+    - !reference [.assume_role]
+    - SOURCE_REGISTRY="${SOURCE_AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+    - aws ecr get-login-password --region $AWS_DEFAULT_REGION |
+        docker login --username AWS --password-stdin $SOURCE_REGISTRY
+    - SOURCE_IMAGE="${SOURCE_REGISTRY}/${SOURCE_ECR_REPO}:${CI_COMMIT_TAG}"
+    - echo "Pulling ${SOURCE_IMAGE} from source account ${SOURCE_AWS_ACCOUNT_ID}"
+    - docker pull -q --platform linux/amd64 "$SOURCE_IMAGE"
+    # Log in to the target (production) registry
+    - export AWS_ACCOUNT_ID=${TARGET_AWS_ACCOUNT_ID}
+    - !reference [.assume_role]
+    - TARGET_REGISTRY="${TARGET_AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+    - aws ecr get-login-password --region $AWS_DEFAULT_REGION |
+        docker login --username AWS --password-stdin $TARGET_REGISTRY
+    - TARGET_IMAGE="${TARGET_REGISTRY}/${TARGET_ECR_REPO}:${CI_COMMIT_TAG}"
+    # Promote only if the tag is missing from the target registry
+    - echo "Promoting ${SOURCE_ECR_REPO}:${CI_COMMIT_TAG} -> ${TARGET_ECR_REPO}:${CI_COMMIT_TAG} in ${TARGET_ENVIRONMENT} (${TARGET_AWS_ACCOUNT_ID})"
+    - |
+      printf "%80s\n" | tr ' ' '-'
+      echo "Checking for image ${TARGET_ECR_REPO}:${CI_COMMIT_TAG} in target ECR"
+      if docker manifest inspect "$TARGET_IMAGE" > /dev/null 2>&1; then
+        echo "Image $TARGET_IMAGE exists. No Actions needed"
+      else
+        echo "Image $TARGET_IMAGE does not exist. Promoting build image"
+        echo ""
+        echo "Tagging and pushing $TARGET_IMAGE"
+        echo -n "  "
+        docker tag "$SOURCE_IMAGE" "$TARGET_IMAGE"
+        echo -n "  "
+        docker push "$TARGET_IMAGE"
+        echo "  Complete"
+      fi
+
 ########################################################################################################################
 # Build stage: build the image and push it to ECR under an immutable, commit-scoped tag
 ########################################################################################################################
@@ -58,7 +106,8 @@ variables:
 Build image for sandbox:
   stage: build
   rules:
-    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/'
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/ && $CI_PIPELINE_SOURCE != "web"'
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/ && $CI_PIPELINE_SOURCE == "web" && $environment == "sandbox"'
   variables:
     TARGET_AWS_ACCOUNT_ID: '703861148810' # sandbox account
     TARGET_ENVIRONMENT: sandbox
@@ -78,7 +127,8 @@ Build image for sandbox:
 Deploy to sandbox:
   stage: deploy
   rules:
-    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/'
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/ && $CI_PIPELINE_SOURCE != "web"'
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/ && $CI_PIPELINE_SOURCE == "web" && $environment == "sandbox"'
   variables:
     TARGET_AWS_ACCOUNT_ID: '703861148810' # sandbox account
     TARGET_ENVIRONMENT: sandbox
@@ -109,3 +159,29 @@ Deploy to sandbox:
         docker push "$RELEASE_IMAGE"
         echo "  Complete"
       fi
+
+########################################################################################################################
+# Production stage: promote the sandbox release image into the production account (manual, web-triggered)
+#
+# Trigger from GitLab: CI/CD -> Pipelines -> Run pipeline on a semver tag with a
+# variable  environment = production. Requires an OIDC role in the production
+# account that trusts this project, and ECR repo ersd/portal.
+#
+# Source: 703861148810.dkr.ecr.us-east-1.amazonaws.com/kds/kds-portal:{tag}
+# Target: 301114786575.dkr.ecr.us-east-1.amazonaws.com/ersd/portal:{tag}
+########################################################################################################################
+
+Promote to production:
+  stage: deploy-production
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/ && $CI_PIPELINE_SOURCE == "web" && $environment == "production"'
+  variables:
+    SOURCE_AWS_ACCOUNT_ID: '703861148810' # sandbox account (promotion source)
+    SOURCE_ECR_REPO: kds/kds-portal
+    TARGET_AWS_ACCOUNT_ID: '301114786575' # AWS-APHL-AIMS-PROD
+    TARGET_ECR_REPO: ersd/portal
+    TARGET_ENVIRONMENT: production
+  extends:
+    - .image_setup
+  script:
+    - !reference [.promote_image, script]
