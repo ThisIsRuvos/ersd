@@ -1,3 +1,19 @@
+# Change Log: eRSD Release 1.5.3
+
+### Security
+- Remediated ECR/Inspector findings for the kds-portal container image
+- Upgraded vulnerable runtime dependencies including axios, multer, dompurify, nodemailer, lodash/lodash-es, tmp, qs, uuid, mermaid, and related transitive packages
+- Upgraded Angular packages to 20.3.26 to pick up security backports
+- Moved esbuild to devDependencies and removed it from the runtime image (clears Go stdlib findings)
+- Removed emoji-toolkit Composer/PHP vendor artifacts from the production image
+- Added npm overrides to pin secure transitive dependency versions
+
+### Configuration Updates
+- Rebased Dockerfile on debian:trixie-slim with official Node.js 20.20.2 binaries
+- Pruned npm/corepack from the runtime image and tightened production node_modules cleanup
+
+---
+
 # Change Log: eRSD Release 1.5.0
 
 ### Breaking Changes

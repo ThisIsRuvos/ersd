@@ -1,9 +1,13 @@
-FROM python:3.11.4-slim AS build-ersd
+FROM debian:trixie-slim AS build-ersd
+
+ARG NODE_VERSION=20.20.2
 
 RUN apt-get update && \
-	apt-get install curl make gcc g++ -y
-
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - && apt-get install nodejs -y
+	apt-get install -y --no-install-recommends \
+		make gcc g++ python3 curl ca-certificates xz-utils && \
+	curl -fsSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz \
+		| tar -xJ --strip-components=1 -C /usr/local && \
+	rm -rf /var/lib/apt/lists/*
 
 WORKDIR /ersd
 
@@ -12,19 +16,27 @@ COPY . .
 RUN npm install --max-old-space-size=8192 --legacy-peer-deps
 RUN npm run build:server
 RUN npm run build:client
-RUN npm prune --omit=dev
+RUN npm prune --omit=dev && \
+	find node_modules -name "composer.lock" -delete && \
+	find node_modules -name "composer.json" -not -path "*/node_modules/.package-lock.json" -delete && \
+	rm -rf node_modules/emoji-toolkit/vendor \
+		node_modules/esbuild \
+		node_modules/@esbuild \
+		node_modules/.bin/esbuild
 
-FROM ubuntu:jammy-20250730
+FROM debian:trixie-slim
+
+ARG NODE_VERSION=20.20.2
 
 RUN apt-get update && \
-	apt-get install curl -y && \
-	apt-get upgrade -y
-
-RUN curl -SLO https://deb.nodesource.com/nsolid_setup_deb.sh
-RUN chmod 500 nsolid_setup_deb.sh
-RUN ./nsolid_setup_deb.sh 20
-RUN apt-get install nodejs -y
-RUN apt-get clean
+	apt-get upgrade -y && \
+	apt-get install -y --no-install-recommends curl ca-certificates xz-utils && \
+	curl -fsSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz \
+		| tar -xJ --strip-components=1 -C /usr/local && \
+	apt-get purge -y --auto-remove curl xz-utils && \
+	rm -rf /var/lib/apt/lists/* && \
+	rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx \
+		/usr/local/lib/node_modules/corepack /usr/local/bin/corepack
 
 RUN mkdir -p /ersd/server && mkdir /ersd/client
 WORKDIR /ersd
