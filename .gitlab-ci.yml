@@ -1,0 +1,190 @@
+include:
+  # Assume roles
+  - project: aphl_aims/devsecops/centralized-cicd
+    ref: stable
+    file:
+      - gitlab-ci-templates/iam-oidc/aws-assume.yaml
+
+stages:
+  - build
+  - deploy
+  - deploy-production
+
+variables:
+  AWS_DEFAULT_REGION: us-east-1
+  ECR_REPO: kds/kds-portal
+  DOCKER_HOST: "tcp://docker:2375"
+
+########################################################################################################################
+# Templates that are run against each account
+########################################################################################################################
+
+.image_setup:
+  id_tokens:
+    GITLAB_OIDC_TOKEN:
+      aud: https://gitlab.com
+  tags:
+    - saas-linux-large-amd64
+  image: docker:24
+  services:
+    - name: docker:24-dind
+  before_script:
+    - apk update
+    - apk upgrade --no-cache
+    - apk add aws-cli
+
+# Assume the target account role, resolve the registry, and log in to ECR.
+# Exports ECR_REGISTRY, BUILD_IMAGE (immutable, commit-scoped) and RELEASE_IMAGE
+# (the version tag consumed by the environment) for the job to use.
+.ecr_login:
+  script:
+    - |
+      echo "Debugging information"
+      printf "%80s\n" | tr ' ' '-'
+      aws --version
+      docker --version
+      echo
+    - export AWS_ACCOUNT_ID=${TARGET_AWS_ACCOUNT_ID}
+    - !reference [.assume_role]
+    - export ECR_REGISTRY="${TARGET_AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+    - export BUILD_IMAGE="${ECR_REGISTRY}/${ECR_REPO}:${CI_COMMIT_TAG}-${CI_COMMIT_SHORT_SHA}"
+    - export RELEASE_IMAGE="${ECR_REGISTRY}/${ECR_REPO}:${CI_COMMIT_TAG}"
+    - aws ecr get-login-password --region $AWS_DEFAULT_REGION |
+        docker login --username AWS --password-stdin $ECR_REGISTRY
+
+# Promote an already-built release image from the source account registry into the
+# target account registry (pull -> retag -> push). Assumes a role in each account.
+# SOURCE_ECR_REPO / TARGET_ECR_REPO default to ECR_REPO when unset.
+.promote_image:
+  script:
+    - |
+      echo "Debugging information"
+      printf "%80s\n" | tr ' ' '-'
+      aws --version
+      docker --version
+      echo
+    - export SOURCE_ECR_REPO="${SOURCE_ECR_REPO:-$ECR_REPO}"
+    - export TARGET_ECR_REPO="${TARGET_ECR_REPO:-$ECR_REPO}"
+    # Log in to the source (sandbox) registry and pull the release image
+    - export AWS_ACCOUNT_ID=${SOURCE_AWS_ACCOUNT_ID}
+    - !reference [.assume_role]
+    - SOURCE_REGISTRY="${SOURCE_AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+    - aws ecr get-login-password --region $AWS_DEFAULT_REGION |
+        docker login --username AWS --password-stdin $SOURCE_REGISTRY
+    - SOURCE_IMAGE="${SOURCE_REGISTRY}/${SOURCE_ECR_REPO}:${CI_COMMIT_TAG}"
+    - echo "Pulling ${SOURCE_IMAGE} from source account ${SOURCE_AWS_ACCOUNT_ID}"
+    - docker pull -q --platform linux/amd64 "$SOURCE_IMAGE"
+    # Log in to the target (production) registry
+    - export AWS_ACCOUNT_ID=${TARGET_AWS_ACCOUNT_ID}
+    - !reference [.assume_role]
+    - TARGET_REGISTRY="${TARGET_AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+    - aws ecr get-login-password --region $AWS_DEFAULT_REGION |
+        docker login --username AWS --password-stdin $TARGET_REGISTRY
+    - TARGET_IMAGE="${TARGET_REGISTRY}/${TARGET_ECR_REPO}:${CI_COMMIT_TAG}"
+    # Promote only if the tag is missing from the target registry
+    - echo "Promoting ${SOURCE_ECR_REPO}:${CI_COMMIT_TAG} -> ${TARGET_ECR_REPO}:${CI_COMMIT_TAG} in ${TARGET_ENVIRONMENT} (${TARGET_AWS_ACCOUNT_ID})"
+    - |
+      printf "%80s\n" | tr ' ' '-'
+      echo "Checking for image ${TARGET_ECR_REPO}:${CI_COMMIT_TAG} in target ECR"
+      if docker manifest inspect "$TARGET_IMAGE" > /dev/null 2>&1; then
+        echo "Image $TARGET_IMAGE exists. No Actions needed"
+      else
+        echo "Image $TARGET_IMAGE does not exist. Promoting build image"
+        echo ""
+        echo "Tagging and pushing $TARGET_IMAGE"
+        echo -n "  "
+        docker tag "$SOURCE_IMAGE" "$TARGET_IMAGE"
+        echo -n "  "
+        docker push "$TARGET_IMAGE"
+        echo "  Complete"
+      fi
+
+########################################################################################################################
+# Build stage: build the image and push it to ECR under an immutable, commit-scoped tag
+########################################################################################################################
+
+Build image for sandbox:
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE != "web"'
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE == "web" && $environment == "sandbox"'
+  variables:
+    TARGET_AWS_ACCOUNT_ID: '703861148810' # sandbox account
+    TARGET_ENVIRONMENT: sandbox
+  extends:
+    - .image_setup
+  script:
+    - !reference [.ecr_login, script]
+    - echo "Building and pushing ${BUILD_IMAGE} to ${TARGET_ENVIRONMENT} registry in account ${TARGET_AWS_ACCOUNT_ID}"
+    - printf "%80s\n" | tr ' ' '-'
+    - docker build --platform linux/amd64 -t "$BUILD_IMAGE" .
+    - docker push "$BUILD_IMAGE"
+
+########################################################################################################################
+# Deploy stage: promote the built image to the release (version) tag consumed by the environment
+########################################################################################################################
+
+Deploy to sandbox:
+  stage: deploy
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE != "web"'
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE == "web" && $environment == "sandbox"'
+  variables:
+    TARGET_AWS_ACCOUNT_ID: '703861148810' # sandbox account
+    TARGET_ENVIRONMENT: sandbox
+  needs:
+    - "Build image for sandbox"
+  extends:
+    - .image_setup
+  script:
+    - !reference [.ecr_login, script]
+    - echo "Deploying ${ECR_REPO}:${CI_COMMIT_TAG} to ${TARGET_ENVIRONMENT} registry in account ${TARGET_AWS_ACCOUNT_ID}"
+    - |
+      printf "%80s\n" | tr ' ' '-'
+      echo "Checking for image ${ECR_REPO}:${CI_COMMIT_TAG} in target ECR"
+      if docker manifest inspect "$RELEASE_IMAGE" > /dev/null 2>&1; then
+        echo "Image $RELEASE_IMAGE exists. No Actions needed"
+      else
+        echo "Image $RELEASE_IMAGE does not exist. Promoting build image"
+        echo ""
+        echo "Pulling $BUILD_IMAGE"
+        echo -n "  "
+        docker pull -q --platform linux/amd64 "$BUILD_IMAGE"
+        echo "  Complete"
+        echo ""
+        echo "Tagging and pushing $RELEASE_IMAGE"
+        echo -n "  "
+        docker tag "$BUILD_IMAGE" "$RELEASE_IMAGE"
+        echo -n "  "
+        docker push "$RELEASE_IMAGE"
+        echo "  Complete"
+      fi
+
+########################################################################################################################
+# Production stage: promote the sandbox release image into the production account (manual, web-triggered)
+#
+# Trigger from GitLab: CI/CD -> Pipelines -> Run pipeline on a semver tag with a
+# variable  environment = production. Requires an OIDC role in the production
+# account that trusts this project, and ECR repo ersd/portal.
+#
+# Production accepts only three-part tags (x.y.z). Four-part tags (x.y.z.n) are
+# for sandbox testing only and will not promote to production.
+#
+# Source: 703861148810.dkr.ecr.us-east-1.amazonaws.com/kds/kds-portal:{tag}
+# Target: 301114786575.dkr.ecr.us-east-1.amazonaws.com/ersd/portal:{tag}
+########################################################################################################################
+
+Promote to production:
+  stage: deploy-production
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/ && $CI_PIPELINE_SOURCE == "web" && $environment == "production"'
+  variables:
+    SOURCE_AWS_ACCOUNT_ID: '703861148810' # sandbox account (promotion source)
+    SOURCE_ECR_REPO: kds/kds-portal
+    TARGET_AWS_ACCOUNT_ID: '301114786575' # AWS-APHL-AIMS-PROD
+    TARGET_ECR_REPO: ersd/portal
+    TARGET_ENVIRONMENT: production
+  extends:
+    - .image_setup
+  script:
+    - !reference [.promote_image, script]

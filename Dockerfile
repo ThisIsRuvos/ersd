@@ -13,7 +13,11 @@ WORKDIR /ersd
 
 COPY . .
 
-RUN npm install --max-old-space-size=8192 --legacy-peer-deps
+# Give Node enough heap for the Angular client build; the runner (saas-linux-large)
+# has 16 GB, and the browser builder OOMs with the default ~2 GB heap.
+ENV NODE_OPTIONS="--max-old-space-size=8192"
+
+RUN npm install --legacy-peer-deps
 RUN npm run build:server
 RUN npm run build:client
 RUN npm prune --omit=dev && \
