@@ -2,14 +2,16 @@
 
 ### Security
 - Remediated ECR/Inspector findings for the kds-portal container image
-- Upgraded vulnerable runtime dependencies including axios, multer, dompurify, nodemailer, lodash/lodash-es, tmp, qs, uuid, mermaid, and related transitive packages
+- Upgraded vulnerable runtime dependencies including axios, multer, dompurify, nodemailer, lodash/lodash-es, tmp, qs, uuid, mermaid, body-parser, and related transitive packages
 - Upgraded Angular packages to 20.3.26 to pick up security backports
 - Moved esbuild to devDependencies and removed it from the runtime image (clears Go stdlib findings)
 - Removed emoji-toolkit Composer/PHP vendor artifacts from the production image
 - Added npm overrides to pin secure transitive dependency versions
+- Upgraded Node.js runtime from 20.20.2 to 22.23.1 (OpenSSL 3.5.7) to address bundled OpenSSL findings
+- Removed Node headers/docs from the runtime image
 
 ### Configuration Updates
-- Rebased Dockerfile on debian:trixie-slim with official Node.js 20.20.2 binaries
+- Switched Dockerfile to official node:22.23.1-trixie-slim base image
 - Pruned npm/corepack from the runtime image and tightened production node_modules cleanup
 
 ---

@@ -1,13 +1,4 @@
-FROM debian:trixie-slim AS build-ersd
-
-ARG NODE_VERSION=20.20.2
-
-RUN apt-get update && \
-	apt-get install -y --no-install-recommends \
-		make gcc g++ python3 curl ca-certificates xz-utils && \
-	curl -fsSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz \
-		| tar -xJ --strip-components=1 -C /usr/local && \
-	rm -rf /var/lib/apt/lists/*
+FROM node:22.23.1-trixie-slim AS build-ersd
 
 WORKDIR /ersd
 
@@ -16,6 +7,10 @@ COPY . .
 # Give Node enough heap for the Angular client build; the runner (saas-linux-large)
 # has 16 GB, and the browser builder OOMs with the default ~2 GB heap.
 ENV NODE_OPTIONS="--max-old-space-size=8192"
+
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends make gcc g++ python3 && \
+	rm -rf /var/lib/apt/lists/*
 
 RUN npm install --legacy-peer-deps
 RUN npm run build:server
@@ -28,18 +23,14 @@ RUN npm prune --omit=dev && \
 		node_modules/@esbuild \
 		node_modules/.bin/esbuild
 
-FROM debian:trixie-slim
-
-ARG NODE_VERSION=20.20.2
+FROM node:22.23.1-trixie-slim
 
 RUN apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y --no-install-recommends curl ca-certificates xz-utils && \
-	curl -fsSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz \
-		| tar -xJ --strip-components=1 -C /usr/local && \
-	apt-get purge -y --auto-remove curl xz-utils && \
 	rm -rf /var/lib/apt/lists/* && \
-	rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx \
+	# Runtime does not need Node headers/docs/npm (Inspector flags bundled OpenSSL headers)
+	rm -rf /usr/local/include /usr/local/share/doc /usr/local/share/man \
+		/usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx \
 		/usr/local/lib/node_modules/corepack /usr/local/bin/corepack
 
 RUN mkdir -p /ersd/server && mkdir /ersd/client
