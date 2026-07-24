@@ -35,7 +35,7 @@ variables:
 
 # Assume the target account role, resolve the registry, and log in to ECR.
 # Exports ECR_REGISTRY, BUILD_IMAGE (immutable, commit-scoped) and RELEASE_IMAGE
-# (the version tag consumed by the environment) for the job to use.
+# (the version tag consumed by the environment — no commit hash).
 .ecr_login:
   script:
     - |
@@ -100,7 +100,7 @@ variables:
       fi
 
 ########################################################################################################################
-# Build stage: build the image and push it to ECR under an immutable, commit-scoped tag
+# Build stage: build the image and push it under an immutable, commit-scoped tag
 ########################################################################################################################
 
 Build image for sandbox:
@@ -121,7 +121,7 @@ Build image for sandbox:
     - docker push "$BUILD_IMAGE"
 
 ########################################################################################################################
-# Deploy stage: promote the built image to the release (version) tag consumed by the environment
+# Deploy stage: promote the built image to the version tag (no commit hash)
 ########################################################################################################################
 
 Deploy to sandbox:
