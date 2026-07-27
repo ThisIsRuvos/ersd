@@ -100,7 +100,7 @@ variables:
       fi
 
 ########################################################################################################################
-# Build stage: build the image and push it under an immutable, commit-scoped tag
+# Build stage: build the image and push it to ECR under an immutable, commit-scoped tag
 ########################################################################################################################
 
 Build image for sandbox:
