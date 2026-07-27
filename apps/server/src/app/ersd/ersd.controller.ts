@@ -16,7 +16,7 @@ import { Constants } from '../../../../../libs/ersdlib/src/lib/constants';
 import { IBundle } from '../../../../../libs/ersdlib/src/lib/bundle';
 import { Person } from '../../../../../libs/ersdlib/src/lib/person';
 import { AppService } from '../app.service';
-import S3 from 'aws-sdk/clients/s3';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { Fhir } from 'fhir/fhir';
 
 @Controller('ersd')
@@ -121,14 +121,10 @@ export class eRSDController {
       throw Error(errorMessage);
     }
 
-    const s3client = new S3();
+    const s3client = new S3Client({});
 
-    const headParams = {
-      Bucket,
-      Key,
-    }
-    const data = await s3client.getObject(headParams).promise();
-    const body = data.Body.toString('utf-8')
+    const data = await s3client.send(new GetObjectCommand({ Bucket, Key }));
+    const body = await data.Body.transformToString('utf-8');
     if (format === 'xml') {
       return response.set({ 'Content-Type': 'text/xml' }).send(body)
     } else {
@@ -150,15 +146,13 @@ export class eRSDController {
       return response.status(500).json({ error: errorMessage });
     }
 
-    const s3client = new S3();
+    const s3client = new S3Client({});
     let markdownFiles = {};
 
     if (Key) {
-      const params = { Bucket, Key };
-
       try {
-        const data = await s3client.getObject(params).promise();
-        markdownFiles['markdownFile2'] = data.Body.toString();
+        const data = await s3client.send(new GetObjectCommand({ Bucket, Key }));
+        markdownFiles['markdownFile2'] = await data.Body.transformToString('utf-8');
       } catch (error) {
         console.error(`Error fetching Markdown from S3 for Key: ${error}`);
       }

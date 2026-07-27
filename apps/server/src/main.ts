@@ -31,10 +31,13 @@ async function bootstrap() {
   });
 
   const port = process.env.port || appService.serverConfig.port || 3333;
-  await app.listen(port, () => {
+  const server = await app.listen(port, () => {
     logger.log(`Listening at http://localhost:${port}`);
     logger.log(`Server configured to use FHIR server ${appService.serverConfig.fhirServerBase}`);
   });
+
+  server.setTimeout(10 * 60 * 1000); // 10 minutes for long-running admin exports
+  server.keepAliveTimeout = 10 * 60 * 1000;
 }
 
 if (!appService.serverConfig.fhirServerBase) {

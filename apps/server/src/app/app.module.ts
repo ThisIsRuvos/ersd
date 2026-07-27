@@ -14,7 +14,7 @@ import { S3Controller } from './s3/s3.controller';
 import { eRSDController } from './ersd/ersd.controller';
 
 @Module({
-  imports: [AuthModule, HttpModule],
+  imports: [AuthModule, HttpModule.register({ timeout: 5 * 60 * 1000 })],
   controllers: [
     AppController,
     UserController,

@@ -1,3 +1,21 @@
+# Change Log: eRSD Release 1.5.3
+
+### Security
+- Remediated ECR/Inspector findings for the kds-portal container image
+- Upgraded vulnerable runtime dependencies including axios, multer, dompurify, nodemailer, lodash/lodash-es, tmp, qs, uuid, mermaid, body-parser, and related transitive packages
+- Upgraded Angular packages to 20.3.26 to pick up security backports
+- Moved esbuild to devDependencies and removed it from the runtime image (clears Go stdlib findings)
+- Removed emoji-toolkit Composer/PHP vendor artifacts from the production image
+- Added npm overrides to pin secure transitive dependency versions
+- Upgraded Node.js runtime from 20.20.2 to 22.23.1 (OpenSSL 3.5.7) to address bundled OpenSSL findings
+- Removed Node headers/docs from the runtime image
+
+### Configuration Updates
+- Switched Dockerfile to official node:22.23.1-trixie-slim base image
+- Pruned npm/corepack from the runtime image and tightened production node_modules cleanup
+
+---
+
 # Change Log: eRSD Release 1.5.1
 
 ### Breaking Changes
@@ -46,3 +64,26 @@
 - Upgraded @nx/workspace from ^19.8.0 to ^22.1.3
 - Updated dev script to use `nx run-many` for parallel builds
 - Added symlinks for assets and config directories
+
+---
+
+# Change Log: eRSD Release 1.4.6
+
+### UI/UX Updates
+- Updated home page with comprehensive information about eRSD Version 3 as the current and recommended specification
+- Added sunsetting information for eRSD Versions 1 and 2 (scheduled for January 31, 2026)
+- Updated preview section wording to clarify that change previews do not include new trigger codes
+- Fixed selection inconsistency issue where default version selection was set to v1 instead of v3
+- Improved eRSD description and terminology throughout the application
+
+### Dependencies
+- Upgraded Angular framework from version 18 to version 20
+- Updated @ng-bootstrap/ng-bootstrap from version 17 to version 19
+- Updated various npm packages to resolve vulnerabilities
+- Added @angular/cdk and @popperjs/core dependencies
+
+### Configuration Updates
+- Updated Dockerfile configuration
+- Updated docker-compose.yml configuration
+
+---

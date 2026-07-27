@@ -13,10 +13,11 @@ import type { IEmailExportRequest } from '../../../../../libs/ersdlib/src/lib/em
 import { Fhir } from 'fhir/fhir';
 import { IBundle } from '../../../../../libs/ersdlib/src/lib/bundle';
 import { AppService } from '../app.service';
-import S3 from 'aws-sdk/clients/s3';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import path, { join } from "path";
 import { validateEmail } from '../helper';
 import { createReadStream, writeFileSync, unlinkSync } from 'fs';
+import { lastValueFrom } from 'rxjs';
 
 @Controller('upload')
 export class UploadController {
@@ -44,15 +45,15 @@ export class UploadController {
       const Metadata = { filename: body.fileName };
 
       try {
-        const s3client = new S3();
+        const s3client = new S3Client({});
         const Key = this.appService.serverConfig.payload.RCTCKey;
         this.logger.log(`Uploaded RCTC excel to s3://${Bucket}/${Key}`);
-        await s3client.putObject({
+        await s3client.send(new PutObjectCommand({
           Bucket,
           Key,
           Metadata,
           Body: buf,
-        }).promise()
+        }))
         this.logger.log(`Uploaded RCTC excel to s3://${Bucket}/${Key}`);
       }
       catch (e) {
@@ -62,71 +63,71 @@ export class UploadController {
     }
   }
 
-  async getEmails(exportTypeOrigin: string) {
-    let resource = [];
-    const getNext = (url?: string): Promise<void> => {
-      if (!url) {
-        url = this.appService.buildFhirUrl(exportTypeOrigin, null, { _summary: true });
-      }
-
-      return new Promise((resolve, reject) => {
-        this.httpService.get<IBundle>(url).toPromise()
-          .then((results) => {
-            const bundle = results.data;
-
-            if (bundle.entry) {
-              const resources = bundle.entry.map((entry) => entry.resource);
-              resource = resource.concat(resources);
-            }
-
-            if (bundle.link) {
-              const foundNext = bundle.link.find((link) => link.relation === 'next');
-
-              if (foundNext) {
-                const nextParams = foundNext.url.substring(foundNext.url.indexOf('?'));
-                const nextUrl = this.appService.serverConfig.fhirServerBase + nextParams;
-
-                getNext(nextUrl)
-                  .then(() => resolve())
-                  .catch((err) => reject(err));
-              } else {
-                resolve();
-              }
-            }
-          });
-      });
-    };
-
-    await getNext();    // get all people
-
-    let emails: string[] = []
-
-    // @ts-ignore
+  private extractEmailsFromPage(resources: any[], exportTypeOrigin: string): string[] {
+    const emails: string[] = [];
     if (exportTypeOrigin === 'Subscription') {
-      resource.forEach((i) => {
-        if (i?.status !== 'active' || i?.channel?.type !== 'email' || i?.channel?.payload === 'application/json') return;
-        const email = i?.channel?.endpoint?.replaceAll('mailto:', '')
+      for (const i of resources) {
+        if (i?.status !== 'active' || i?.channel?.type !== 'email' || i?.channel?.payload === 'application/json') continue;
+        const email = i?.channel?.endpoint?.replaceAll('mailto:', '');
         if (validateEmail(email)) {
-          emails.push(email)
+          emails.push(email.toLowerCase());
         } else {
           this.logger.error(`Invalid email address ${email}`);
         }
-      })
+      }
     } else if (exportTypeOrigin === 'Person') {
-      resource?.forEach(i => {
-        const primaryEmail = i?.telecom?.find(j => j.system === 'email')?.value
-        const secondaryEmail = i?.contained?.find?.(c => c?.resourceType === 'Person')?.telecom?.find(j => j.system === 'email')?.value
-        const allPersonEmails = [primaryEmail, secondaryEmail].map(i => i && i.replaceAll('mailto:', '')).filter(i => i)
-        allPersonEmails.forEach(email => {
+      for (const i of resources) {
+        const primaryEmail = i?.telecom?.find(j => j.system === 'email')?.value;
+        const secondaryEmail = i?.contained?.find?.(c => c?.resourceType === 'Person')?.telecom?.find(j => j.system === 'email')?.value;
+        const allPersonEmails = [primaryEmail, secondaryEmail].map(e => e && e.replaceAll('mailto:', '')).filter(e => e);
+        for (const email of allPersonEmails) {
           if (validateEmail(email)) {
-            emails.push(email)
+            emails.push(email.toLowerCase());
           } else {
             this.logger.error(`Invalid email address ${email}`);
           }
-        })
-      })
+        }
+      }
     }
-    return [...new Set(emails.map(i => i.toLowerCase()))]
+    return emails;
+  }
+
+  async getEmails(exportTypeOrigin: string) {
+    const emailSet = new Set<string>();
+
+    const fhirParams: Record<string, any> = {
+      _count: 500,
+    };
+    if (exportTypeOrigin === 'Subscription') {
+      fhirParams._elements = 'status,channel';
+    } else if (exportTypeOrigin === 'Person') {
+      fhirParams._elements = 'telecom,contained';
+    }
+
+    let url = this.appService.buildFhirUrl(exportTypeOrigin, null, fhirParams);
+
+    while (url) {
+      const results = await lastValueFrom(this.httpService.get<IBundle>(url));
+      const bundle = results.data;
+
+      if (bundle.entry) {
+        const resources = bundle.entry.map((entry) => entry.resource);
+        const pageEmails = this.extractEmailsFromPage(resources, exportTypeOrigin);
+        for (const email of pageEmails) {
+          emailSet.add(email);
+        }
+      }
+
+      const nextLink = bundle.link?.find((link) => link.relation === 'next');
+      if (nextLink) {
+        const nextParams = nextLink.url.substring(nextLink.url.indexOf('?'));
+        url = this.appService.serverConfig.fhirServerBase + nextParams;
+      } else {
+        url = null;
+      }
+    }
+
+    return Array.from(emailSet);
   }
 
   @Post('get-emails')
@@ -146,15 +147,18 @@ export class UploadController {
     if (exportTypeOrigin !== 'Subscription' && exportTypeOrigin !== 'Person' && exportTypeOrigin !== 'Both') throw new BadRequestException('Invalid export type origin');
     this.logger.log('Admin exporting email list from fhir resource:' + exportTypeOrigin);
     this.logger.log('Getting all people registered in the FHIR server');
-    let emails: string[] = []
+    let emails: string[];
     if (exportTypeOrigin === 'Both') {
-      const personEmails = await this.getEmails('Person');
-      const subscriptionEmails = await this.getEmails('Subscription');
-      emails = [...new Set([...personEmails, ...subscriptionEmails].map(i => i.toLowerCase()))] // get unique array of emails
+      const [personEmails, subscriptionEmails] = await Promise.all([
+        this.getEmails('Person'),
+        this.getEmails('Subscription'),
+      ]);
+      const merged = new Set([...personEmails, ...subscriptionEmails]);
+      emails = Array.from(merged);
     } else {
       emails = await this.getEmails(exportTypeOrigin);
     }
-    this.logger.log('Found ' + emails.length + ' emails')
+    this.logger.log('Found ' + emails.length + ' emails');
     try {
       this.logger.log('Converting emails to CSV');
       const parser = new Parser({
@@ -220,16 +224,16 @@ export class UploadController {
         this.logger.log(`Updated bundle file at path ${bundlePath}.`);
       }
       else {
-        const s3client = new S3();
+        const s3client = new S3Client({});
         const Key = this.appService.serverConfig.payload.Key;
         const Metadata = { filename: body.fileName };
 
-        await s3client.putObject({
+        await s3client.send(new PutObjectCommand({
           Bucket,
           Key,
           Metadata,
           Body: xmlData,
-        }).promise()
+        }))
         this.logger.log(`Uploaded bundle to s3://${Bucket}/${Key}`);
       }
     }

@@ -1,9 +1,4 @@
-FROM python:3.11.4-slim AS build-ersd
-
-RUN apt-get update && \
-	apt-get install curl make gcc g++ -y
-
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - && apt-get install nodejs -y
+FROM node:22.23.1-trixie-slim AS build-ersd
 
 WORKDIR /ersd
 
@@ -13,22 +8,30 @@ COPY . .
 # has 16 GB, and the browser builder OOMs with the default ~2 GB heap.
 ENV NODE_OPTIONS="--max-old-space-size=8192"
 
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends make gcc g++ python3 && \
+	rm -rf /var/lib/apt/lists/*
+
 RUN npm install --legacy-peer-deps
 RUN npm run build:server
 RUN npm run build:client
-RUN npm prune --omit=dev
+RUN npm prune --omit=dev && \
+	find node_modules -name "composer.lock" -delete && \
+	find node_modules -name "composer.json" -not -path "*/node_modules/.package-lock.json" -delete && \
+	rm -rf node_modules/emoji-toolkit/vendor \
+		node_modules/esbuild \
+		node_modules/@esbuild \
+		node_modules/.bin/esbuild
 
-FROM ubuntu:jammy-20250730
+FROM node:22.23.1-trixie-slim
 
 RUN apt-get update && \
-	apt-get install curl -y && \
-	apt-get upgrade -y
-
-RUN curl -SLO https://deb.nodesource.com/nsolid_setup_deb.sh
-RUN chmod 500 nsolid_setup_deb.sh
-RUN ./nsolid_setup_deb.sh 20
-RUN apt-get install nodejs -y
-RUN apt-get clean
+	apt-get upgrade -y && \
+	rm -rf /var/lib/apt/lists/* && \
+	# Runtime does not need Node headers/docs/npm (Inspector flags bundled OpenSSL headers)
+	rm -rf /usr/local/include /usr/local/share/doc /usr/local/share/man \
+		/usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx \
+		/usr/local/lib/node_modules/corepack /usr/local/bin/corepack
 
 RUN mkdir -p /ersd/server && mkdir /ersd/client
 WORKDIR /ersd

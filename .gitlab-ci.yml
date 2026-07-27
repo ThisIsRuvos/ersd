@@ -35,7 +35,7 @@ variables:
 
 # Assume the target account role, resolve the registry, and log in to ECR.
 # Exports ECR_REGISTRY, BUILD_IMAGE (immutable, commit-scoped) and RELEASE_IMAGE
-# (the version tag consumed by the environment) for the job to use.
+# (the version tag consumed by the environment — no commit hash).
 .ecr_login:
   script:
     - |
@@ -121,7 +121,7 @@ Build image for sandbox:
     - docker push "$BUILD_IMAGE"
 
 ########################################################################################################################
-# Deploy stage: promote the built image to the release (version) tag consumed by the environment
+# Deploy stage: promote the built image to the version tag (no commit hash)
 ########################################################################################################################
 
 Deploy to sandbox:
@@ -167,6 +167,9 @@ Deploy to sandbox:
 # variable  environment = production. Requires an OIDC role in the production
 # account that trusts this project, and ECR repo ersd/portal.
 #
+# Production accepts only three-part tags (x.y.z). Four-part tags (x.y.z.n) are
+# for sandbox testing only and will not promote to production.
+#
 # Source: 703861148810.dkr.ecr.us-east-1.amazonaws.com/kds/kds-portal:{tag}
 # Target: 301114786575.dkr.ecr.us-east-1.amazonaws.com/ersd/portal:{tag}
 ########################################################################################################################
@@ -174,7 +177,7 @@ Deploy to sandbox:
 Promote to production:
   stage: deploy-production
   rules:
-    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE == "web" && $environment == "production"'
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/ && $CI_PIPELINE_SOURCE == "web" && $environment == "production"'
   variables:
     SOURCE_AWS_ACCOUNT_ID: '703861148810' # sandbox account (promotion source)
     SOURCE_ECR_REPO: kds/kds-portal
