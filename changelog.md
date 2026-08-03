@@ -1,5 +1,9 @@
 # Change Log: eRSD Release 1.5.3
 
+### UI/UX Updates
+- Updated RCTC Spreadsheet deprecation notice to state availability ends by Q1, 2027 (was late 2026)
+- Updated hidden site version value to eRSD Version: 1.5.3
+
 ### Security
 - Remediated ECR/Inspector findings for the kds-portal container image
 - Upgraded vulnerable runtime dependencies including axios, multer, dompurify, nodemailer, lodash/lodash-es, tmp, qs, uuid, mermaid, body-parser, and related transitive packages
