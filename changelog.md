@@ -11,6 +11,7 @@
 - Moved esbuild to devDependencies and removed it from the runtime image (clears Go stdlib findings)
 - Removed emoji-toolkit Composer/PHP vendor artifacts from the production image
 - Added npm overrides to pin secure transitive dependency versions
+- Scoped path-to-regexp and body-parser security pins to the 0.1.x / 1.x lines so NestJS Express 5 (router@2) keeps path-to-regexp@8 and no longer crashes with `pathRegexp.match is not a function`
 - Upgraded Node.js runtime from 20.20.2 to 22.23.1 (OpenSSL 3.5.7) to address bundled OpenSSL findings
 - Removed Node headers/docs from the runtime image
 
