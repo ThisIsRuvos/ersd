@@ -1,0 +1,124 @@
+# Local stack using sandbox ECR images (AWS profile: sandbox).
+# HAPI is not published to sandbox ECR; the live ERSD-HAPI ECS service
+# uses hapiproject/hapi:v6.8.0 from Docker Hub.
+services:
+  hapi-db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_DB: hapi_db
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: secret
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d hapi_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    ports:
+      - "5433:5432"
+
+  ersd-hapi-fhir:
+    image: hapiproject/hapi:v6.8.0
+    depends_on:
+      hapi-db:
+        condition: service_healthy
+    ports:
+      - "8081:8080"
+    environment:
+      spring.datasource.url: jdbc:postgresql://hapi-db:5432/hapi_db
+      spring.datasource.driverClassName: org.postgresql.Driver
+      spring.datasource.username: myuser
+      spring.datasource.password: secret
+      spring.jpa.properties.hibernate.dialect: ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgres94Dialect
+      hapi.fhir.fhir_version: R4
+      hapi.fhir.client_id_strategy: ANY
+
+  # Newest tagged image in 703861148810.dkr.ecr.us-east-1.amazonaws.com/ersd/ersd-keycloak
+  keycloak:
+    image: 703861148810.dkr.ecr.us-east-1.amazonaws.com/ersd/ersd-keycloak:26.7.0
+    entrypoint: ["/opt/keycloak/bin/kc.sh"]
+    command: ["start-dev", "--http-relative-path=/auth", "--hostname-strict=false", "--http-enabled=true"]
+    ports:
+      - "8085:8080"
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
+      KC_HEALTH_ENABLED: "true"
+      # Image defaults to mysql; force file-based storage for local start-dev
+      KC_DB: dev-file
+
+  # Newest portal image after fix: kds/kds-portal:1.5.3.4
+  web:
+    image: 703861148810.dkr.ecr.us-east-1.amazonaws.com/kds/kds-portal:1.5.3.4
+    depends_on:
+      - ersd-hapi-fhir
+      - keycloak
+    ports:
+      - "3333:3333"
+    environment:
+      AWS_REGION: us-east-1
+      # Minimal config: FHIR + Keycloak local. S3/email optional for boot.
+      NODE_CONFIG: >-
+        {
+          "server": {
+            "port": 3333,
+            "fhirServerBase": "http://ersd-hapi-fhir:8080/fhir",
+            "rctcExcelPath": "assets/rctc.xlsx",
+            "bundlePath": "assets/bundle.xml",
+            "subscriptionCriteria": "Bundle?",
+            "enableSubscriptions": false,
+            "serveV3": true,
+            "restrictedResourceTypes": ["Person", "Subscription"],
+            "payload": {
+              "Bucket": "",
+              "Key": "",
+              "RCTCKey": "rctc",
+              "ERSDV3_SPECIFICATION_JSON_KEY": "eRSDv3_specification_bundle.json",
+              "ERSDV3_SPECIFICATION_XML_KEY": "eRSDv3_specification_bundle.xml",
+              "ERSD_RELEASE_DESCRIPTION_V3_KEY": "eRSDv3_specification_release_description.txt",
+              "ERSDV3_CHANGE_PREVIEW_JSON_KEY": "eRSDv3_change_preview.json",
+              "ERSDV3_CHANGE_PREVIEW_XML_KEY": "eRSDv3_change_preview.xml",
+              "ERSDV3_CHANGE_PREVIEW_SUMMARY_KEY": "eRSDv3_change_preview_summary.md",
+              "RCTC_CHANGE_LOG_KEY": "RCTC_Change_Log.xlsx",
+              "RCTC_RELEASE_SPREADSHEET_KEY": "RCTC_Release.xlsx"
+            },
+            "contactInfo": {
+              "enableExpiryCheck": false,
+              "checkDurationSeconds": 0,
+              "checkCountPerPage": 5,
+              "expiration": { "value": 1, "unit": "month" },
+              "notificationInterval": { "value": 15, "unit": "days" },
+              "maxNotifications": 3,
+              "templates": {
+                "variables": { "portal_link": "http://localhost:3333" },
+                "expiring": {
+                  "subject": "test",
+                  "text": "config/templates/contact-info-expiring.txt",
+                  "html": "config/templates/contact-info-expiring.html"
+                },
+                "expired": {
+                  "subject": "test",
+                  "text": "config/templates/contact-info-expired.txt",
+                  "html": "config/templates/contact-info-expired.html"
+                }
+              }
+            },
+            "authCertificate": "-----BEGIN CERTIFICATE-----\nMIIClzCCAX8CBgGcKmNOzjANBgkqhkiG9w0BAQsFADAPMQ0wCwYDVQQDDARlcnNkMB4XDTI2MDIwNDIwMzkzN1oXDTM2MDIwNDIwNDExN1owDzENMAsGA1UEAwwEZXJzZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOSPT21RYIMtx5Lx4WE3d95ZiApLmqnlSNj0JV/yODBa2+6MwnT6/rOicqmL8YPjs2af++1GIfV3jFb0B09fgWyit8TpNvh4sPxdHIOw3W1jlNgYYNnPkx/tgj0hlR8xtK1h6l39XNapPT7IpD+byNRkXWa7F1UJTK5DL0sDwmqCKkA/I9EoWfY838MF+HRFZoqGeGW2LntW3QgA3qgH26LW1QTmHxa9JslTsu7uKfMLpWbPAVcid35RASEq2y29geRxrJF+JnVDh/S9Vv/tvx0QqZDYSLrwigU6g7NzAfSjVb8Rt9RSy1i+yMcYvfzRDrE7sdjOtrPOrEY/uvz9dVsCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAf9BAQBJ8k4uj/fC3SU+h3YYBqa9Aia77UmNiFV7qVuuQJ6C2sV0ii6//jYC0TLVmnQBfAJ/JLUD8R09xM6TIgoPmVS3N/uP9xHFv20vKiO7DtAo9Qn89AtdxespO8Pvch7vgx+G7NOnWfLirlM6AcVDU1aCq1dCPTxvLLH2A+3gcK8DormmghZK1Zq7SUMUp/8NeH4UPqaEj/PZ3bPnYWKbz//62Rp/bgXbjAeflL9r1wUODoQzgIhRaVANvX7v4nsDC7ofk0ZtXBmVFM/Bq5fniMggmVXYAEAuQ1Ofpf1U+hp6oZDN37WVXLY3iRd7GztGOv40/f95LIGIOChNvMg==\n-----END CERTIFICATE-----"
+          },
+          "email": {
+            "from": "",
+            "host": "",
+            "port": 25,
+            "tls": false,
+            "username": "",
+            "password": ""
+          },
+          "client": {
+            "keycloak": {
+              "url": "http://localhost:8085/auth",
+              "realm": "ersd",
+              "clientId": "ersd-app"
+            }
+          }
+        }
