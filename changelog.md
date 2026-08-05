@@ -1,7 +1,7 @@
 # Change Log: eRSD Release 1.5.3
 
 ### UI/UX Updates
-- Updated RCTC Spreadsheet deprecation notice to state availability ends by Q1, 2027 (was late 2026)
+- Updated RCTC Spreadsheet deprecation notice to state availability ends by early 2027 (was Q1, 2027; previously late 2026)
 - Updated hidden site version value to eRSD Version: 1.5.3
 
 ### Security
