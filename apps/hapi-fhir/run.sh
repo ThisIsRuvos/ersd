@@ -19,6 +19,7 @@ EMAIL_PORT=${EMAIL_PORT:-'10025'}
 
 sed -i '/^server_address/c\server_address='$SERVER_ADDRESS WEB-INF/classes/hapi.properties
 sed -i '/^server.name/c\server.name='$SERVER_NAME WEB-INF/classes/hapi.properties
+sed -i '/^reuse_cached_search_results_millis/c\reuse_cached_search_results_millis=60000' WEB-INF/classes/hapi.properties
 sed -i '/^datasource.driver/c\datasource.driver='$DATASOURCE_DRIVER WEB-INF/classes/hapi.properties
 sed -i '/^datasource.url/c\datasource.url='$DATASOURCE_URL WEB-INF/classes/hapi.properties
 sed -i '/^datasource.username/c\datasource.username='$DATASOURCE_USERNAME WEB-INF/classes/hapi.properties
