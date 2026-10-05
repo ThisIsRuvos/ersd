@@ -20,8 +20,8 @@ import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { Fhir } from 'fhir/fhir';
 
 @Controller('ersd')
-export class eRSDController {
-  private readonly logger = new Logger('eRSDController');
+export class ERSDController {
+  private readonly logger = new Logger('ERSDController');
   constructor(private httpService: HttpService, private appService: AppService) {
   }
 
@@ -147,7 +147,7 @@ export class eRSDController {
     }
 
     const s3client = new S3Client({});
-    let markdownFiles = {};
+    const markdownFiles = {};
 
     if (Key) {
       try {
