@@ -11,7 +11,7 @@ import { ApiKeysController } from './api-key/api-keys.controller';
 import { UploadController } from './upload/upload.controller';
 import { DownloadController } from './download/download.controller';
 import { S3Controller } from './s3/s3.controller';
-import { eRSDController } from './ersd/ersd.controller';
+import { ERSDController } from './ersd/ersd.controller';
 
 @Module({
   imports: [AuthModule, HttpModule.register({ timeout: 5 * 60 * 1000 })],
@@ -20,7 +20,7 @@ import { eRSDController } from './ersd/ersd.controller';
     UserController,
     FhirController,
     S3Controller,
-    eRSDController,
+    ERSDController,
     SubscriptionController,
     ApiKeysController,
     UploadController,
