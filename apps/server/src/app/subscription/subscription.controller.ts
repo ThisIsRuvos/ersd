@@ -247,8 +247,8 @@ export class SubscriptionController {
       const nextLinkQueryString = nextLink.url.split('fhir').pop()
       const nextURL = this.appService.serverConfig.fhirServerBase + nextLinkQueryString
       const subscriptionsBundle = await this.httpService.get(nextURL).toPromise()
-      const { data: bundle } = subscriptionsBundle;
-      this.sendUpdateBundle(bundle)
+      const { data: nextBundle } = subscriptionsBundle;
+      this.sendUpdateBundle(nextBundle)
     }
   }
 

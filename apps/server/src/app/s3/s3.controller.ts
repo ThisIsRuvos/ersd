@@ -22,7 +22,7 @@ export class S3Controller {
 
   private setJSONKey(version, bundle = 'specification') {
     let key = ''
-    if (version == 'ecrv3' && bundle !== '') {
+    if (version === 'ecrv3' && bundle !== '') {
       switch(bundle) {
         // case 'supplemental':
         //   key = this.appService.serverConfig.payload.ERSDV3_SUPPLEMENTAL_JSON_KEY
@@ -35,7 +35,7 @@ export class S3Controller {
 
   private setXMLKey(version, bundle = 'specification') {
     let key = ''
-    if (version == 'ecrv3' && bundle !== '') {
+    if (version === 'ecrv3' && bundle !== '') {
       switch(bundle) {
         // case 'supplemental':
         //   key = this.appService.serverConfig.payload.ERSDV3_SUPPLEMENTAL_JSON_KEY

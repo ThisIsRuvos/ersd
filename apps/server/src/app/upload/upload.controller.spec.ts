@@ -22,14 +22,15 @@ jest.mock('config', () => {
   };
 });
 
-const putObjectMock = jest.fn(() => ({
-  promise: jest.fn()
-}));
+const sendMock = jest.fn().mockResolvedValue({});
 
-jest.mock('aws-sdk/clients/s3', () => {
-  return jest.fn().mockImplementation(() => ({
-    putObject: putObjectMock,
-  }))
+jest.mock('@aws-sdk/client-s3', () => {
+  return {
+    S3Client: jest.fn().mockImplementation(() => ({
+      send: sendMock
+    })),
+    PutObjectCommand: jest.fn().mockImplementation((input) => input)
+  };
 });
 
 describe('Subscription Controller', () => {
