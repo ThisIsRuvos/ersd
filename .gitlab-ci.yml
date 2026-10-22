@@ -303,7 +303,8 @@ Deploy to sandbox:
 # Production stage: promote the sandbox release image into the production account (manual, web-triggered)
 #
 # Trigger from GitLab: Build -> Pipelines -> New pipeline on a three-part tag,
-# with pipeline variable environment = production.
+# with pipeline variable environment = production. The API create-pipeline
+# call is accepted as well, with the same variable.
 # Source account and repository: SANDBOX_AWS_ACCOUNT_ID / SANDBOX_ECR_REPO
 # Target account and repository: PROD_AWS_ACCOUNT_ID / PROD_ECR_REPO
 #
@@ -314,7 +315,7 @@ Deploy to sandbox:
 Promote to production:
   stage: deploy-production
   rules:
-    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/ && $CI_PIPELINE_SOURCE == "web" && $environment == "production"'
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/ && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api") && $environment == "production"'
   variables:
     SOURCE_AWS_ACCOUNT_ID: $SANDBOX_AWS_ACCOUNT_ID
     SOURCE_ECR_REPO: $SANDBOX_ECR_REPO
