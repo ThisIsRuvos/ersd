@@ -13,10 +13,11 @@
 - Added npm overrides to pin secure transitive dependency versions
 - Scoped path-to-regexp and body-parser security pins to the 0.1.x / 1.x lines so NestJS Express 5 (router@2) keeps path-to-regexp@8 and no longer crashes with `pathRegexp.match is not a function`
 - Upgraded Node.js runtime from 20.20.2 to 22.23.1 (OpenSSL 3.5.7) to address bundled OpenSSL findings
+- Upgraded Node.js runtime from 22.23.1 to 22.23.4 so the built-in root store no longer trusts the compromised eMudhra roots
 - Removed Node headers/docs from the runtime image
 
 ### Configuration Updates
-- Switched Dockerfile to official node:22.23.1-trixie-slim base image
+- Switched Dockerfile and CI images from Node 22.23.1 to 22.23.4 (node:22.23.4-trixie-slim)
 - Pruned npm/corepack from the runtime image and tightened production node_modules cleanup
 
 ---
