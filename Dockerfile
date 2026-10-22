@@ -1,4 +1,4 @@
-FROM node:22.23.1-trixie-slim AS build-ersd
+FROM node:22.23.4-trixie-slim AS build-ersd
 
 WORKDIR /ersd
 
@@ -23,7 +23,7 @@ RUN npm prune --omit=dev && \
 		node_modules/@esbuild \
 		node_modules/.bin/esbuild
 
-FROM node:22.23.1-trixie-slim
+FROM node:22.23.4-trixie-slim
 
 RUN apt-get update && \
 	apt-get upgrade -y && \
