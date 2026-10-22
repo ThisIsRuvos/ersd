@@ -191,7 +191,7 @@ Test:
 Build image for sandbox:
   stage: build
   rules:
-    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE != "web"'
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE != "web" && $environment != "production"'
     - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE == "web" && $environment == "sandbox"'
   variables:
     TARGET_AWS_ACCOUNT_ID: $SANDBOX_AWS_ACCOUNT_ID
@@ -227,7 +227,7 @@ Prepare container scan:
     TARGET_AWS_ACCOUNT_ID: $SANDBOX_AWS_ACCOUNT_ID
     TARGET_ENVIRONMENT: sandbox
   rules:
-    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE != "web"'
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE != "web" && $environment != "production"'
     - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE == "web" && $environment == "sandbox"'
   script:
     - export AWS_ACCOUNT_ID=${TARGET_AWS_ACCOUNT_ID}
@@ -255,7 +255,7 @@ container_scanning:
     CS_REGISTRY_USER: AWS
   allow_failure: true
   rules:
-    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE != "web"'
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE != "web" && $environment != "production"'
     - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE == "web" && $environment == "sandbox"'
 
 ########################################################################################################################
@@ -265,7 +265,7 @@ container_scanning:
 Deploy to sandbox:
   stage: deploy
   rules:
-    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE != "web"'
+    - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE != "web" && $environment != "production"'
     - if: '$CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+(\.\d+)?$/ && $CI_PIPELINE_SOURCE == "web" && $environment == "sandbox"'
   variables:
     TARGET_AWS_ACCOUNT_ID: $SANDBOX_AWS_ACCOUNT_ID
@@ -310,6 +310,8 @@ Deploy to sandbox:
 #
 # Production accepts only three-part tags (x.y.z). Four-part tags (x.y.z.n) are
 # for sandbox testing only and will not promote to production.
+# A production pipeline skips the sandbox build and scan. Those ECR tags are
+# immutable, and a second push of the same tag fails the promotion.
 ########################################################################################################################
 
 Promote to production:
