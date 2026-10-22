@@ -1,3 +1,9 @@
+# Change Log: eRSD Release 1.5.4
+
+### Security
+- Upgraded the portal container and CI images from Node.js 22.23.1 to 22.23.4 so Node's built-in root store no longer trusts the compromised eMudhra intermediates
+- Updated hidden site version value to eRSD Version: 1.5.4
+
 # Change Log: eRSD Release 1.5.3
 
 ### UI/UX Updates
