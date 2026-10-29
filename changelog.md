@@ -6,6 +6,10 @@
 
 ### Security
 - Remediated ECR/Inspector findings for the kds-portal container image
+- Upgraded Angular 20.3.26 to 20.3.34 for the router, common, core, and compiler advisories
+- Upgraded axios, nodemailer, multer, dompurify, qs, moment, mermaid, body-parser, proxy-addr, follow-redirects, fast-uri, and katex to patched releases
+- Moved the direct Express dependency to 5.2.x, matching the NestJS runtime, so the image no longer ships Express 4
+- Moved ts-loader and @angular/localize to devDependencies so browserslist and baseline-browser-mapping are not copied into the runtime image
 - Upgraded vulnerable runtime dependencies including axios, multer, dompurify, nodemailer, lodash/lodash-es, tmp, qs, uuid, mermaid, body-parser, and related transitive packages
 - Upgraded Angular packages to 20.3.26 to pick up security backports
 - Moved esbuild to devDependencies and removed it from the runtime image (clears Go stdlib findings)
