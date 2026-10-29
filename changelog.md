@@ -6,6 +6,10 @@
 
 ### Security
 - Remediated ECR/Inspector findings for the kds-portal container image
+- Upgraded Angular 20.3.26 to 20.3.34 for the router, common, core, and compiler advisories
+- Upgraded axios, nodemailer, multer, dompurify, qs, moment, mermaid, body-parser, proxy-addr, follow-redirects, fast-uri, and katex to patched releases
+- Moved the direct Express dependency to 5.2.x, matching the NestJS runtime, so the image no longer ships Express 4
+- Moved ts-loader and @angular/localize to devDependencies so browserslist and baseline-browser-mapping are not copied into the runtime image
 - Upgraded vulnerable runtime dependencies including axios, multer, dompurify, nodemailer, lodash/lodash-es, tmp, qs, uuid, mermaid, body-parser, and related transitive packages
 - Upgraded Angular packages to 20.3.26 to pick up security backports
 - Moved esbuild to devDependencies and removed it from the runtime image (clears Go stdlib findings)
@@ -13,10 +17,11 @@
 - Added npm overrides to pin secure transitive dependency versions
 - Scoped path-to-regexp and body-parser security pins to the 0.1.x / 1.x lines so NestJS Express 5 (router@2) keeps path-to-regexp@8 and no longer crashes with `pathRegexp.match is not a function`
 - Upgraded Node.js runtime from 20.20.2 to 22.23.1 (OpenSSL 3.5.7) to address bundled OpenSSL findings
+- Upgraded Node.js runtime from 22.23.1 to 22.23.4 so the built-in root store no longer trusts the compromised eMudhra roots
 - Removed Node headers/docs from the runtime image
 
 ### Configuration Updates
-- Switched Dockerfile to official node:22.23.1-trixie-slim base image
+- Switched Dockerfile and CI images from Node 22.23.1 to 22.23.4 (node:22.23.4-trixie-slim)
 - Pruned npm/corepack from the runtime image and tightened production node_modules cleanup
 
 ---

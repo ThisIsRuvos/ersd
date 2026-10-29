@@ -10,7 +10,7 @@ import {IEmailConfig} from './app/email-config';
 
 import * as path from 'path';
 import * as fs from 'fs';
-import * as SMTPConnection from 'nodemailer/lib/smtp-connection';
+import * as SMTPTransport from 'nodemailer/lib/smtp-transport';
 import * as Mail from 'nodemailer/lib/mailer';
 import * as nodemailer from 'nodemailer';
 import moment from 'moment';    // this syntax is needed, for some reason
@@ -30,7 +30,7 @@ export class CheckContactInfo {
     this.contactInfoConfig = contactInfoConfig;
     this.emailConfig = emailConfig;
 
-    const transportOptions: SMTPConnection.Options = {
+    const transportOptions: SMTPTransport.Options = {
       host: emailConfig.host,
       port: emailConfig.port,
       requireTLS: emailConfig.tls
