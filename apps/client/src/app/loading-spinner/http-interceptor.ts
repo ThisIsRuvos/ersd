@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import {
   HttpRequest,
   HttpHandler,
-  HttpEvent,
-  HttpInterceptor, HttpResponse
+  HttpInterceptor,
+  HttpResponse
 } from '@angular/common/http';
+import type { HttpEvent } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators'
 import { LoadingService } from './loading.service';
